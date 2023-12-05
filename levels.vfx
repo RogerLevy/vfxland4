@@ -1,0 +1,3 @@
+0 define-level 1-1
+    s" _g1.csv" dungeon.ts csv-layer,
+    s" _a1.csv" dungeon.ts csv-layer,

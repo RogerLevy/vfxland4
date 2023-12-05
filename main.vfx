@@ -1,0 +1,28 @@
+-sin
+require lib/alpha.vfx
+require lib/obj.vfx
+require lib/timer.vfx
+require lib/tilemap.vfx
+
+create stage /obj allot&erase
+
+: present display al_flip_display ;
+: poll poll-keyboard poll-mouse ;
+: think stage { act reckon } ;
+: graphics cls stage { draw } present ;
+: frame poll think graphics pause ;
+: go >display begin frame <esc> pressed? until >vfx ;
+
+: *box stage *child dup as act> 0.1e f>p x +! draw> blue 33 66 rectf red 33 66 rect ;
+100 100 at *box constant box
+
+create buf 20 16 * cells allot 
+: *map buf 20 stage *tilemap ; \ dup as act> 
+50 50 at *map constant map
+
+z" data/tbank_test.png" loadbmp constant b
+0 0 at b tbank bmpwrite
+map as :: act> 0.5e 0.5e 2f>p scrollx v+! ; execute
+
+midentity 2e 2e mscale
+go

@@ -1,0 +1,8 @@
+: csv> ( a c - <code> ) ( a c - )
+    begin over >r s" ," search while
+        over r> swap over - r@ execute
+        1 /string
+    repeat
+    r> drop
+    dup if  r@ execute  else  2drop  then
+    r> drop ;

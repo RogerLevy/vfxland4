@@ -1,0 +1,13 @@
+require lib/allegro-5.2.5.vfx
+require lib/obj.vfx
+require lib/counter.vfx
+
+motif var et var xt  
+create timers /obj allot&erase
+
+: fsec>ms  1000e f* f>s ;
+: 1timer
+    xt !  fsec>ms counter + et !
+    draw>  counter et @ >= if  xt @ execute  en off  then ;
+: timer>  ( f: sec -- )
+    timers *child { r> 1timer } ;

@@ -1,0 +1,87 @@
+require lib/options.vfx
+require lib/allegro-5.2.5.vfx
+require lib/core.vfx
+include lib/counter.vfx
+include lib/csv.vfx
+include lib/files.vfx
+
+winw 2 / constant gamew
+winh 2 / constant gameh
+
+\ - Ranges
+: area 2over 2+ ;
+: 2rnd rnd swap rnd swap ;
+: overlap? 2swap 2rot rot > -rot < and >r rot > -rot < and r> and ;
+: inside? 2>r 2>r 2dup 2r> 2r> overlap? ;
+
+\ - Input
+: held? kbs0 swap al_key_down 0<> ;
+: kdelta dup kbs0 swap al_key_down kbs1 rot al_key_down - ;
+: pressed? kdelta 1 = ;
+: letgo? kdelta -1 = ;
+: shift? 215 held? 216 held? or ;
+: ctrl? 217 held? 218 held? or ;
+: alt? 219 held? 220 held? or ;
+: mouse ms0 ALLEGRO_MOUSE_STATE.x @ ms0 ALLEGRO_MOUSE_STATE.y @ ;
+: mickey ms1 ALLEGRO_MOUSE_STATE.x @ ms1 ALLEGRO_MOUSE_STATE.y @ ;
+: 2- rot swap - >r - r> ;
+: walt mouse mickey 2- ;
+: mheld? ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
+: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0< 1 and - ;
+: mpressed? mdelta 1 = ;
+: mletgo? mdelta -1 = ;
+: poll poll-keyboard poll-mouse ;
+
+\ - Graphics
+create pen 0 , 0 ,
+create fore 0e sf, 0e sf, 0e sf, 0e sf,
+create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
+create m 16 cells allot
+: at pen v! ;
+: +at pen v+! ;
+: pen@f pen v@ 2s>f ;
+: mapply m al_use_transform ;
+: mscale m al_scale_transform mapply ;
+: mrotate deg>rad m al_rotate_transform mapply ;
+: mtranslate m al_translate_transform mapply ;
+: midentity m al_identity_transform mapply ; midentity
+: 4f@ sf@+ sf@+ sf@+ sf@ ;
+: 4f! 4 cells + sf-! sf-! sf-! cell- sf! ;
+: rect 1e f>ds >r  pen@f  pen v@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
+: rectf pen v@ 2+  pen@f 2s>f  fore 4f@  al_draw_filled_rectangle ;
+: fcolor fore 4f! ;
+: cls backdrop 4f@ al_clear_to_color ;
+
+\ - Bitmaps
+: ?null ?dup 0= if r> 2drop exit then ;
+: fblit pen@f swap al_draw_bitmap ;
+: blit ?null 0 swap fblit ;
+: bmpw al_get_bitmap_width ;
+: bmph al_get_bitmap_height ;
+: bmpwh dup bmpw swap bmph ; 
+: loadbmp al_load_bitmap ;
+: subbmp pen v@ 2swap al_create_sub_bitmap ;
+: hold al_hold_bitmap_drawing ;
+: -bmp ?null al_destroy_bitmap ;
+: onto ?null al_set_target_bitmap ;
+: backbuf display al_get_backbuffer ;
+: opaque ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO al_set_blender ;
+: transparent ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender ;
+: bmpwrite onto opaque blit backbuf onto transparent ;
+: rblit swap >r  dup bmpwh 2 2 2/ 2s>f  pen@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
+
+\ - Colors
+: red 1e 0e 0e 1e fcolor ;
+: green 0e 1e 0e 1e fcolor ;
+: blue 0e 0e 1e 1e fcolor ;
+: yellow 1e 1e 0e 1e fcolor ;
+: magenta 1e 0e 1e 1e fcolor ;
+: cyan 0e 1e 1e 1e fcolor ;
+: brown 0.5e 0.25e 0e 1e fcolor ;
+: pink 1e 0.5e 1e 1e fcolor ;
+: orange 1e 0.5e 0e 1e fcolor ;
+: purple 0.5 0e 1e 1e fcolor ;
+: dk dup sf@ 2e f/ sf!+ ;
+: br dup sf@ 2e f* sf!+ ;
+: <d fore dk dk dk dk drop ; 
+: <b fore br br br br drop ; 

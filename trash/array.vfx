@@ -1,0 +1,52 @@
+%obj kind: %array
+    var len var buf var cap
+;kind
+
+\ to add to a "collection" interface...
+\ key/value thingies... string keys being z-term...
+: ?index  dup len @ >= abort" set: Index out of range!" ;
+: set  [[ ?index cells buf @ + ! ]] ;
+: get  [[ ?index cells buf @ + @ ]] ;
+: length  -> len @ ;
+
+: array ( n -- <name> )
+    %array create-static  here buf ! dup len ! dup cap ! cells allot&erase ;
+
+%array m: (clear)  buf @ len @ cells erase ;
+
+%array m: (each)  ( xt - )  ( v - )  \ me is not preserved
+    len @ 0= if exit then
+    buf @ len @ cells bounds do
+        i @ swap dup >r execute r>  cell +loop  drop ; 
+
+\ ------------------------------------------------------------------------------
+
+%array kind: %stack
+;kind
+
+: stack ( n -- <name> )
+    %stack create-static  here buf ! dup cap ! cells allot&erase ;
+
+%stack m: (push)  1 len +!  len @ 1 - me set  ;
+%stack m: (clear)  0 len ! ;
+
+\ ------------------------------------------------------------------------------
+
+%array kind: %table
+    var cols
+;kind
+
+: table ( cols rows -- <name> )
+    %table create-static  here buf !
+    over cols !  * dup len ! dup cap ! cells allot&erase ;
+
+: table-get  ( col row table - v )  [[ cols * + (get) ]] ;
+: table-set  ( v col row table - )  [[ cols * + (set) ]] ;
+
+\ ------------------------------------------------------------------------------
+
+: create-array  array ;
+: create-stack  stack ;
+: create-table  table ;
+
+\ ------------------------------------------------------------------------------

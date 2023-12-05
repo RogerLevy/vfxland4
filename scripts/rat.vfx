@@ -1,0 +1,41 @@
+include actors/rat-sfx.vfx
+
+%actor kind: %rat
+    var ctr var ang var spd var ctr2
+;kind
+
+z" assets/rat1.png" loadbmp constant rat.bmp
+z" assets/hitrat.png" loadbmp constant hitrat.bmp
+
+rat.bmp 32 32 create-tileset rat.ts
+
+%rat m: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
+: bop  *bop*  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;
+: hit  bop  rat-hit  32 choose rathits get play-doubled ;
+: ?hit  clicked? if  hit  then ;
+: stop  0 0 vx v! step>  ?hit ;
+
+: propel  dup ang !  s>f spd fs@ fvec vx fv! ;
+: redirect  4 choose 90 * propel ;
+: turn  ang @ 90 + 360 mod propel  0 ctr ! ;
+: ?turn
+    x s@ 16 < if  16 x s!  turn  then
+    y s@ 16 < if  16 y s!  turn  then
+    x s@ winw 2 / 16 - > if  winw 2 / 16 - x s!  turn  then
+    y s@ winh 2 / 16 - > if  winh 2 / 16 - y s!  turn  then ;
+: skitter  *squeak*  90 propel  0 ctr !  step>  ctr @ 60 >= if redirect
+    0 ctr ! then  ?hit  ?turn ;
+
+%rat m: init
+    32 32 w v!
+    20 choose 10 / s>f 1e f+ spd fs!
+    skitter
+    70 ctr2 !
+    physics>
+        move-simple
+    draw>
+        ctr @ 3 / 9 mod rat.ts tile@ ang @ 90 - s>f rblit
+        1 ctr +!
+        winw 4 / 32 - winh 4 / 32 - at
+        ctr2 @ 0 > if hitrat.bmp blit -1 ctr2 +! then
+        ;
