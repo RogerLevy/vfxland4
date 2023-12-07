@@ -24,5 +24,8 @@ z" data/tbank_test.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 map as :: act> 0.5e 0.5e 2f>p scrollx v+! ; execute
 
+: *text stage *child dup as draw> white s" Hello" text ; 
+160 120 at *text constant hello
+
 midentity 2e 2e mscale
 go

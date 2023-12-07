@@ -1,0 +1,30 @@
+module stming
+
+include lib/deprecated/files1.vfx
+
+: ?exist ( a c - a c )
+    2dup file-exists not if
+        cr type -1 abort"  not found"
+    then ;
+
+: stm-dims ( a c - w h )
+    ?exist r/o[ 
+        0 sp@ 4 read drop
+        0 sp@ 2 read ( w ) 
+        0 sp@ 2 read ( h )
+    ]file ;
+
+: load-stm ( a c tilemap - )
+    [[ ?dup if  ?exist
+        r/o[ 
+            0 sp@ 4 read drop
+            0 sp@ 2 read ( w ) dup tm.cols s!  cells tm.stride !
+            0 sp@ 2 read ( h ) tm.rows s!
+            tm.base @ bytes-left read
+        ]file
+    then ]] ;
+
+export load-stm
+export stm-dims
+
+end-module

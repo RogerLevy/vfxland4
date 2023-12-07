@@ -7,5 +7,5 @@
 : copybmp ( src dest - )
 : rblit ( flags .angle bmp - )
 
-: tile@ ( c r tilemap - n ) { stride @ * + ba @ get } ;
-: tile! ( c r tilemap - ) { stride @ * + ba @ set } ;
+: tile@ ( c r tilemap - n )
+: tile! ( c r tilemap - )

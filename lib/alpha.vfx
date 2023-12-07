@@ -81,7 +81,15 @@ create m 16 cells allot
 : pink 1e 0.5e 1e 1e fcolor ;
 : orange 1e 0.5e 0e 1e fcolor ;
 : purple 0.5 0e 1e 1e fcolor ;
+: white 1e 1e 1e 1e fcolor ;
+: black 0e 0e 0e 0e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
 : <d fore dk dk dk dk drop ; 
-: <b fore br br br br drop ; 
+: <b fore br br br br drop ;
+
+\ - Text
+variable font  builtin-font font !
+create z$ 257 allot
+: >z$ dup >r z$ swap move 0 r> z$ + c! z$ ;
+: text >z$ font @ fore 4f@ pen@f 0 z$ al_draw_text ;
