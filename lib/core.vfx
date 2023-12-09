@@ -2,7 +2,8 @@
 : @+ dup cell+ swap @ ;
 : rnd choose ;
 : ?literal state @ if postpone literal then ;
-: ?; s" ?dup 0= if exit then" evaluate ; immediate
+: ?; s" if exit then" evaluate ; immediate
+: 0; s" 0= if exit then" evaluate ; immediate
 : sf@+ dup sf@ cell+ ;
 : sf-! cell- dup sf! ;
 : f>ds 0 >r rp@ sf! r> ;

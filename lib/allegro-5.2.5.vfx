@@ -3995,9 +3995,6 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
         al_load_bitmap swap !
     else  2drop  then ;
 
-: matrix  ( - <name> ) ( - matrix )
-    create 16 cells allot ;
-
 \ - Key constants
 
 1 constant <A>  

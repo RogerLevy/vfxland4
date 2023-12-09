@@ -1,0 +1,40 @@
+\ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
+: h. base @ swap hex . base ! ;
+: .s depth | d | d 0 ?do d 1 - i - pick h. loop ; \ .fs ;
+: ?type ?dup 0= if drop else type then ;
+: .tib ." >" tib #tib @ ?type ." _" ;
+: nr 0 pen cell+ @ 8 + at ; 
+: try catch dup .throw if 2drop then ;
+: obey tib #tib @ ['] evaluate try 0 #tib ! ;
+: ?charkey
+    case
+        8 of #tib @ 0; -1 #tib +! exit endof
+        13 of obey exit endof
+        27 of exit endof
+    end-case
+    tib #tib @ + c! 1 #tib +!
+;
+
+create e /ALLEGRO_EVENT allot&erase
+: etype? e ALLEGRO_EVENT.type @ = ;
+: events
+    begin  queue e al_get_next_event  while
+        ALLEGRO_EVENT_DISPLAY_CLOSE etype? if
+            bye
+        then
+        ALLEGRO_EVENT_KEY_CHAR etype? if
+           e KEYBOARD_EVENT.unichar @ ?charkey
+        then
+\         ALLEGRO_EVENT_MOUSE_AXES etype? if
+\            e MOUSE_EVENT.dz @ ?dup if ?wheel then
+\         then
+    repeat
+;
+
+ui value uime
+: ui-draw draw> blue gamew 16 rectf white text[ .s ]text nr text[ .tib ]text ;
+: ui-act act> 0 gameh 16 - .0 x v! uime { events me to uime } ;
+ui as ui-act ui-draw
+
+: rs reset-stacks ;
+: init-ui 0 #tib ! rs ; 

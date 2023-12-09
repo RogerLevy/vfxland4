@@ -1,6 +1,10 @@
+win32catch \ enables catching windows exceptions
+Win32ExceptThrow
+
 require lib/options.vfx
 require lib/allegro-5.2.5.vfx
 require lib/core.vfx
+require lib/strout.vfx
 include lib/counter.vfx
 include lib/csv.vfx
 include lib/files.vfx
@@ -32,19 +36,24 @@ winh 2 / constant gameh
 : mletgo? mdelta -1 = ;
 : poll poll-keyboard poll-mouse ;
 
+\ - Matrix stack
+create mstk 16 cells 16 * allot
+variable mp
+: m mp @ 15 and 16 cells * mstk + ; m al_use_transform 
+: +m m 1 mp +! m 16 cells move  ;
+: -m -1 mp +!  m al_use_transform ;
+: mscale m al_scale_transform  m al_use_transform ;
+: mrotate deg>rad m al_rotate_transform  m al_use_transform ;
+: mtranslate m al_translate_transform  m al_use_transform ;
+: midentity m al_identity_transform  m al_use_transform ; midentity
+
 \ - Graphics
 create pen 0 , 0 ,
 create fore 0e sf, 0e sf, 0e sf, 0e sf,
 create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
-create m 16 cells allot
 : at pen v! ;
 : +at pen v+! ;
 : pen@f pen v@ 2s>f ;
-: mapply m al_use_transform ;
-: mscale m al_scale_transform mapply ;
-: mrotate deg>rad m al_rotate_transform mapply ;
-: mtranslate m al_translate_transform mapply ;
-: midentity m al_identity_transform mapply ; midentity
 : 4f@ sf@+ sf@+ sf@+ sf@ ;
 : 4f! 4 cells + sf-! sf-! sf-! cell- sf! ;
 : rect 1e f>ds >r  pen@f  pen v@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
@@ -90,6 +99,6 @@ create m 16 cells allot
 
 \ - Text
 variable font  builtin-font font !
-create z$ 257 allot
-: >z$ dup >r z$ swap move 0 r> z$ + c! z$ ;
-: text >z$ font @ fore 4f@ pen@f 0 z$ al_draw_text ;
+: text[ zstr[ ;
+: ]text font @ fore 4f@ pen@f 0 ]zstr al_draw_text ;
+: text text[ type ]text ;

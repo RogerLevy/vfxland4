@@ -44,6 +44,7 @@ defer children
 \ - Instancing
 : init pen v@ 2s>p x v! en on ;
 : *child here 256 allot&erase dup rot push dup { init } ;
+: obj create here as 256 allot&erase init ;
 
 \ - Basic actions
 : reckon
@@ -52,13 +53,13 @@ defer children
             en @ 0= if  me recurse  me remove  then
         r> as
     repeat } ;
-: ?execute ?; execute ;
+: ?execute ?dup 0; execute ;
 : draw x v@ 2p>s at  drw @ ?execute  children ; 
-: act beh @ ?execute  me each>  en @ ?;  recurse ;
-: physics phy @ ?execute  me each>  en @ ?;  recurse ;
-: ?draw en @ ?; draw ;
+: act beh @ ?execute  me each>  en @ 0;  recurse ;
+: physics phy @ ?execute  me each>  en @ 0;  recurse ;
+: ?draw en @ 0; draw ;
 : draw> r> drw ! ;
 : act> r> beh ! ;
-: +t x v@ 2p>f mtranslate ;
-: -t x v@ 2negate 2p>f mtranslate ;
-:noname [ is children ] first @ ?; +t ['] ?draw me each -t ;
+: +t +m x v@ 2p>f mtranslate ;
+: -t -m ;
+:noname [ is children ] first @ 0; +t ['] ?draw me each -t ;
