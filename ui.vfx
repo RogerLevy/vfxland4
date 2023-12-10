@@ -1,3 +1,7 @@
+obj ui  me root push
+
+true value ui?
+
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. base @ swap hex . base ! ;
 : .s depth | d | d 0 ?do d 1 - i - pick h. loop ; \ .fs ;
@@ -5,12 +9,14 @@
 : .tib ." >" tib #tib @ ?type ." _" ;
 : nr 0 pen cell+ @ 8 + at ; 
 : try catch dup .throw if 2drop then ;
-: obey tib #tib @ ['] evaluate try 0 #tib ! ;
-: ?charkey
+: obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
+: toggle ui? not to ui? ui? if ui root push else ui remove then ;
+: ?charkey  
     case
-        8 of #tib @ 0; -1 #tib +! exit endof
-        13 of obey exit endof
-        27 of exit endof
+        ( bksp ) 8 of #tib @ 0; -1 #tib +! exit endof
+        ( tab ) 9 of exit endof
+        ( enter ) 13 of obey exit endof
+        ( esc ) 27 of exit endof
     end-case
     tib #tib @ + c! 1 #tib +!
 ;
@@ -32,9 +38,14 @@ create e /ALLEGRO_EVENT allot&erase
 ;
 
 ui value uime
-: ui-draw draw> blue gamew 16 rectf white text[ .s ]text nr text[ .tib ]text ;
-: ui-act act> 0 gameh 16 - s>p x v! uime { events me to uime } ;
+: bar blue winw 16 rectf white text[ .s ]text nr text[ .tib ]text ;
+: ui-draw draw> midentity bar ;
+: ui-act act> 0 winh 16 - s>p x v! uime { events me to uime } ;
 ui as ui-act ui-draw
+
+: ui-toggle <tab> pressed? if toggle then ;
+: mgmt-act act> ui-toggle ;
+obj mgmt  me root unshift  mgmt-act
 
 : rs reset-stacks ;
 : init-ui 0 #tib ! rs ; 

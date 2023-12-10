@@ -22,7 +22,7 @@ winh 2 / constant gameh
 : sf-! cell- dup sf! ;
 : f>ds 0 >r rp@ sf! r> ;
 synonym | locals|
-synonym :: :noname 
+: :: :noname  [char] ; parse evaluate  postpone ;  execute ;
 
 \ - Arrays
 : get  swap cells + @ ;
@@ -41,6 +41,8 @@ synonym :: :noname
 : 2s>f swap s>f s>f ;
 : x@ @ ;
 : y@ cell+ @ ;
+: vp? v@ 2p. ;
+
 
 \ - Ranges
 : area 2over 2+ ;

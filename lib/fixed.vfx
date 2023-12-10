@@ -8,6 +8,9 @@
 : p/ 65536 swap */ ;
 : 2p>f swap p>f p>f ;
 : 2f>p f>p f>p swap ;
+: p. p>f f. ;
+: 2p. swap p. p. ; 
+: p? @ p. ;
 
 : (>FIXED)	\ c-addr u -- flag ; F: -- f | --
 \ *G Try to convert the string at c-addr/u to a floating point number.
