@@ -7,7 +7,7 @@ true value ui?
 : .s depth | d | d 0 ?do d 1 - i - pick h. loop ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
-: nr 0 pen cell+ @ 8 + at ; 
+: nr 0 pen cell+ @ 8 + at ;
 : try catch dup .throw if 2drop then ;
 : obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
 : toggle ui? not to ui? ui? if ui root push else ui remove then ;
@@ -44,8 +44,7 @@ ui value uime
 ui as ui-act ui-draw
 
 : ui-toggle <tab> pressed? if toggle then ;
-: mgmt-act act> ui-toggle ;
-obj mgmt  me root unshift  mgmt-act
+obj mgmt  me root unshift  :: act> ui-toggle ;
 
 : rs reset-stacks ;
 : init-ui 0 #tib ! rs ; 

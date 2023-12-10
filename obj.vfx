@@ -53,7 +53,7 @@ defer children
             en @ 0= if  me recurse  me remove  then
         r> as
     repeat } ;
-: ?execute ?dup 0; execute ;
+: ?execute ?dup 0; catch .throw ;
 : draw x v@ 2p>s at  drw @ ?execute  children ; 
 : act beh @ ?execute  me each>  en @ 0;  recurse ;
 : physics phy @ ?execute  me each>  en @ 0;  recurse ;

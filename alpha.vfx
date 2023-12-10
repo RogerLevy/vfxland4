@@ -1,6 +1,5 @@
 win32catch \ enables catching windows exceptions
 Win32ExceptThrow
-
 require lib/options.vfx
 require lib/allegro-5.2.5.vfx
 require lib/strout.vfx
@@ -11,6 +10,7 @@ include lib/files.vfx
 
 winw 2 / constant gamew
 winh 2 / constant gameh
+60e fconstant framerate
 
 \ - Misc
 : @+ dup cell+ swap @ ;
@@ -42,7 +42,6 @@ synonym | locals|
 : x@ @ ;
 : y@ cell+ @ ;
 : vp? v@ 2p. ;
-
 
 \ - Ranges
 : area 2over 2+ ;
@@ -138,8 +137,9 @@ variable font  builtin-font font !
 \ - Delta
 1e fvalue delta
 0 0 2value lastTime
-16.66666666e 10000e f* fvalue fus
+1000e framerate f/ 10000e f* fvalue fus
 : !delta  ( - )
     \ al_wait_for_vsync drop
     dcounter 2dup lastTime d- d>f fus f/ to delta  to lastTime ;
-: 2delta*  delta f* fswap delta f* fswap ;
+: delta* delta f>p p* ;
+: 2delta* delta f>p p* swap delta f>p p* swap ;
