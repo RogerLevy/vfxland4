@@ -10,6 +10,7 @@ obj stage  stage root push
 include scripts/ui.vfx
 
 \ - Main loop
+stage as :: draw> midentity zoom fdup mscale ;
 : present display al_flip_display ;
 : poll poll-keyboard poll-mouse ;
 : think root { act reckon } ;
@@ -17,8 +18,6 @@ include scripts/ui.vfx
 : frame !delta poll think graphics pause ;
 : pre !delta init-ui ;
 : go >display pre begin frame <esc> pressed? until >vfx ;
-
-stage as :: draw> midentity 2e 2e mscale ;
 
 \ - Tests
 create buf 20 16 * cells allot 

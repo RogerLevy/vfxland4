@@ -1,13 +1,13 @@
 obj ui  me root push
-
 true value ui?
+z" data/consolab.ttf" #16 3 al_load_ttf_font
+    constant consolas 
 
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. base @ swap hex . base ! ;
 : .s depth | d | d 0 ?do d 1 - i - pick h. loop ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
-: nr 0 pen cell+ @ 8 + at ;
 : try catch dup .throw if 2drop then ;
 : obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
 : toggle ui? not to ui? ui? if ui root push else ui remove then ;
@@ -38,9 +38,11 @@ create e /ALLEGRO_EVENT allot&erase
 ;
 
 ui value uime
-: bar blue winw 16 rectf white text[ .s ]text nr text[ .tib ]text ;
-: ui-draw draw> midentity bar ;
-: ui-act act> 0 winh 16 - s>p x v! uime { events me to uime } ;
+: nr 0 pen cell+ @ 16 + at ;
+: bar blue winw 32 rectf ;
+: bar-text consolas font ! white text[ .s ]text nr text[ .tib ]text ;
+: ui-draw draw> midentity bar bar-text ;
+: ui-act act> 0 winh 32 - s>p x v! uime { events me to uime } ;
 ui as ui-act ui-draw
 
 : ui-toggle <tab> pressed? if toggle then ;

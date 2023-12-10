@@ -2,8 +2,9 @@
 0 value fullscreen?
 0 value doublebuf?
 -1 value mswin?
-640 value winw
-480 value winh
+3e fvalue zoom
+320e zoom f* f>s value winw
+240e zoom f* f>s value winh
 
 : argkey  over >r s" =" search drop nip r> swap ;
 : argval  s" =" search drop 1 /string ;

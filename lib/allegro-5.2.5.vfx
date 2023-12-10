@@ -3092,7 +3092,7 @@ extern "C" void * al_load_bitmap( void * filename );
 extern "C" void * al_load_font( void * filepath, int size, int flags );
 extern "C" void * al_load_sample( void * filepath );
 \ extern "C" al_load_sample_f( );
-\ extern "C" al_load_ttf_font( );
+extern "C" void * al_load_ttf_font( void * zstr, int size, int flags );
 \ extern "C" al_load_ttf_font_f( );
 \ extern "C" al_load_ttf_font_stretch( );
 \ extern "C" al_load_ttf_font_stretch_f( );
@@ -4148,6 +4148,9 @@ $08000 constant ALLEGRO_KEYMOD_ACCENT4
 <insert> constant <ins>
 <delete> constant <del>
 
+#define ALLEGRO_TTF_NO_KERNING  $1
+#define ALLEGRO_TTF_MONOCHROME  $2
+#define ALLEGRO_TTF_NO_AUTOHINT $4
 
 mswin? [if]
     extern void * GetForegroundWindow( );

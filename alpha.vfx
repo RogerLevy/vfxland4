@@ -8,8 +8,8 @@ include lib/counter.vfx
 include lib/csv.vfx
 include lib/files.vfx
 
-winw 2 / constant gamew
-winh 2 / constant gameh
+winw s>f zoom f/ f>s constant gamew
+winh s>f zoom f/ f>s constant gameh
 60e fconstant framerate
 
 \ - Misc
