@@ -1,5 +1,4 @@
-win32catch \ enables catching windows exceptions
-Win32ExceptThrow
+integers remove-fp-pack include lib/FPSSE64S.fth
 
 require lib/options.vfx
 require lib/allegro-5.2.5.vfx
