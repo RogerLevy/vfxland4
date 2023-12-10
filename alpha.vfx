@@ -4,6 +4,7 @@ Win32ExceptThrow
 require lib/options.vfx
 require lib/allegro-5.2.5.vfx
 require lib/strout.vfx
+include lib/fixed.vfx
 include lib/counter.vfx
 include lib/csv.vfx
 include lib/files.vfx
@@ -40,18 +41,6 @@ synonym :: :noname
 : 2s>f swap s>f s>f ;
 : x@ @ ;
 : y@ cell+ @ ;
-
-\ - Fixed point numbers
-: .0 16 lshift ;
-: 2s>p .0 swap .0 swap ;
-: p>s 65536 / ;
-: 2p>s p>s swap p>s swap ;  
-: p>f s>f 65536e f/ ;
-: f>p 65536e f* f>s ;
-: p* 65536 */ ;
-: p/ 65536 swap */ ;
-: 2p>f swap p>f p>f ;
-: 2f>p f>p f>p swap ;
 
 \ - Ranges
 : area 2over 2+ ;

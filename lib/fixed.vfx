@@ -1,0 +1,81 @@
+: s>p 16 lshift ;
+: 2s>p s>p swap s>p swap ;
+: p>s 65536 / ;
+: 2p>s p>s swap p>s swap ;  
+: p>f s>f 65536e f/ ;
+: f>p 65536e f* f>s ;
+: p* 65536 */ ;
+: p/ 65536 swap */ ;
+: 2p>f swap p>f p>f ;
+: 2f>p f>p f>p swap ;
+
+: (>FIXED)	\ c-addr u -- flag ; F: -- f | --
+\ *G Try to convert the string at c-addr/u to a floating point number.
+\ ** If conversion is successful, flag is returned true, and a floating
+\ ** number is returned on the float stack, otherwise flag is returned
+\ ** false and the float stack is unchanged.
+  { c-addr u | dlo dhi u' fsgn flag nshift obase -- flag }
+  
+  u 2 < IF false exit THEN       \ must have at least one significand digit and decimal
+  base @ -> obase  decimal		\ preserve and force base ; SFP028
+
+  false -> flag
+  0 -> nshift
+
+  c-addr c@ [char] + = if               \ Ignore preceeding +
+    c-addr 1 chars + -> c-addr
+    u 1 chars - -> u
+  then
+  c-addr c@ [char] - =                  \ check for preceeding -
+  dup -> fsgn  IF
+    c-addr 1+ -> c-addr
+    u 1- -> u
+  THEN
+
+  \ convert mantissa (first set of digits)
+  0 0 c-addr u >number -> u' -> c-addr -> dhi -> dlo
+
+  u' 1 > IF
+    \ convert optional number after mandatory decimal point
+    c-addr c@ fp-char isSep? IF		\ SFP035
+      dlo dhi c-addr 1+ u' 1- dup -> nshift >number
+      dup nshift - -> nshift
+      -> u' -> c-addr -> dhi -> dlo
+      u' 0= -> flag  \ must have been a number
+    else
+        false -> flag
+    THEN
+  ELSE
+    c-addr c@ fp-char isSep? -> flag
+  THEN
+
+  \ convert double precision int to float and then to fixed
+  flag IF
+    cw@ >r  rounded
+    dlo dhi d>f
+\    10 s>f nshift s>f f** f*   \ apply exponent
+    nshift 10**n f*
+    fsgn IF  fnegate  THEN
+    r> cw!
+    f>p
+  THEN
+
+  flag  obase base !			\ SFP028
+;
+
+: post-fixed \ f: f -- ; --
+\ *G POSTPONE a fixed  point number. The word being defined will
+\ ** itself compile the given fixed point number.
+  clit,  ['] clit, compile,
+;
+
+' noop  ' clit,  ' post-fixed  RecType: r:fixed \ -- struct
+\ *G Contains the interpret, compile and postpone actions for
+\ ** fixed point literals.
+
+: rec-fixed	\ caddr u -- r:float | r:fail ; F: -- [f]
+\ *G The parser part of the floating point recogniser.
+  (>fixed) if  r:fixed  else  r:fail  then
+;
+
+' rec-fixed forth-recognizer +stack

@@ -33,7 +33,7 @@ create e /ALLEGRO_EVENT allot&erase
 
 ui value uime
 : ui-draw draw> blue gamew 16 rectf white text[ .s ]text nr text[ .tib ]text ;
-: ui-act act> 0 gameh 16 - .0 x v! uime { events me to uime } ;
+: ui-act act> 0 gameh 16 - s>p x v! uime { events me to uime } ;
 ui as ui-act ui-draw
 
 : rs reset-stacks ;
