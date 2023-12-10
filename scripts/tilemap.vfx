@@ -1,6 +1,5 @@
 require lib/allegro-5.2.5.vfx
-require lib/obj.vfx
-require lib/delta.vfx
+require obj.vfx
 
 16 constant tw \ tile width
 2048 dup al_create_bitmap value tbank

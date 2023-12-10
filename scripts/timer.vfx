@@ -1,5 +1,4 @@
-require lib/allegro-5.2.5.vfx
-require lib/obj.vfx
+require obj.vfx
 require lib/counter.vfx
 
 motif var et var xt  

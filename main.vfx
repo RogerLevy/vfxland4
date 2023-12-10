@@ -1,8 +1,8 @@
 -sin
-require lib/alpha.vfx
-require lib/obj.vfx
-require lib/timer.vfx
-require lib/tilemap.vfx
+require alpha.vfx
+require obj.vfx
+require scripts/timer.vfx
+require scripts/tilemap.vfx
 
 0 0 at
 obj root 

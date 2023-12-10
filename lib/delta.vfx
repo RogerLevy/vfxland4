@@ -1,7 +1,0 @@
-1e fvalue delta
-0 0 2value lastTime
-16.66666666e 10000e f* fvalue fus
-: !delta  ( - )
-    \ al_wait_for_vsync drop
-    dcounter 2dup lastTime d- d>f fus f/ to delta  to lastTime ;
-: 2delta*  delta f* fswap delta f* fswap ;
