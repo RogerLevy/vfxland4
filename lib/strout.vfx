@@ -1,4 +1,4 @@
-create str 1000 allot
+create str 32768 allot
 0 value >str
 
 : Emit-string  drop  str >str + c!  1 +to >str ;

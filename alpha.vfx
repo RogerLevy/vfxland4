@@ -133,8 +133,6 @@ variable font  builtin-font font !
 : text[ zstr[ ;
 : ]text font @ fore 4f@ pen@f 0 ]zstr al_draw_text ;
 : text text[ type ]text ;
-: zmtext >r font @ fore 4f@ pen@f winw s>f 16e 0 r> al_draw_multiline_text ;
-
 
 \ - Delta
 1e fvalue delta

@@ -5,16 +5,24 @@ true value ui?
 z" data/consolab.ttf" #16 3 al_load_ttf_font constant consolas 
 
 \ - History
-variable buf variable s
-: init-buf 0 s ! 1 allocate drop buf ! ; 
-: >buf s @ >r dup s +! buf @ s @ resize drop dup buf ! r> + swap move ;
-: zbuf buf @ 0 over s @ + c! ;
-: history 1 1 at black zbuf zmtext 0 0 at white zbuf zmtext ;
+variable hbuf variable s variable l# variable #lines
+: init-hbuf 16 allocate drop hbuf ! ; 
+: >hbuf s @ >r dup s +! hbuf @ s @ resize drop dup hbuf ! r> + swap move ;
+: top hbuf @ s @ l# @ 0 ?do 10 scan 1 /string loop drop ;
+: ?type dup if type else 2drop then ;
+: nl 0 pen cell+ @ 16 + at ;
+: lines ( a # - )
+    s @ swap 0 ?do
+        text[ 10 csplit ?type ]text
+        nl 1 /string over c@ 0= if unloop 2drop exit then
+    loop 2drop
+;
+: history 1 1 at black top 100 lines 0 0 at white top 100 lines ;
 
 \ - History Device
-: Emit-history  drop  >r rp@ 1 >buf r> drop ;
-: Type-history  drop  >buf ;
-: CR-history  10 swap emit-history ;
+: Emit-history  drop  >r rp@ 1 >hbuf r> drop ;
+: Type-history  drop  >hbuf ;
+: CR-history  10 swap emit-history  1 #lines +! ;
 create history-vectors
   ' drop ,
   ' drop ,
@@ -98,7 +106,7 @@ obj mgmt  me root unshift  :: act> ui-toggle ;
 : init-ui 0 #tib ! rs ;
 
 ' noop is EditOnError 
-init-buf
+init-hbuf
 
 \ - Widgets
 
