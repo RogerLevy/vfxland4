@@ -4171,5 +4171,8 @@ get-window constant vfx-hwnd
         vfx-hwnd window-to-front
     then ;
 
+: winw display al_get_display_width ;
+: winh display al_get_display_height ;
+
 init-allegro
 >vfx

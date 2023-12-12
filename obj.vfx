@@ -12,7 +12,7 @@ variable >os
 : as to me ;
 : { me >o as ;
 : } o> as ;
-: ->  ' >body @ ?literal s" +" evaluate ; immediate
+: -> ' >body @ ?literal s" +" evaluate ; immediate
 : require me { require } ;
 : include me { include } ;
 : included me { included } ;

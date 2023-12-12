@@ -122,7 +122,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : orange 1e 0.5e 0e 1e fcolor ;
 : purple 0.5 0e 1e 1e fcolor ;
 : white 1e 1e 1e 1e fcolor ;
-: black 0e 0e 0e 0e fcolor ;
+: black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
 : <d fore dk dk dk dk drop ; 
@@ -133,6 +133,8 @@ variable font  builtin-font font !
 : text[ zstr[ ;
 : ]text font @ fore 4f@ pen@f 0 ]zstr al_draw_text ;
 : text text[ type ]text ;
+: zmtext >r font @ fore 4f@ pen@f winw s>f 16e 0 r> al_draw_multiline_text ;
+
 
 \ - Delta
 1e fvalue delta

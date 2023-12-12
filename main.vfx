@@ -10,7 +10,9 @@ obj stage  stage root push
 include scripts/ui.vfx
 
 \ - Main loop
-stage as :: draw> midentity zoom fdup mscale ;
+: sf* s>f f* f>s ;
+: matte 0 0 gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
+stage as :: draw> midentity matte zoom fdup mscale ;
 : present display al_flip_display ;
 : poll poll-keyboard poll-mouse ;
 : think root { act reckon } ;

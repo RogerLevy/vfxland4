@@ -1,15 +1,59 @@
 obj ui  me root push
-true value ui?
-z" data/consolab.ttf" #16 3 al_load_ttf_font
-    constant consolas 
 
+true value ui?
+
+z" data/consolab.ttf" #16 3 al_load_ttf_font constant consolas 
+
+\ - History
+variable buf variable s
+: init-buf 0 s ! 1 allocate drop buf ! ; 
+: >buf s @ >r dup s +! buf @ s @ resize drop dup buf ! r> + swap move ;
+: zbuf buf @ 0 over s @ + c! ;
+: history 1 1 at black zbuf zmtext 0 0 at white zbuf zmtext ;
+
+\ - History Device
+: Emit-history  drop  >r rp@ 1 >buf r> drop ;
+: Type-history  drop  >buf ;
+: CR-history  10 swap emit-history ;
+create history-vectors
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' Emit-history ,
+  ' drop ,
+  ' Type-history ,
+  ' CR-history ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+  ' drop ,
+create histdev 0 , history-vectors ,
+0 value old-dev
+: history[  op-handle @ to old-dev  histdev op-handle ! ;
+: ]history  old-dev op-handle ! ; 
+
+\ - REPL
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. base @ swap hex . base ! ;
 : .s depth | d | d 0 ?do d 1 - i - pick h. loop ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
-: obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
+: obey history[ cr tib #tib @ ['] evaluate try 0 #tib ! ]history ;
 : toggle ui? not to ui? ui? if ui root push else ui remove then ;
 : ?charkey  
     case
@@ -21,6 +65,7 @@ z" data/consolab.ttf" #16 3 al_load_ttf_font
     tib #tib @ + c! 1 #tib +!
 ;
 
+\ - Event pump
 create e /ALLEGRO_EVENT allot&erase
 : etype? e ALLEGRO_EVENT.type @ = ;
 : events
@@ -37,16 +82,25 @@ create e /ALLEGRO_EVENT allot&erase
     repeat
 ;
 
+\ - Define UI behavior
 ui value uime
 : nr 0 pen cell+ @ 16 + at ;
 : bar blue winw 32 rectf ;
 : bar-text consolas font ! white text[ .s ]text nr text[ .tib ]text ;
-: ui-draw draw> midentity bar bar-text ;
-: ui-act act> 0 winh 32 - s>p x v! uime { events me to uime } ;
+: ui-draw draw> midentity history 0 winh 32 - at bar bar-text ;
+: ui-act act> uime { events me to uime } ;
 ui as ui-act ui-draw
-
 : ui-toggle <tab> pressed? if toggle then ;
 obj mgmt  me root unshift  :: act> ui-toggle ;
 
+\ - Init
 : rs reset-stacks ;
-: init-ui 0 #tib ! rs ; 
+: init-ui 0 #tib ! rs ;
+
+' noop is EditOnError 
+init-buf
+
+\ - Widgets
+
+\ - Load/save
+
