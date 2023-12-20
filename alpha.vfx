@@ -134,8 +134,8 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
-: <d fore dk dk dk dk drop ; 
-: <b fore br br br br drop ;
+: <d fore dk dk dk drop ; 
+: <b fore br br br drop ;
 
 \ - Text
 variable font  builtin-font font !

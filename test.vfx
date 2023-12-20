@@ -36,7 +36,10 @@ fget starfield
 
 load test
 
-bg { :: draw> blue <d fore backdrop gamew gameh gradient ; }
+0e 0.1e 0.5e 1e backdrop 4f! 
+bg { :: draw> blue <d <d <d <d fore backdrop gamew gameh gradient ; }
 
 : *block *actor 16. 16. w v! draw> 1 tile+ act> 0.25 y +! ;
 \ :: *one act> gamew gameh 2rnd at stage { *block } ;
+
+bg clear fget snow

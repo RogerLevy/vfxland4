@@ -2616,7 +2616,7 @@ extern "C" void * al_create_sub_bitmap( void * bmp, int x, int y, int w, int h )
 \ extern "C" al_create_thread( );
 extern "C" void * al_create_timer( double speed_secs );
 \ extern "C" al_create_vertex_buffer( );
-\ extern "C" al_create_vertex_decl( );
+extern "C" void * al_create_vertex_decl( void * arr, int stride );
 extern "C" void * al_create_voice( int rate, int depth, int conf );
 \ extern "C" al_cstr( );
 \ extern "C" al_cstr_dup( );
@@ -2693,7 +2693,7 @@ extern "C" void al_draw_multiline_text( void *font,
 \ extern "C" al_draw_pixel( );
 \ extern "C" al_draw_polygon( );
 \ extern "C" al_draw_polyline( );
-\ extern "C" al_draw_prim( );
+extern "C" void al_draw_prim( void * vtxs, void * decl, void * texture, int start, int end, int type );
 extern "C" void al_draw_rectangle( float x1, float y1, float x2, float y2, float r, float g, float b, float a, int float-thickness );
 \ extern "C" al_draw_ribbon( );
 extern "C" void al_draw_rotated_bitmap( void *bitmap, float cx, float cy, float dx, float dy, float angle, int flags );
