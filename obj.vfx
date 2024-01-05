@@ -10,10 +10,9 @@ variable osp  os osp !
 
 \ - Addressing
 0 value me
-0 value you
 : as to me ;
-: { you >o me >o dup to me to you ;
-: } o> to me o> to you ;
+: { me >o to me ;
+: } o> to me ;
 : -> ' >body @ ?literal s" +" evaluate ; immediate 
 : require me { require } ;
 : include me { include } ;
@@ -49,7 +48,6 @@ defer children
 : init en on 1. dup sx v! ;
 : *child here 256 allot&erase dup rot push dup { init }  ;
 : obj create here as 256 allot&erase init ;
-: child obj me you push ;
 
 \ - Basic actions
 : reckon
