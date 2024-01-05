@@ -60,7 +60,7 @@ defer children
         r> as
     repeat }
 ;
-: ?execute ?dup 0; catch .throw ;
+: ?execute ?dup 0; catch dup .throw if quit then ;
 : +t +m x v@ 2i 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
 : draw en @ 0; hide @ ?; x v@ 2p>s at drw @ ?execute children ; 
