@@ -1,8 +1,9 @@
 include scripts/tilemap.vfx
 
+
 create buf 20 16 * cells allot 
-: *map
-    buf 20 *actor 1tilemap 
+object: *map
+    buf 20 1tilemap 
     320. 240. w v!
     act> 1. 1. 2delta* scrollx v+!
     ser> scrollx vp? ." scrollx v! "
@@ -17,8 +18,11 @@ object: *hello draw> white s" Hello" !textbounds >z stext ;
 
 \ ' shed shed -> constructor !
 
-0 value bg
-object: *bg me to bg 0 0 x v! ;
+object: *bg ;
+stage {
+    0 0 at *bg named bg
+    0 0 at *map named map
+}
 
 fget starfield
 
@@ -32,13 +36,31 @@ fget starfield
 \     200 stars    
 \ }
 
-load test
-
 create c1 0e sf, 0.1e sf, 0.5e sf, 1e sf,
 create c2 0.1 sf, 0.1 sf, 0.1 sf, 1e sf,
 bg { :> draw> c2 c1 gamew gameh gradient ; }
 
 \ : *block *actor 16. 16. w v! draw> 1 tile+ act> 0.25 y +! ;
-\ :> *one act> gamew gameh 2rnd at stage { *block } ;
+\ :: *one act> gamew gameh 2rnd at stage { *block } ;
 
-stage clear bg clear fget snow
+z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
+    constant ibmbios.fnt
+
+: file,  read> here over allot swap move ;
+
+create pal s" data/vga.act" file,
+: twiddle dup 16 >> $ff00 and >r   dup 16 << $ff000000 and >r  $00ff00ff and r> or r> or ; 
+: hu. base @ swap hex u. base ! ;
+: attribute 3 * pal 1 - + @ $ff or twiddle color ;
+create temp 4 cells allot
+: !temp fore temp 4 cells move ;
+: @temp temp fore 4 cells move ;
+: textbg !temp zcount nip 8 * 8 black rectf @temp ;
+: print dup textbg ibmbios.fnt font ! text ;
+: zwh! zcount nip 8 * 8 2s>p w v! ;
+
+object: *txt draw> here 32 >z dup zwh! 5 attribute print ; 
+
+stage {
+    0 0 at *txt named txt { }
+}
