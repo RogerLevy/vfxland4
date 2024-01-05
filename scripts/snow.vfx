@@ -1,0 +1,48 @@
+8 mb allocate throw constant vbuf
+variable vc
+
+: 2sf f>ds f>ds swap ;
+: vpos! ( x y a ) >r  2s>f 2sf  r> v! ;
+: vcolor! ( src - ) ALLEGRO_VERTEX.r 4 cells move ;
+
+: pt ( a x y - a )
+    rot >r at@ 2+ r@ vpos!
+    fore r@ vcolor!
+    r> /ALLEGRO_VERTEX +
+;
+
+: (points)
+    me each>
+        x v@ 2p>s at
+        vy @ 0.5 < if 1e 1e 1e 0.7e fcolor else white then
+        0 0 pt
+        0 1 pt
+        1 0 pt
+        0 1 pt
+        1 0 pt
+        1 1 pt
+;
+    
+: points 
+    0 vc !
+    vbuf (points) vbuf - /ALLEGRO_VERTEX / vc !
+    vbuf 0 0 0 vc @ ALLEGRO_PRIM_TRIANGLE_LIST al_draw_prim 
+;
+
+: rndx gamew 2 * rnd gamew 2 / - ;
+: somewhere rndx gameh rnd ;
+: rspd 2. rnd 1. -  0.25 0.5 rnd + ;
+: ?wrap y @ gameh s>p > if rndx 0 2s>p x v! 0 vx ! then ;
+: wiggle 0.1 rnd  0.05 - vx +!  vx @ -0.5 0.5 clamp vx ! ;
+: fall act> wiggle ?wrap ;
+\ : pixel 1 1 rectf ;
+object: *flake rspd vx v! fall ( draw> white pixel ) ;
+: flakes 0 do somewhere at *flake drop loop ;
+
+object: *snow draw> white points ;
+
+stage {
+    *snow {
+        20000 flakes 
+    }
+}
