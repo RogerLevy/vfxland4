@@ -119,7 +119,7 @@ variable indent
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - UI extension
-uiext as *generic named shed as
+uiext as *generic named shed as shed to this
 :noname
     act>
         dragee alt? 1 mheld? and or if dragging else root { hovering } then
