@@ -56,7 +56,7 @@ motif var ctr
 0 value dialogue?
 : ?animate
     talking? 0= if 0 ctr ! gabe-big.bmp exit then
-    1 ctr +! ctr @ 15 / 2 mod if gabe-big.bmp else gabe-big-talk.bmp then
+    1. delta* ctr +! ctr @ p>s 8 / 2 mod if gabe-big.bmp else gabe-big-talk.bmp then
 ;
 object: *gabe-big draw> ?animate blit ;
 
@@ -75,17 +75,18 @@ var oy
     clear-timers
     4e timer> recurse
 ;
-object: *dialogue draw>
+object: *dialogue
+    draw>
     dialogue? if
         chr 0= if
             0 to talking? 0 to dialogue?
             clear-timers
             exit
         then
-        ctr @ delta* 4 mod 0= if
+        ctr @ p>s 4 mod 0= if
             chr $d <> if 1 tc +! else 0 to talking? then
         then
-        1 ctr +!
+        1. delta* ctr +!
         chr $d = if
             <space> pressed? <z> pressed? or if
                 advance
