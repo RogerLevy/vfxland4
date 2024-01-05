@@ -9,7 +9,6 @@ display 1920 2 / 0 al_set_window_position
 vfx-hwnd 0 0 0 1920 2 / 1000 $40 SetWindowPos drop
 
 include shed.vfx
-include snow.vfx 
 
 require scripts/tilemap.vfx
 z" data/tbank_test.png" loadbmp constant b
