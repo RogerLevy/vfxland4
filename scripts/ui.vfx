@@ -1,8 +1,9 @@
 obj ui me {
-    child megaphone me {
-        child uiext
-        child mgmt
-        child repl
+    me *child constant megaphone
+    megaphone {
+        me *child constant uiext
+        me *child constant mgmt
+        me *child constant repl
     }
 }
 
@@ -64,7 +65,6 @@ create e /ALLEGRO_EVENT allot&erase
 ;
 
 viewport value uime
-viewport value uiyou
 variable uiosp
 bpage uios uios uiosp !
 : nr 0 pen cell+ @ 32 + at ;
@@ -78,9 +78,7 @@ repl as repl-draw
 : (events)
     osp @ >r uiosp @ osp !
     me >r uime as
-    you >r uiyou to you
     events
-    you to uiyou r> to you
     me to uime r> as
     osp @ uiosp ! r> osp !
 ; 

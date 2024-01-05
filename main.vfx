@@ -23,7 +23,4 @@ obj dbg  dbg root push
 \    z[ this -> ax v@ swap p. p. ]z text
 ; dbg-draw
 
-me to this
-mixer 0e al_set_mixer_gain
-
 go 
