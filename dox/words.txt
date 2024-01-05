@@ -1,0 +1,16 @@
+: area  ( x y w h -- x1 y1 x2 y2 )
+: overlap? ( xyxy xyxy - flag ) Return where 2 rectangles (x1,y1,x2,y2) and (x3,y3,x4,y4) overlap.
+: inside? ( xy xyxy - flag )  
+
+: subbmp ( bmp w h - bmp )
+: fblit ( flags bmp - )
+: copybmp ( src dest - )
+: rblit ( flags .angle bmp - )
+
+: tile@ ( c r tilemap - n )
+: tile! ( c r tilemap - )
+
+: gradient ( a-color1 a-color2 w h - )
+
+: object: ( - <name> ) ( - ) ( - obj )
+: named ( obj - <name> obj )

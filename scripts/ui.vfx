@@ -1,0 +1,97 @@
+obj ui me {
+    child megaphone me {
+        child uiext
+        child mgmt
+        child repl
+    }
+}
+
+true value ui?
+true value ui-halt?
+
+\ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
+\     constant ibm8x16.fnt 
+z" data/Mx437_SperryPC_8x16.ttf" #16 3 al_load_ttf_font
+    constant sherry16.fnt 
+z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
+    constant sherry32.fnt 
+defer app-events ' noop is app-events
+
+\ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
+: h. base @ swap hex . base ! ;
+: .s depth | d | d 0 ?do d 1 - i - pick . loop cr ; \ .fs ;
+: ?type ?dup 0= if drop else type then ;
+: .tib ." >" tib #tib @ ?type ." _" ;
+: try catch dup .throw if 2drop then ;
+: obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
+: ?halt ui? ui-halt? and viewport -> halt ! ;
+: toggle ui? not to ui? ui? not megaphone -> hide ! ?halt ;
+: ?charkey  
+    case
+        ( bksp ) 8 of #tib @ 0; -1 #tib +! exit endof
+        ( tab ) 9 of exit endof
+        ( enter ) 13 of obey exit endof
+        ( esc ) 27 of exit endof
+    end-case
+    dup 32 < over 127 = or if drop exit then
+    tib #tib @ + c! 1 #tib +!
+;
+
+create e /ALLEGRO_EVENT allot&erase
+: happened? e ALLEGRO_EVENT.type @ = ;
+: echar e KEYBOARD_EVENT.unichar @ ;
+: ekey e KEYBOARD_EVENT.keycode @ ;
+: events
+    begin  queue e al_get_next_event  while
+        ui? 0;
+        ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
+            bye
+        then
+        ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? if
+            reset-keyboard reset-mouse
+        then
+        ALLEGRO_EVENT_KEY_CHAR happened? if
+            e KEYBOARD_EVENT.unichar @ ?charkey
+        then
+\         ALLEGRO_EVENT_MOUSE_AXES happened? if
+\            e MOUSE_EVENT.dz @ ?dup if ?wheel then
+\         then
+        ALLEGRO_EVENT_KEY_DOWN happened? if
+            ekey <f3> = if viewport { halt @ invert dup halt ! to ui-halt? } then
+        then
+        app-events
+    repeat
+;
+
+viewport value uime
+viewport value uiyou
+variable uiosp
+bpage uios uios uiosp !
+: nr 0 pen cell+ @ 32 + at ;
+: -matte 0 0 winw winh al_set_clipping_rectangle ;
+: bar blue winw 64 rectf ;
+: ]z. ]z text ; 
+: bar-text sherry32.fnt font ! white z[ .s ]z. nr z[ .tib ]z. ;
+: repl-draw draw> bar bar-text ;
+repl as repl-draw
+
+: (events)
+    osp @ >r uiosp @ osp !
+    me >r uime as
+    you >r uiyou to you
+    events
+    you to uiyou r> to you
+    me to uime r> as
+    osp @ uiosp ! r> osp !
+; 
+: ui-act act> 0 winh 64 - s>p x v! (events) pause ;
+: ui-draw draw> identity -matte ;
+megaphone as ui-act ui-draw
+
+: ui-toggle <tab> pressed? if toggle then ;
+mgmt as :> act> ui-toggle ;
+
+: rs reset-stacks ;
+
+' noop is EditOnError
+?halt 

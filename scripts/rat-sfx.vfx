@@ -1,0 +1,40 @@
+: sound  create here 0 , swap ?load-sample  does> just-play-sample ;
+
+z" assets/sfx/squeak.ogg" sound *squeak*
+z" assets/sfx/bop.wav" sound *bop*
+
+33 stack rathits
+
+: sample  here swap push here 0 , swap ?load-sample ;
+z" assets/sfx/rathit (1).ogg"  rathits sample
+z" assets/sfx/rathit (2).ogg"  rathits sample
+z" assets/sfx/rathit (3).ogg"  rathits sample
+z" assets/sfx/rathit (4).ogg"  rathits sample
+z" assets/sfx/rathit (5).ogg"  rathits sample
+z" assets/sfx/rathit (6).ogg"  rathits sample
+z" assets/sfx/rathit (7).ogg"  rathits sample
+z" assets/sfx/rathit (9).ogg"  rathits sample
+z" assets/sfx/rathit (10).ogg" rathits sample
+z" assets/sfx/rathit (11).ogg" rathits sample
+z" assets/sfx/rathit (12).ogg" rathits sample
+z" assets/sfx/rathit (13).ogg" rathits sample
+z" assets/sfx/rathit (14).ogg" rathits sample
+z" assets/sfx/rathit (15).ogg" rathits sample
+z" assets/sfx/rathit (16).ogg" rathits sample
+z" assets/sfx/rathit (17).ogg" rathits sample
+z" assets/sfx/rathit (18).ogg" rathits sample
+z" assets/sfx/rathit (19).ogg" rathits sample
+z" assets/sfx/rathit (20).ogg" rathits sample
+z" assets/sfx/rathit (21).ogg" rathits sample
+z" assets/sfx/rathit (22).ogg" rathits sample
+z" assets/sfx/rathit (23).ogg" rathits sample
+z" assets/sfx/rathit (24).ogg" rathits sample
+z" assets/sfx/rathit (25).ogg" rathits sample
+z" assets/sfx/rathit (26).ogg" rathits sample
+z" assets/sfx/rathit (27).ogg" rathits sample
+z" assets/sfx/rathit (28).ogg" rathits sample
+z" assets/sfx/rathit (29).ogg" rathits sample
+z" assets/sfx/rathit (30).ogg" rathits sample
+z" assets/sfx/rathit (31).ogg" rathits sample
+z" assets/sfx/rathit (32).ogg" rathits sample
+z" assets/sfx/rathit (33).ogg" rathits sample

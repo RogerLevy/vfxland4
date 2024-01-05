@@ -1,0 +1,71 @@
+: dlremove  ( node -- )
+    dup -> parent @ dup 0= if  2drop  exit  then
+    locals| p n |
+    0 n -> parent !
+    p -> first @ p -> last @ = if
+        n p -> first @ = if
+            0 dup p -> first ! p -> last !
+        exit then
+        -1 abort" dlremove: Corrupt tree!"
+    else
+        n p -> first @ = if
+            0 n -> next @ -> prev !
+            n -> next @ p -> first !
+            0 dup n -> prev ! n -> next !
+        exit then
+        n p -> last @ = if
+            0 n -> prev @ -> next !
+            n -> prev @ p -> last !
+            0 dup n -> prev ! n -> next !
+        exit then
+        n -> next @ n -> prev @ -> next !
+        n -> prev @ n -> next @ -> prev !
+        0 dup n -> prev ! n -> next !
+    then ;
+
+: (dlinit)  ( node parent -- )
+    locals| p n |
+    n dup p -> first ! p -> last !
+    p n -> parent ! ;
+
+: dlpush  ( node parent -- )
+    over dlremove
+    dup -> first @ 0= if  (dlinit)  exit  then
+    locals| p n |
+    n p -> last @ -> next !
+    p -> last @ n -> prev !
+    n p -> last !
+    p n -> parent ! ;
+
+: dlinsert  ( node dest -- )
+    dup -> next @ 0= if  -> parent @ dlpush  exit  then
+    over dlremove
+    dup -> next @ locals| e d n |
+    n d -> next !
+    d n -> prev !
+    e n -> next !
+    n e -> prev !
+    d -> parent @ n -> parent ! ;
+
+: dlunshift  ( node parent -- )
+    over dlremove
+    dup -> first @ 0= if  (dlinit)  exit  then
+    locals| p n |
+    p -> first @ n -> next !
+    n p -> first @ -> prev ! 
+    n p -> first !
+    p n -> parent ! ;
+
+: dleach  ( xt node -- )
+    -> first @ {  begin  me while
+        dup >r execute r>  next @ as
+    repeat
+    drop  } ;
+
+: (dlorphan)  0 dup next ! dup prev ! parent ! ;
+
+: dlclear  ( node -- )
+    { first @ {  begin  me while
+        next @  (dlorphan)  as
+    repeat
+    } 0 dup first ! last ! } ;

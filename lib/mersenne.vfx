@@ -1,0 +1,119 @@
+require lib/counter.vfx
+
+1 constant tinymt32-sh0
+10 constant tinymt32-sh1
+8 constant tinymt32-sh8
+$7FFFFFFF constant tinymt32-mask
+
+struct tinymt32-size
+    0 cells +field tinymt32-status
+    field: s0
+    field: s1
+    field: s2
+    field: s3
+    field: tinymt32-mat1
+    field: tinymt32-mat2
+    field: tinymt32-tmat
+end-struct
+
+\ This function changes internal state of tinymt32.
+\ Users should not call this function directly.
+: tinymt32-next-state ( random -- )
+    >r ( )
+    r@ s3 @ ( y )
+    r@ s0 @ tinymt32-mask and ( y s0-masked )
+    r@ s1 @ xor ( y s0^s1 )
+    r@ s2 @ xor ( y x )
+    dup tinymt32-sh0 lshift xor ( y x )
+    swap dup tinymt32-sh0 rshift 2 pick xor xor ( x y )
+    r@ s1 @ ( x y s1 )
+    r@ s0 ! ( x y )
+    r@ s2 @ ( x y s2 )
+    r@ s1 ! ( x y )
+    tuck tinymt32-sh1 lshift xor r@ s2 ! ( y )
+    dup r@ s3 ! ( y )
+    dup 1 and negate r@ tinymt32-mat1 @ and ( y a )
+    swap 1 and negate r@ tinymt32-mat2 @ and ( a b )
+    r@ s2 @ ( a b s2 )
+    xor r@ s2 ! ( a )
+    r@ s1 @ ( a s1 )
+    xor 1 cells r> tinymt32-status + ! ( )
+;
+
+\ This function outputs 32-bit unsigned integer from internal state.
+\ Users should not call tihs function directly.
+: tinymt32-temper ( random -- x )
+    >r
+    r@ s3 @ ( t0 )
+    r@ s0 @ ( t0 s0 )
+    r@ s2 @ tinymt32-sh8 rshift + ( t0 t1 )
+    tuck xor ( t1 t0 )
+    swap 1 and if ( t0 )
+        r> tinymt32-tmat @ xor ( t0 )
+    else
+        r> drop ( t0 )
+    then
+;
+
+8 constant min-loop
+8 constant pre-loop
+
+\ This function certificate the period of 2^127-1
+: period-certification ( random -- )
+    >r ( )
+    r@ s0 @ tinymt32-mask and 0=
+    r@ s1 @ 0= and
+    r@ s2 @ 0= and
+    r@ s3 @ 0= and if
+        [char] T r@ s0 !
+        [char] I r@ s1 !
+        [char] N r@ s2 !
+        [char] Y 3 cells r> tinymt32-status + !
+    else
+        r> drop
+    then
+;
+
+\ This function initializes the internal state array with a 32-bit unsigned
+\ integer seed.
+: tinymt32-init ( seed random -- )
+    >r ( seed )
+    r@ s0 ! ( )
+    r@ tinymt32-mat1 @ r@ s1 ! ( )
+    r@ tinymt32-mat2 @ r@ s2 ! ( )
+    r@ tinymt32-tmat @ r@ s3 ! ( )
+    1 begin dup min-loop < while ( i )
+        dup 3 and cells r@ tinymt32-status + @ ( i x )
+        1812433253 ( i x constant )
+        2 pick 1- 3 and cells r@ tinymt32-status + @ ( i x constant y )
+        dup 30 rshift xor * 2 pick + xor ( i z )
+        over 3 and cells r@ tinymt32-status + ! ( i )
+    1+ repeat drop ( )
+    r@ period-certification ( )
+    0 begin dup pre-loop < while r@ tinymt32-next-state 1+ repeat drop ( )
+    r> drop ( )
+;
+
+\ Prepare the internal state's mat1, mat2, and tmat values
+: tinymt32-prepare ( mat1 mat2 tmat random -- )
+    >r ( mat1 mat2 tmat )
+    r@ tinymt32-tmat ! ( mat1 mat2 )
+    r@ tinymt32-mat2 ! ( mat1 )
+    r> tinymt32-mat1 ! ( )
+;
+
+\ Example internal state values
+: tinymt32-prep ( random -- )
+    >r dcounter drop $8F7011EE + dup $FC78FF1F + dup $3793FDFF + r> tinymt32-prepare
+;
+
+\ This function outputs 32-bit unsigned integer from internal state.
+: tinymt32-generate-uint32 ( random -- x )
+    dup tinymt32-next-state tinymt32-temper
+;
+
+create mersenne tinymt32-size allot&erase
+counter mersenne tinymt32-init
+mersenne tinymt32-prep
+: ?abs abs over 0< if negate then ;
+: rnd mersenne tinymt32-generate-uint32 ?abs swap mod ;

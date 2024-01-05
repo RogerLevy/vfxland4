@@ -1,0 +1,11 @@
+\ - Gradient
+create gv  4 /ALLEGRO_VERTEX * allot&erase
+create gi  0 , 1 , 2 , 3 ,
+: 2sf f>ds f>ds swap ;
+: vpos! ( x y a n ) /ALLEGRO_VERTEX * + >r  2s>f 2sf  r> v! ;
+: vcolor! ( a-color a n )  /ALLEGRO_VERTEX * + >r  4f@  r> ALLEGRO_VERTEX.r 4f! ;
+: gradient
+    at@ 2+ at@ | y x y2 x2 c2 c1 | 
+    x y gv 0 vpos!  x2 y gv 1 vpos!  x2 y2 gv 2 vpos!  x y2 gv 3 vpos!
+    c1 gv 2dup 0 vcolor! 1 vcolor!  c2 gv 2dup 2 vcolor! 3 vcolor!
+    gv 0 0 gi 4 ALLEGRO_PRIM_TRIANGLE_FAN al_draw_indexed_prim ;

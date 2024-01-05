@@ -1,0 +1,44 @@
+keyframes move the target (aid=0)
+    you can animate multiple objects at once if you put them in a lookup table
+    sprites can be static or cycle some frames
+    
+
+editing
+    enter/exit editor
+    load animation
+    save animation
+    (load tileset)
+    select tile
+        create sprite from current tile
+    add keyframe or keyframe/loop
+        change settings (time, length, ease)
+    delete keyframe
+    scrub ("period", keyframe-by-keyframe)
+    select timeline (prompt?)
+    add/delete timeline (prompt?)
+    rename timeline (prompt?)
+    
+    
+
+me {
+    0 0 at *timeline s" bumpy" name $! {
+        0 0 at *keyframe linear 0 time ! 0 len ! 0. ang ! 1. 1. sx sy v! 0 aid ! {
+            0 0 at *sprite the.ts ts ! 0 frm ! 0. ang ! 1. 1. sx sy v! 
+            0 -16 at *sprite the.ts ts ! 1 frm ! 0. ang ! 1. 1. sx sy v! 
+        }
+        -20 20 at *keyframe-loop linear 1. time ! 0 len ! 0. ang ! 1. 1. sx sy v! 1 aid ! {
+            0 0 at *sprite the.ts ts ! 2 frm ! 0. ang ! 1. 1. sx sy v! 
+            0 -16 at *sprite the.ts ts ! 3 frm ! 0. ang ! 1. 1. sx sy v! 
+        }
+    }
+    0 0 at *timeline s" dumpy" name $! {
+        0 0 at *keyframe linear 0 time ! 0 len ! 0. ang ! 1. 1. sx sy v! 0 aid ! {
+            0 0 at *sprite the.ts ts ! 0 frm ! 0. ang ! 1. 1. sx sy v! 
+            0 -16 at *sprite the.ts ts ! 1 frm ! 0. ang ! 1. 1. sx sy v! 
+        }
+        20 20 at *keyframe-loop linear 1. time ! 0 len ! 0. ang ! 1. 1. sx sy v! 1 aid ! {
+            0 0 at *sprite the.ts ts ! 2 frm ! 0. ang ! 1. 1. sx sy v! 
+            0 -16 at *sprite the.ts ts ! 3 frm ! 0. ang ! 1. 1. sx sy v! 
+        }
+    }
+}

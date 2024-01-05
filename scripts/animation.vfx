@@ -1,0 +1,63 @@
+motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
+
+object: *timeline ;
+object: *keyframe ; 
+
+\ - Runtime rendering
+: ?+ac ui? ?; delta spd @ p/ ac +! ;
+: keyframe +t { #children mod abs nth-child as children } -t ;
+: animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
+
+\ - Test
+require scripts/tilemap.vfx
+
+motif var ti
+
+: draw-tile draw> ti @ tile+ ;
+: ser-tile ser> ti ? ." ti !" ;
+object: *tile 16. 16. w v! draw-tile ser-tile ; 
+
+obj animations me {
+
+    0 0 at *timeline named test.tl {
+        0 0 at *keyframe {
+            0 0 at *tile { $02 ti ! }
+            16 0 at *tile { $03 ti ! }
+            0 16 at *tile { $82 ti ! }
+            16 16 at *tile { $83 ti ! }
+        }
+        0 -1 at *keyframe {
+            -1 -1 at *tile { $04 ti ! }
+            17 -1 at *tile { $05 ti ! }
+            -1 17 at *tile { $84 ti ! }
+            17 17 at *tile { $85 ti ! }
+        }
+        0 -2 at *keyframe {
+            -2 -2 at *tile { $06 ti ! }
+            18 -2 at *tile { $07 ti ! }
+            -2 18 at *tile { $86 ti ! }
+            18 18 at *tile { $87 ti ! }
+        }
+        0 -1 at *keyframe {
+            -3 -3 at *tile { $08 ti ! }
+            19 -3 at *tile { $09 ti ! }
+            -3 19 at *tile { $88 ti ! }
+            19 19 at *tile { $89 ti ! }
+        }
+    }
+
+object: *test 32. 32. w v! test.tl 0.25 animate ;
+
+stage {
+    0 0 at *generic named aed { 
+        50 50 at *test named test { 0 ti ! }
+    }
+}
+
+test.tl stage push
+150. 50. test.tl -> x v!
+
+: hide-each each> hide on ;
+: sel test.tl { me hide-each nth-child -> hide off } ;
+
+0 sel
