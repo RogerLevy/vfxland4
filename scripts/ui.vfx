@@ -1,25 +1,31 @@
 obj ui me {
-    child uiext
-    child mgmt
-    child repl
+    child megaphone me {
+        child uiext
+        child mgmt
+        child repl
+    }
 }
 
-ui root push
-
 true value ui?
-z" data/consolab.ttf" #16 3 al_load_ttf_font
-    constant consolas 
+true value ui-halt?
+
+\ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
+\     constant ibm8x16.fnt 
+z" data/Mx437_SperryPC_8x16.ttf" #16 3 al_load_ttf_font
+    constant sherry16.fnt 
+z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
+    constant sherry32.fnt 
 defer app-events ' noop is app-events
 
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. base @ swap hex . base ! ;
-: .s depth | d | d 0 ?do d 1 - i - pick h. loop cr ; \ .fs ;
+: .s depth | d | d 0 ?do d 1 - i - pick . loop cr ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
 : obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
-: ?halt ui? viewport -> halt ! ;
-: toggle ui? not to ui? ui? not ui -> hide ! ?halt ;
+: ?halt ui? ui-halt? and viewport -> halt ! ;
+: toggle ui? not to ui? ui? not megaphone -> hide ! ?halt ;
 : ?charkey  
     case
         ( bksp ) 8 of #tib @ 0; -1 #tib +! exit endof
@@ -33,42 +39,59 @@ defer app-events ' noop is app-events
 
 create e /ALLEGRO_EVENT allot&erase
 : happened? e ALLEGRO_EVENT.type @ = ;
+: echar e KEYBOARD_EVENT.unichar @ ;
+: ekey e KEYBOARD_EVENT.keycode @ ;
 : events
     begin  queue e al_get_next_event  while
         ui? 0;
         ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
             bye
         then
+        ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? if
+            reset-keyboard reset-mouse
+        then
         ALLEGRO_EVENT_KEY_CHAR happened? if
             e KEYBOARD_EVENT.unichar @ ?charkey
         then
-        app-events
 \         ALLEGRO_EVENT_MOUSE_AXES happened? if
 \            e MOUSE_EVENT.dz @ ?dup if ?wheel then
 \         then
+        ALLEGRO_EVENT_KEY_DOWN happened? if
+            ekey <f3> = if viewport { halt @ invert dup halt ! to ui-halt? } then
+        then
+        app-events
     repeat
 ;
 
 viewport value uime
+viewport value uiyou
 variable uiosp
 bpage uios uios uiosp !
-: nr 0 pen cell+ @ 16 + at ;
+: nr 0 pen cell+ @ 32 + at ;
 : -matte 0 0 winw winh al_set_clipping_rectangle ;
-: bar blue winw 32 rectf ;
+: bar blue winw 64 rectf ;
 : ]z. ]z text ; 
-: bar-text consolas font ! white z[ .s ]z. nr z[ .tib ]z. ;
+: bar-text sherry32.fnt font ! white z[ .s ]z. nr z[ .tib ]z. ;
 : repl-draw draw> bar bar-text ;
 repl as repl-draw
 
-: (events) osp @ >r uiosp @ osp ! me >r uime as events me to uime r> as osp @ uiosp ! r> osp ! ; 
-: ui-act act> 0 winh 32 - s>p x v! (events) pause ;
+: (events)
+    osp @ >r uiosp @ osp !
+    me >r uime as
+    you >r uiyou to you
+    events
+    you to uiyou r> to you
+    me to uime r> as
+    osp @ uiosp ! r> osp !
+; 
+: ui-act act> 0 winh 64 - s>p x v! (events) pause ;
 : ui-draw draw> identity -matte ;
-ui as ui-act ui-draw
+megaphone as ui-act ui-draw
 
 : ui-toggle <tab> pressed? if toggle then ;
-mgmt as :: act> ui-toggle ;
+mgmt as :> act> ui-toggle ;
 
 : rs reset-stacks ;
-: init-ui ?halt 0 #tib ! rs postpone \\ ;
 
 ' noop is EditOnError
+?halt 

@@ -24,14 +24,15 @@
 : write ( adr bytes - )
     file1 write-file abort" Write file error" ;
 
-: read> ( $ c - <code> )  ( a c - )
+: (read>) ( $ c - <code> )  ( a c - )
     r/o[ bytes-left allocate throw
         dup bytes-left 2dup read  r> execute
         free throw
     ]file ;
+: read> postpone (read>) discard-sinline ; immediate
 
 create crlf 2 c, $0d c, $0a c, 
-: lines> ( a c - <code> ) ( a c - )
+: (lines>) ( a c - <code> ) ( a c - )
     begin over >r crlf count search while
         over r> swap over - r@ execute
         2 /string
@@ -39,3 +40,4 @@ create crlf 2 c, $0d c, $0a c,
     r> drop
     dup if  r@ execute  else  2drop  then
     r> drop ;
+: lines> postpone (lines>) discard-sinline ; immediate

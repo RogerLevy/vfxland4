@@ -1,4 +1,0 @@
-64 mb set-size
-: start  s" main.vfx" included  0 ;
-' start is EntryPoint
-save game

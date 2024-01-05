@@ -1,20 +1,22 @@
+require scripts/timer.vfx
+
 8 mb allocate throw constant vbuf
 variable vc
 
 : 2sf f>ds f>ds swap ;
 : vpos! ( x y a ) >r  2s>f 2sf  r> v! ;
-: vcolor! ( a f: r g b a - ) ALLEGRO_VERTEX.r 4f! ;
+: vcolor! ( src - ) ALLEGRO_VERTEX.r 4 cells move ;
 
 : pt ( a x y - a )
     rot >r at@ 2+ r@ vpos!
-    fore 4f@ r@ vcolor!
+    fore r@ vcolor!
     r> /ALLEGRO_VERTEX +
 ;
 
 : (points)
     me each>
         x v@ 2p>s at
-        vy @ 0.5 < if 0.7e 0.7e 0.7e 1.0e fcolor else white then
+        vy @ 0.5 < if 1e 1e 1e 0.7e fcolor else white then
         0 0 pt
         0 1 pt
         1 0 pt
@@ -31,14 +33,106 @@ variable vc
 
 : rndx gamew 2 * rnd gamew 2 / - ;
 : somewhere rndx gameh rnd ;
-: rspd 0.25 0.5 rnd + abs ;
+: rspd 2. rnd 1. -  0.25 0.5 rnd + ;
 : ?wrap y @ gameh s>p > if rndx 0 2s>p x v! 0 vx ! then ;
-: wiggle 0.1 rnd  0.05 - vx +!  vx @ -0.5 max 0.5 min vx ! ;
+: wiggle 0.1 rnd  0.05 - vx +!  vx @ -0.5 0.5 clamp vx ! ;
 : fall act> wiggle ?wrap ;
 \ : pixel 1 1 rectf ;
-: *flake *actor rspd vy ! fall ( draw> white pixel ) ;
-: flakes 0 do somewhere at *flake loop ;
+object: *flake rspd vx v! fall ( draw> white pixel ) ;
+: flakes 0 do somewhere at *flake drop loop ;
 
-: *snow *actor me { flakes } draw> white points ;
+object: *snow draw> white points ;
 
-bg { 20000 *snow named snow }
+z" data/foggyday.png" loadbmp constant foggyday.bmp
+object: *foggyday draw> foggyday.bmp blit ;
+z" data/hill.png" loadbmp constant hill.bmp
+object: *hill draw> hill.bmp blit ;
+
+\ - Gabe
+z" data/gabe-big.png" loadbmp constant gabe-big.bmp
+z" data/gabe-big-talk.png" loadbmp constant gabe-big-talk.bmp
+motif var ctr
+0 value talking?
+0 value dialogue?
+: ?animate
+    talking? 0= if 0 ctr ! gabe-big.bmp exit then
+    1 ctr +! ctr @ 15 / 2 mod if gabe-big.bmp else gabe-big-talk.bmp then
+;
+object: *gabe-big draw> ?animate blit ;
+
+\ - Text
+variable ta
+variable tc
+
+s" data/script.txt" r/o[ bytes-left allocate throw dup bytes-left read constant script ]file
+script ta !
+var oy
+: chr ta @ tc @ + c@ ;
+: advance
+    tc @ 2 + ta +!
+    0 tc !
+    true to talking?
+    clear-timers
+    4e timer> recurse
+;
+object: *dialogue draw>
+    dialogue? if
+        chr 0= if
+            0 to talking? 0 to dialogue?
+            clear-timers
+            exit
+        then
+        ctr @ delta* 4 mod 0= if
+            chr $d <> if 1 tc +! else 0 to talking? then
+        then
+        1 ctr +!
+        chr $d = if
+            <space> pressed? <z> pressed? or if
+                advance
+            then
+        then
+    then
+    sherry16.fnt font !
+       
+    ta @ tc @
+    2dup
+    begin
+        [char] ^ scan dup while
+            1 /string 0 -16 +at
+    repeat 2drop
+    
+    begin
+        [char] ^ csplit dup while
+        >z red text
+        0 16 +at
+    repeat
+    
+    2drop dup if >z 1 + red text else 2drop then
+;
+
+z" data/snowkaiju.png" loadbmp constant snowkaiju.bmp
+object: *snowman draw> snowkaiju.bmp blit ;
+
+\ - Scene
+stage {
+    0 0 at *foggyday { }
+    0 gameh at *snowman { -0.1 vy ! }
+    0 0 at *hill { }
+    *snow {
+        20000 flakes 
+    }
+    10 gameh at *gabe-big named gabe { } 
+    50 gameh 16 - at *dialogue named dialogue { y @ oy ! }
+}
+variable s
+ALLEGRO_PLAYMODE_LOOP s z" data/bgm/Sleigh Ride.ogg" ?stream-sample
+
+: talk  true to talking? true to dialogue? ;
+
+dialogue {
+    : demo
+        2e timer> -1. gabe -> vy !
+        0.5e timer> talk 0. gabe -> vy !
+        3e timer> advance
+    ; demo
+}

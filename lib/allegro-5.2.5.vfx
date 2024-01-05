@@ -3,7 +3,9 @@
 0 value fullscreen?
 0 value doublebuf?
 
+cwd dll
 LIBRARY: allegro_monolith-5.2.dll
+cwd ..
 
 $05020500 constant ALLEGRO_VERSION
 
@@ -3236,8 +3238,8 @@ extern "C" bool al_set_default_mixer( void * mixer );
 \ extern "C" al_set_menu_item_flags( );
 \ extern "C" al_set_menu_item_icon( );
 \ extern "C" al_set_mixer_frequency( );
-\ extern "C" al_set_mixer_gain( );
-extern "C" boold al_set_mixer_playing( void * mixer, int state );
+extern "C" al_set_mixer_gain( void *mixer, float new_gain );
+extern "C" bool al_set_mixer_playing( void * mixer, int state );
 \ extern "C" al_set_mixer_postprocess_callback( );
 \ extern "C" al_set_mixer_quality( );
 \ extern "C" al_set_mouse_axis( );
@@ -3318,7 +3320,7 @@ extern "C" void al_start_timer( void * timer );
 \ extern "C" al_stop_timer( );
 \ extern "C" al_store_state( );
 \ extern "C" al_toggle_menu_item_flags( );
-\ extern "C" al_transform_coordinates( );
+extern "C" void al_transform_coordinates( void * transform, float * x, float * y );
 \ extern "C" al_transform_coordinates_3d( );
 extern "C" void al_translate_transform( void * transform, float x, float y );
 \ extern "C" al_translate_transform_3d( );
@@ -3954,8 +3956,8 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
 
 : +audio  ( -- )
     mixer if  mixer 1 al_set_mixer_playing drop  exit then 
-    44100 ALLEGRO_AUDIO_DEPTH_INT16 ALLEGRO_CHANNEL_CONF_2 al_create_voice to voice
-    44100 ALLEGRO_AUDIO_DEPTH_FLOAT32 ALLEGRO_CHANNEL_CONF_2 al_create_mixer to mixer
+    48000 ALLEGRO_AUDIO_DEPTH_INT16 ALLEGRO_CHANNEL_CONF_2 al_create_voice to voice
+    48000 ALLEGRO_AUDIO_DEPTH_FLOAT32 ALLEGRO_CHANNEL_CONF_2 al_create_mixer to mixer
     mixer voice al_attach_mixer_to_voice 0= abort" Couldn't initialize audio"
     mixer al_set_default_mixer drop
     mixer 1 al_set_mixer_playing drop ;
@@ -3983,7 +3985,7 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
     al_install_mouse check
     al_install_touch_input check
     ALLEGRO_VSYNC  1  ALLEGRO_SUGGEST  al_set_new_display_option
-    doublebuf? if
+    doublebuf? not if
         \ gets us one less frame of input lag
         \ and in development keeps the framebuffer always presented
         ALLEGRO_SINGLE_BUFFER 1 2 al_set_new_display_option
@@ -4016,6 +4018,10 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
 : poll-keyboard  ( -- )
     kbs0 kbs1 /ALLEGRO_KEYBOARD_STATE move
     kbs0 al_get_keyboard_state ;
+
+: reset-mouse
+    ms0 /ALLEGRO_MOUSE_STATE erase
+    ms1 /ALLEGRO_MOUSE_STATE erase ;
 
 : poll-mouse  ( -- )
     ms0 ms1 /ALLEGRO_MOUSE_STATE move

@@ -1,34 +1,48 @@
-display 1920 2 / 0 al_set_window_position
-vfx-hwnd 0 0 0 0 0 $41 SetWindowPos drop
+require alpha.vfx
+require obj.vfx
+require core.vfx
+require lib/gradient.vfx
+require scripts/ui.vfx
+ui root push
 
-0 value stage
 0 value dragee
 0 value this
 0 value hoveree
 variable snapping
 
-motif var constructor var ax var ay var ser /obj to /basis
-
-\ - Gradient
-create gv  4 /ALLEGRO_VERTEX * allot&erase
-create gi  0 , 1 , 2 , 3 ,
-: 2sf f>ds f>ds swap ;
-: vpos! ( x y a n ) /ALLEGRO_VERTEX * + >r  2s>f 2sf  r> v! ;
-: vcolor! ( a-color a n )  /ALLEGRO_VERTEX * + >r  4f@  r> ALLEGRO_VERTEX.r 4f! ;
-: gradient
-    at@ 2+ at@ | y x y2 x2 c2 c1 | 
-    x y gv 0 vpos!  x2 y gv 1 vpos!  x2 y2 gv 2 vpos!  x y2 gv 3 vpos!
-    c1 gv 2dup 0 vcolor! 1 vcolor!  c2 gv 2dup 2 vcolor! 3 vcolor!
-    gv 0 0 gi 4 ALLEGRO_PRIM_TRIANGLE_FAN al_draw_indexed_prim ;
+\ - Viewport config
+: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
+: center
+    winw 2 /  gamew zoom sf* 2 / -
+    winh 64 - 2 /  gameh zoom sf* 2 / -  2s>p viewport -> x v!
+    zoom f>p dup viewport -> sx v!
+;
+viewport as :> draw> center matte zoom f>p dup sx v! ;
 
 \ - Scripting
-: *one you *child as ;
-: physics> r> phy ! ;
-: (*actor) *one constructor ! physics> vx v@ 2delta* x v+! ;
-: *actor here postpone literal postpone (*actor) ; immediate  
+motif var constructor var ser var nam /obj to /basis
+: (physics>) r> phy ! ;
+: physics> postpone (physics>) discard-sinline ; immediate
+: ?literal state @ if postpone literal then ;
+: 1object body> constructor ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
+: object:
+    create here 0 , :noname swap !
+    does> you *child { dup 1object @ execute me } ;
 : kill -> en off ;
-: *stage *actor me to stage ;
-viewport { *stage }
+: named
+    >in @ >r bl word find if
+        2dup >name swap -> nam !
+        over swap >body @ !
+        r> drop 
+    else
+        drop r> >in !
+        dup value latest ctrl>nfa over -> nam !
+    then ;
+object: *generic ;
+: ??? me ;
+
+\ - Stage
+viewport { *generic named stage }
 
 \ - Quickly reload a set file
 create reload$ 64 allot
@@ -39,31 +53,31 @@ s" shed.vfx" reload$ place
 \ - Dragging
 : zoom/ >r zoom sf/ r> zoom sf/ ;
 : +drag walt 2s>p zoom/ x v+! ;
+: bounding w v@ parent -> sx v@ 2p* ;
 : dragging alt? if stage else dragee then { +drag } ;
 : tsnap 8. + dup 16. mod - ;
 : ?snap snapping @ if tsnap swap tsnap swap else 2i then ;
 : stop-dragging alt? if stage else dragee then ?dup 0; { x v@ ?snap x v! } 0 to dragee ;
-: (hovering) me each> mouse 2s>p zoom/ ax v@ w v@ area inside? if me to hoveree then  recurse ;
+: gbox x v@ w v@ area v*m 2swap v*m 2swap ;
+: (hovering) me each> hide @ ?; w v@ and first @ or 0; mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
 : hovering 0 to hoveree (hovering) ;
 : pick to this ;
 : drag to dragee ;
 
 \ - UI extensions
-: echar e KEYBOARD_EVENT.unichar @ ;
-: ekey e KEYBOARD_EVENT.keycode @ ;
 : ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
 :noname [ is app-events ]
     ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
         ekey <f5> = if s" reload" evaluate then
-        ekey <f3> = if viewport { halt @ invert halt ! } then
         ekey <del> = if ?delete then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         hoveree ?dup if dup pick drag then
     then
-    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
+    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
         stop-dragging
     then
 ;
@@ -76,10 +90,13 @@ variable indent
 : .xy x v@ 2p>s swap . . ;
 : ?.wh w v@ or if w vp? ." w v! " then ;
 : .constructor constructor @ >name count type space ;
-: o. { .xy ." at " .constructor ?.wh } ser @ ?execute space ;
-: .{ first @ if ." me {" then ;
-: .} first @ if cri ." }" then ;
-: o.r constructor @ if cri dup o. then .{ ['] .} >r each> +i me recurse -i ;
+: .{ ." { " ;
+: .} ." } " } ;
+: .}r first @ if cri then .} ;
+: ?.named nam @ ?dup if ." named " count type space then ;
+: (o.) .xy ." at " .constructor ?.named .{ ?.wh ;
+: o. { (o.) .} ;
+: o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
 : figpath z[ ." figures/" type ." .vfx" ]z zcount ;
 : save figpath f[ viewport o.r ]f ;
 : save-to 0 parse save ;
@@ -88,24 +105,26 @@ variable indent
 
 \ - Info
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
-: outline ax v@ 2p>s at w v@ 2p>s rect ;
-: zoom* >r zoom sf* r> zoom sf* ;
-: tiny identity pen v@ zoom* at ;
-: info 0 -16 zoom/ 1 - +at +m tiny z[ me o. ]z stext -m ;
-
-: !positions parent @ ?dup if -> ax v@ x v@ 2+ ax v!  then  me each> recurse ;
+: a+t
+    +m identity
+    parent @ begin ?dup while
+        dup { x v@ 2p>f  sx v@ 2p>f } 0e
+            m2 al_build_transform  m m2 al_compose_transform
+        -> parent @
+    repeat
+    m al_use_transform
+;
+: tiny a+t x v@ v*m 2p>s at -t identity ;
+: info +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
+: outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - UI extension
-obj shed
-uiext clear
-shed uiext push
+uiext to you *generic named shed as
 :noname
     act>
-        root { !positions }
         dragee alt? 1 mheld? and or if dragging else root { hovering } then
     draw>
-        +m identity 0e 0e zoom fdup 0e transform
+        ui? 0;
         hoveree ?dup if { yellow outline } then
-        this ?dup if { green outline info } then
-        -m
+        this ?dup if { red outline white info } then
 ; execute

@@ -21,13 +21,14 @@ require lib/fileout.vfx
 : sf-! cell- dup sf! ;
 : f>ds 0 >r rp@ sf! r> ;
 synonym | locals|
-: :: :noname  [char] ; parse evaluate  postpone ;  execute ;
-synonym >> rshift
-synonym << lshift
+: :> :noname  [char] ; parse evaluate  postpone ;  execute ;
+: >> rshift ;
+: << lshift ;
 : sf/ s>f fswap f/ f>s ;
 : sf* s>f f* f>s ;
 : f[ write[ ;
 : ]f ]write ;
+: u+ rot + swap ;
 
 \ - Arrays
 : get  swap cells + @ ;
@@ -47,12 +48,14 @@ synonym << lshift
 : x@ @ ;
 : y@ cell+ @ ;
 : vp? v@ 2p. ;
+: 2p* rot p* >r p* r> ;
 
 \ - Ranges
 : area 2over 2+ ;
 : 2rnd rnd swap rnd swap ;
 : overlap? 2swap 2rot rot > -rot < and >r rot > -rot < and r> and ;
 : inside? 2>r 2>r 2dup 2r> 2r> overlap? ;
+: clamp >r max r> min ;
 
 \ - Input
 : held? kbs0 swap al_key_down 0<> ;
@@ -74,13 +77,15 @@ synonym << lshift
 
 \ - Matrix stack
 create mstk 16 cells 16 * allot
-create temp 16 cells allot
+create m2 16 cells allot
 variable mp
+variable tx variable ty
 : m mp @ 15 and 16 cells * mstk + ; 
 : +m m 1 mp +! m swap al_copy_transform ;
 : -m -1 mp +!  m al_use_transform ;
-: transform  temp al_build_transform  temp m al_compose_transform  m temp al_copy_transform  m al_use_transform ;
+: transform  m2 al_build_transform  m2 m al_compose_transform  m m2 al_copy_transform  m al_use_transform ;
 : identity  m al_identity_transform  m al_use_transform ;
+: v*m 2p>f ty sf! tx sf! m tx ty al_transform_coordinates tx sf@ f>p ty sf@ f>p ;
 
 \ - Graphics
 create pen 0 , 0 ,
@@ -102,7 +107,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
 
 \ - Bitmaps
-: ?null ?dup 0= if r> 2drop exit then ;
+: ?null ?dup 0= if r> drop exit then ;
 : fblit at@f swap al_draw_bitmap ;
 : blit ?null 0 swap fblit ;
 : bmpw al_get_bitmap_width ;
@@ -141,15 +146,19 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 variable font  builtin-font font !
 : z[ zstr[ ;
 : ]z ]zstr ;
-: >z z[ type ]z ;
+: ?type ?dup if type else drop then ;
+: >z z[ ?type ]z ;
 : text >r font @ fore 4f@ at@f 0 r> al_draw_text ;
 
 \ - Delta
-1e fvalue delta
-0 0 2value lastTime
+1e fvalue fdelta
+0e fvalue tdelta
+dcounter 2value dLastTime
 1000e framerate f/ 10000e f* fvalue fus
-: !delta  ( - )
-    \ al_wait_for_vsync drop
-    dcounter 2dup lastTime d- d>f fus f/ to delta  to lastTime ;
-: delta* delta f>p p* ;
-: 2delta* delta f>p p* swap delta f>p p* swap ;
+: !delta
+    dcounter 2dup dLastTime d- d>f
+        fdup 10000000e f/ to tdelta fus f/ to fdelta
+        to dLastTime ;
+: delta* fdelta f>p p* ;
+: 2delta* fdelta f>p p* swap fdelta f>p p* swap ;
+: delta tdelta f>p ;

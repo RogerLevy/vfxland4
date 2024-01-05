@@ -10,4 +10,7 @@
 : tile@ ( c r tilemap - n )
 : tile! ( c r tilemap - )
 
-: gradient ( a-color1 a-color2 w h -- )
+: gradient ( a-color1 a-color2 w h - )
+
+: object: ( - <name> ) ( - ) ( - obj )
+: named ( obj - <name> obj )

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="497c29c6-2251-44c4-a311-02c4b598cb67" kpf_version="5" name="vfxland4.komodoproject">
+<preference-set idref="497c29c6-2251-44c4-a311-02c4b598cb67" id="project" preftype="project">
+  <boolean id="dedentOnColon">0</boolean>
+  <string id="editAutoIndentStyle">smart</string>
+  <boolean id="editBackspaceDedents">1</boolean>
+  <boolean id="editElectricBrace">1</boolean>
+  <boolean id="enableElasticTabstops">0</boolean>
+  <string relative="path" id="import_dirname"></string>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;_svn;.git;.hg;.bzr;*%25*;tmp*.html;.DS_Store;*.swp;*.kpf;*.komodoproject;.komodotools;__pycache__;*.dll</string>
+  <string id="import_include_matches"></string>
+  <boolean id="indentStringsAfterParens">0</boolean>
+  <long id="indentWidth">4</long>
+  <string relative="path" id="last_local_directory"></string>
+  <string id="last_remote_directory">None</string>
+  <long id="prefs_version">1</long>
+  <boolean id="showIndentationGuides">0</boolean>
+  <long id="tabWidth">4</long>
+  <boolean id="useSmartTabs">0</boolean>
+  <boolean id="useTabs">0</boolean>
+</preference-set>
+</project>

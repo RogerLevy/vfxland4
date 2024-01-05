@@ -11,12 +11,12 @@ rat.bmp 32 32 create-tileset rat.ts
 
 %rat m: bbox  x v@ -16 -16 2+ 2dup w v@ 2+ ;
 : bop  *bop*  1 -2 vx v! step>  0.05e vy fs+!  33 ang +! ;
-: hit  bop  rat-hit  32 choose rathits get play-doubled ;
+: hit  bop  rat-hit  32 rnd rathits get play-doubled ;
 : ?hit  clicked? if  hit  then ;
 : stop  0 0 vx v! step>  ?hit ;
 
 : propel  dup ang !  s>f spd fs@ fvec vx fv! ;
-: redirect  4 choose 90 * propel ;
+: redirect  4 rnd 90 * propel ;
 : turn  ang @ 90 + 360 mod propel  0 ctr ! ;
 : ?turn
     x s@ 16 < if  16 x s!  turn  then
@@ -28,7 +28,7 @@ rat.bmp 32 32 create-tileset rat.ts
 
 %rat m: init
     32 32 w v!
-    20 choose 10 / s>f 1e f+ spd fs!
+    20 rnd 10 / s>f 1e f+ spd fs!
     skitter
     70 ctr2 !
     physics>

@@ -3,5 +3,5 @@
 : rspd 64. rnd 16. + pcos 2 3 */ abs negate ;
 : fly act> x @ 0 < if gamew gameh rnd 2s>p x v! then ;
 : pixel 1 1 rectf ;
-: *star *actor rspd vx ! fly draw> white pixel  ;
+object: *star rspd vx ! fly draw> white pixel  ;
 : stars 0 do somewhere at *star loop ;
