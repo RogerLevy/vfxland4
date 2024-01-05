@@ -42,7 +42,7 @@ object: *flake rspd vx v! fall ( draw> white pixel ) ;
 object: *snow draw> white points ;
 
 stage {
-    *snow {
+    *snow named snow {
         20000 flakes 
     }
 }
