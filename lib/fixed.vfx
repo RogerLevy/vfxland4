@@ -11,6 +11,8 @@
 : p. p>f f. ;
 : 2p. swap p. p. ; 
 : p? @ p. ;
+: 1i $ffff0000 and ;
+: 2i 1i swap 1i swap ;
 
 : (>FIXED)	\ c-addr u -- flag ; F: -- f | --
 \ *G Try to convert the string at c-addr/u to a floating point number.

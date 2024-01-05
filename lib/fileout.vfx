@@ -41,7 +41,7 @@ create filedev  0 , file-vectors ,
     w/o create-file throw to file#
     op-handle @ to old-dev  filedev op-handle !
 ;
-    
+
 : ]write
     old-dev op-handle !
     file# close-file drop

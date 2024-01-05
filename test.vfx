@@ -1,0 +1,42 @@
+include scripts/tilemap.vfx
+
+: named me value ;
+
+create buf 20 16 * cells allot 
+: *map
+    buf 20 *actor 1tilemap 
+    320. 240. w v!
+    act> 1. 1. 2delta* scrollx v+!
+    ser> scrollx vp? ." scrollx v! "
+;
+
+z" data/tbank_test.png" loadbmp constant b
+0 0 at b tbank bmpwrite
+: *box *actor 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
+
+: !textbounds 2dup nip 9 * font @ al_get_font_line_height 2s>p w v! ;
+: *hello *actor draw> white s" Hello" !textbounds >z stext ; 
+
+\ ' shed shed -> constructor !
+
+0 value bg
+: *bg 0 0 at *actor me to bg ;
+
+fget starfield
+
+\ stage {             \ ignore this: }
+\ 50 50 at *map named map
+\ 100 100 at  *box named box  33. 66. w v!
+\ 160 120 at *hello named hello
+\ } 
+
+\ *bg me dup viewport unshift {
+\     200 stars    
+\ }
+
+load test
+
+bg { :: draw> blue <d fore backdrop gamew gameh gradient ; }
+
+: *block *actor 16. 16. w v! draw> 1 tile+ act> 0.25 y +! ;
+\ :: *one act> gamew gameh 2rnd at stage { *block } ;

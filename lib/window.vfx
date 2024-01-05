@@ -1,0 +1,48 @@
+require lib/allegro-5.2.5.vfx
+
+0 value dev?
+-1 value mswin?
+
+: argkey  over >r s" =" search drop nip r> swap ;
+: argval  s" =" search drop 1 /string ;
+
+:noname
+    CommandLine 2drop
+    argc 1 ?do
+        \ i argv[ zcount 
+        \     2dup s" -dev" compare 0= dev? or to dev?
+        \     2dup s" -fullscreen" compare 0= fullscreen? or to fullscreen?
+        \     2dup s" -doublebuf" compare 0= doublebuf? or to doublebuf?
+        \     2dup argkey
+        \       2dup s" -winw" compare 0= if  2dup argval to winw  then
+        \       2dup s" -winh" compare 0= if  2dup argval to winh  then
+        \     2drop
+        \ 2drop
+    loop
+; execute
+
+dev? [if]
+    : require  get-order depth >R require depth R> >
+        abort"  Stack item(s) left behind" set-order ;
+[then]
+
+mswin? [if]
+    extern void * GetForegroundWindow( );
+    extern bool SetForegroundWindow( void * hwnd );
+    : window-to-front  SetForegroundWindow drop ;
+    : get-window  GetForegroundWindow ; 
+[then]
+
+get-window constant vfx-hwnd
+
+: >display
+    flushOP-gen drop \ VFX flush buffered output
+    reset-keyboard 
+    display al_get_win_window_handle window-to-front ;
+
+: >vfx vfx-hwnd window-to-front ;
+
+: window to fullscreen? to winh to winw init-allegro dev? if >vfx then ;
+
+: winw display al_get_display_width ;
+: winh display al_get_display_height ;

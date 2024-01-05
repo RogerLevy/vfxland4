@@ -1,18 +1,20 @@
 \ - Object stack
-create os  $100 allot
-variable >os 
-: >o >os @ $ff and os + ! 4 >os +! ;
-: o> -4 >os +! >os @ $ff and os + @ ;
+: bpage here $ff and 256 swap - allot here $100 allot constant ;
+bpage os
+variable osp  os osp !
+: >o osp @ ! 4 osp c+! ;
+: o> -4 osp c+! osp @ @ ;
 
 \ - Structs
 : field create over , +  does> @ + ;
 
 \ - Addressing
 0 value me
+0 value you
 : as to me ;
-: { me >o as ;
-: } o> as ;
-: ->  ' >body @ ?literal s" +" evaluate ; immediate
+: { you >o me >o dup to me to you ;
+: } o> to me o> to you ;
+: -> ' >body @ ?literal s" +" evaluate ; immediate
 : require me { require } ;
 : include me { include } ;
 : included me { included } ;
@@ -33,33 +35,36 @@ include lib/dltree.vfx
 : insert dlinsert ;
 : each dleach ;
 : each> r> swap dleach ;
-: empty dlclear ;
+: clear dlclear ;
 
 \ - Basis
-var en var x var y var w var h var vx var vy
+var en var hide var halt
+var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy
 /obj to /basis
 defer children
 
 \ - Instancing
-: init pen v@ 2s>p x v! en on ;
-: *child here 256 allot&erase dup rot push dup { init } ;
+: init pen v@ 2s>p x v! en on 1. dup sx v! ;
+: *child here 256 allot&erase dup rot push dup { init }  ;
 : obj create here as 256 allot&erase init ;
+: child obj me you push ;
 
 \ - Basic actions
 : reckon
     first @ {  begin  me while
         next @ >r
-            en @ 0= if  me recurse  me remove  then
+            recurse
+            en @ 0= if  me remove  then
         r> as
-    repeat } ;
+    repeat }
+;
 : ?execute ?dup 0; catch .throw ;
-: draw x v@ 2p>s at  drw @ ?execute  children ; 
-: act beh @ ?execute  me each>  en @ 0;  recurse ;
-: physics phy @ ?execute  me each>  en @ 0;  recurse ;
-: ?draw en @ 0; draw ;
+: +t +m x v@ 2i 2p>f  sx v@ 2p>f  0e  transform ;
+: -t -m ;
+: draw en @ 0;  hide @ ?;  x v@ 2p>s at  drw @ ?execute  children ; 
+: act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
+: physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
 : draw> r> drw ! ;
 : act> r> beh ! ;
-: +t +m x v@ 2p>f mtranslate ;
-: -t -m ;
-:noname [ is children ] first @ 0; +t ['] ?draw me each -t ;
+:noname [ is children ] first @ 0; +t ['] draw me each -t ;

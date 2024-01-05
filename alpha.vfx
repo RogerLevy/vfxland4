@@ -1,20 +1,19 @@
-win32catch \ enables catching windows exceptions
-Win32ExceptThrow
-require lib/options.vfx
-require lib/allegro-5.2.5.vfx
+\ win32catch \ enables catching windows exceptions
+\ Win32ExceptThrow
+require lib/counter.vfx
+require lib/mersenne.vfx
 require lib/strout.vfx
-include lib/fixed.vfx
-include lib/counter.vfx
-include lib/csv.vfx
-include lib/files.vfx
+require lib/fixed.vfx
+require lib/csv.vfx
+require lib/files.vfx
+require lib/fileout.vfx
 
-winw s>f zoom f/ f>s constant gamew
-winh s>f zoom f/ f>s constant gameh
+320 value gamew
+240 value gameh
 60e fconstant framerate
 
 \ - Misc
 : @+ dup cell+ swap @ ;
-: rnd choose ;
 : ?literal state @ if postpone literal then ;
 : ?; s" if exit then" evaluate ; immediate
 : 0; s" 0= if exit then" evaluate ; immediate
@@ -23,6 +22,12 @@ winh s>f zoom f/ f>s constant gameh
 : f>ds 0 >r rp@ sf! r> ;
 synonym | locals|
 : :: :noname  [char] ; parse evaluate  postpone ;  execute ;
+synonym >> rshift
+synonym << lshift
+: sf/ s>f fswap f/ f>s ;
+: sf* s>f f* f>s ;
+: f[ write[ ;
+: ]f ]write ;
 
 \ - Arrays
 : get  swap cells + @ ;
@@ -69,14 +74,13 @@ synonym | locals|
 
 \ - Matrix stack
 create mstk 16 cells 16 * allot
+create temp 16 cells allot
 variable mp
-: m mp @ 15 and 16 cells * mstk + ; m al_use_transform 
-: +m m 1 mp +! m 16 cells move  ;
+: m mp @ 15 and 16 cells * mstk + ; 
+: +m m 1 mp +! m swap al_copy_transform ;
 : -m -1 mp +!  m al_use_transform ;
-: mscale m al_scale_transform  m al_use_transform ;
-: mrotate deg>rad m al_rotate_transform  m al_use_transform ;
-: mtranslate m al_translate_transform  m al_use_transform ;
-: midentity m al_identity_transform  m al_use_transform ; midentity
+: transform  temp al_build_transform  temp m al_compose_transform  m temp al_copy_transform  m al_use_transform ;
+: identity  m al_identity_transform  m al_use_transform ;
 
 \ - Graphics
 create pen 0 , 0 ,
@@ -84,17 +88,22 @@ create fore 0e sf, 0e sf, 0e sf, 0e sf,
 create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : at pen v! ;
 : +at pen v+! ;
-: pen@f pen v@ 2s>f ;
+: at@ pen v@ ;
+: at@f pen v@ 2s>f ;
 : 4f@ sf@+ sf@+ sf@+ sf@ ;
 : 4f! 4 cells + sf-! sf-! sf-! cell- sf! ;
-: rect 1e f>ds >r  pen@f  pen v@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
-: rectf pen v@ 2+  pen@f 2s>f  fore 4f@  al_draw_filled_rectangle ;
+: rect 1e f>ds >r  at@f  pen v@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
+: rectf pen v@ 2+  at@f 2s>f  fore 4f@  al_draw_filled_rectangle ;
 : fcolor fore 4f! ;
 : cls backdrop 4f@ al_clear_to_color ;
+: c dup 24 >> s>f 255e f/ ;
+: color c 8 << c 8 << c 8 << c drop fcolor ;
+: b >r sf@+ 255e f* f>s r> or ;
+: @color fore 0 b 8 << b 8 << b 8 << b nip ;
 
 \ - Bitmaps
 : ?null ?dup 0= if r> 2drop exit then ;
-: fblit pen@f swap al_draw_bitmap ;
+: fblit at@f swap al_draw_bitmap ;
 : blit ?null 0 swap fblit ;
 : bmpw al_get_bitmap_width ;
 : bmph al_get_bitmap_height ;
@@ -108,7 +117,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : opaque ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO al_set_blender ;
 : transparent ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender ;
 : bmpwrite onto opaque blit backbuf onto transparent ;
-: rblit swap >r  dup bmpwh 2 2 2/ 2s>f  pen@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
+: rblit swap >r  dup bmpwh 2 2 2/ 2s>f  at@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
 
 \ - Colors
 : red 1e 0e 0e 1e fcolor ;
@@ -122,7 +131,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : orange 1e 0.5e 0e 1e fcolor ;
 : purple 0.5 0e 1e 1e fcolor ;
 : white 1e 1e 1e 1e fcolor ;
-: black 0e 0e 0e 0e fcolor ;
+: black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
 : <d fore dk dk dk dk drop ; 
@@ -130,9 +139,10 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 
 \ - Text
 variable font  builtin-font font !
-: text[ zstr[ ;
-: ]text font @ fore 4f@ pen@f 0 ]zstr al_draw_text ;
-: text text[ type ]text ;
+: z[ zstr[ ;
+: ]z ]zstr ;
+: >z z[ type ]z ;
+: text >r font @ fore 4f@ at@f 0 r> al_draw_text ;
 
 \ - Delta
 1e fvalue delta

@@ -1,37 +1,30 @@
 -sin faster
+require lib/window.vfx
+
+3e fvalue zoom
+320 3 *  240 3 * 32 +  0 window
+
 require alpha.vfx
 require obj.vfx
-require scripts/timer.vfx
-require scripts/tilemap.vfx
 
 0 0 at
-obj root 
-obj stage  stage root push
+obj root
+obj viewport  me root push
 include scripts/ui.vfx
 
 \ - Main loop
-stage as :: draw> midentity zoom fdup mscale ;
+: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* area al_set_clipping_rectangle ;
+viewport as :: draw> matte zoom f>p dup sx v! ;
 : present display al_flip_display ;
 : poll poll-keyboard poll-mouse ;
-: think root { act reckon } ;
-: graphics cls root { draw } present ;
-: frame !delta poll think graphics pause ;
+: think me >r root as physics act reckon r> as ;
+: paint identity cls me >r root as draw r> as ;
+: frame !delta poll think paint present pause ;
+: ?quit <esc> pressed? if >vfx quit then ;
 : pre !delta init-ui ;
-: go >display pre begin frame <esc> pressed? until >vfx ;
+: go >display pre begin frame ?quit again ;
 
-\ - Tests
-create buf 20 16 * cells allot 
-: *map buf 20 stage *tilemap ; \ dup as act> 
-50 50 at *map constant map
-
-z" data/tbank_test.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-map as :: act> 1. 1. 2delta* scrollx v+! ;
-
-: *box stage *child dup as act> 0.05 delta* x +! draw> blue 33 66 rectf red 33 66 rect ;
-100 100 at *box constant box
-
-: *text stage *child dup as draw> white s" Hello" text ; 
-160 120 at *text constant hello
-
+include shed.vfx
+include test.vfx
+ 
 go 
