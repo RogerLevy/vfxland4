@@ -59,7 +59,7 @@ s" shed.vfx" reload$ place
 : ?snap snapping @ if tsnap swap tsnap swap else 2i then ;
 : stop-dragging alt? if stage else dragee then ?dup 0; { x v@ ?snap x v! } 0 to dragee ;
 : gbox x v@ w v@ area v*m 2swap v*m 2swap ;
-: (hovering) me each> hide @ ?; w v@ and first @ or 0; mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
+: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
 : hovering 0 to hoveree (hovering) ;
 : pick to this ;
 : drag to dragee ;
