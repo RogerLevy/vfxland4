@@ -27,7 +27,7 @@ motif var constructor var ser var nam /obj to /basis
 : 1object body> constructor ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
 : object:
     create here 0 , :noname swap !
-    does> you *child { dup 1object @ execute me } ;
+    does> me *child { dup 1object @ execute me } ;
 : kill -> en off ;
 : named
     >in @ >r bl word find if
@@ -119,7 +119,7 @@ variable indent
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - UI extension
-uiext to you *generic named shed as
+uiext as *generic named shed as
 :noname
     act>
         dragee alt? 1 mheld? and or if dragging else root { hovering } then
