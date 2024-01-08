@@ -51,9 +51,9 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
-: zoom/ >r zoom sf/ r> zoom sf/ ;
-: +drag walt 2s>p zoom/ x v+! ;
-: bounding w v@ parent -> sx v@ 2p* ;
+: scale* parent @ ?dup if { sx v@ 2p* recurse } then ; 
+: +drag walt 2s>p 1. 1. scale* 2p/ x v+! ;
+: bounding w v@ scale* ;
 : dragging alt? if stage else dragee then { +drag } ;
 : tsnap 8. + dup 16. mod - ;
 : ?snap snapping @ if tsnap swap tsnap swap else 2i then ;
