@@ -3,7 +3,7 @@ require scripts/tilemap.vfx
 motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
 
 \ - Runtime rendering
-: ?+ac ui? ?; delta spd @ p/ ac +! ;
+: ?+ac delta spd @ p/ ac +! ;
 : keyframe +t { me #children mod abs me nth-child as children } -t ;
 : animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
 
@@ -15,19 +15,18 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 
 \ - Editor components
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line ;
-: preview-ser ser> tl @ .name spd p? ." animate" ;
-object: *preview 2. 2. sx 2! preview-ser draw> crosshairs ;
+object: *preview 2. 2. sx 2! draw> crosshairs ;
 object: *animations 2. 2. sx 2! draw> crosshairs ;
-object: *aed draw> -matte 0 winh 64 - at z[ ." AED" ]z white stext ;
+object: *aed draw> -matte 0 winh 96 - at z[ ." AED" ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
 
 \ - Test
 include figures/timelines/test.vfx
-object: *pspr draw> test.tl 0.25 animate ;
+: pspr-ser ser> tl @ .name spd p? ." animate" ;
+object: *pspr pspr-ser draw> test.tl 0.25 animate ;
 
-\ Editor
-root { }
+\ - Editor
 apps {
     0 0 at *aed named aed {
         winw 0.16666 p* 200 at *preview named preview { 

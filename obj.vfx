@@ -54,6 +54,7 @@ defer children
         drop r> >in !
         dup value latest ctrl>nfa over -> nam !
     then ;
+: .name -> nam @ ?dup if count type space then ;
     
 \ - Instancing
 : init en on 1. dup sx v! ;

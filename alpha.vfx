@@ -29,7 +29,6 @@ synonym | locals|
 : f[ write[ ;
 : ]f ]write ;
 : u+ rot + swap ;
-: .name body> >name count type space ;
 
 \ - Arrays
 : get  swap cells + @ ;
