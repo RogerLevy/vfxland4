@@ -9,13 +9,15 @@ obj ui me {
 true value ui?
 true value ui-halt?
 
+motif var eh /obj to /basis
+: respond> r> eh ! ;
+
 \ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 \     constant ibm8x16.fnt 
 z" data/Mx437_SperryPC_8x16.ttf" #16 3 al_load_ttf_font
     constant sherry16.fnt 
 z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
     constant sherry32.fnt 
-defer app-events ' noop is app-events
 
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. base @ swap hex . base ! ;
@@ -37,12 +39,15 @@ defer app-events ' noop is app-events
     tib #tib @ + c! 1 #tib +!
 ;
 
+: responses eh @ ?execute each> me recurse ;
+
 create e /ALLEGRO_EVENT allot&erase
 : happened? e ALLEGRO_EVENT.type @ = ;
 : echar e KEYBOARD_EVENT.unichar @ ;
 : ekey e KEYBOARD_EVENT.keycode @ ;
 : events
     begin  queue e al_get_next_event  while
+        root responses
         ui? 0;
         ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
             bye
@@ -62,7 +67,6 @@ create e /ALLEGRO_EVENT allot&erase
         ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
             display al_acknowledge_resize
         then
-        app-events
     repeat
 ;
 

@@ -55,24 +55,6 @@ s" shed.vfx" reload$ place
 : pick to this ;
 : drag to dragee ;
 
-\ - UI extensions
-: ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
-:noname [ is app-events ]
-    ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
-    then
-    ALLEGRO_EVENT_KEY_DOWN happened? if
-        ekey <f5> = if s" reload" evaluate then
-        ekey <del> = if ?delete then
-    then
-    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
-        hoveree ?dup if dup pick drag then
-    then
-    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
-    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
-        stop-dragging
-    then
-;
-
 \ - Serialize
 variable indent
 : +i  4 indent +! ;
@@ -114,7 +96,6 @@ variable indent
 obj apps  me root push
 ui root push \ bring ui to front
 
-
 \ - UI extension
 uiext as *generic named shed {
 :noname
@@ -124,5 +105,23 @@ uiext as *generic named shed {
         ui? 0;
         hoveree ?dup if { yellow outline } then
         this ?dup if { red outline white info } then
+; execute
+
+: ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
+:noname
+    respond>
+    ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
+    then
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        ekey <f5> = if s" reload" evaluate then
+        ekey <del> = if ?delete then
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+        hoveree ?dup if dup pick drag then
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
+    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
+        stop-dragging
+    then
 ; execute
 }
