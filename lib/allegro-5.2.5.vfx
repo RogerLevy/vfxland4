@@ -2513,7 +2513,7 @@ $05020500 constant ALLEGRO_VERSION
 \ extern "C" _Z7sprintfPcPKcz( );
 \ extern "C" al_acknowledge_drawing_halt( );
 \ extern "C" al_acknowledge_drawing_resume( );
-\ extern "C" al_acknowledge_resize( );
+extern "C" void al_acknowledge_resize( void * display );
 \ extern "C" al_add_config_comment( );
 \ extern "C" al_add_config_section( );
 \ extern "C" al_add_new_bitmap_flag( );
@@ -2685,7 +2685,7 @@ extern "C" void al_draw_indexed_prim( void * vtxs, void * decl, void * texture, 
 \ extern "C" al_draw_justified_text( );
 \ extern "C" al_draw_justified_textf( );
 \ extern "C" al_draw_justified_ustr( );
-extern "C" al_draw_line( float x1, float y1, float x2, float y2, int color, float thickness );
+extern "C" void al_draw_line( float x1, float y1, float x2, float y2, float r, float g, float b, float a, int float-thickness );
 extern "C" void al_draw_multiline_text( void *font,
      float r, float g, float b, float a, float x, float y, float max_width, float line_height,
      int flags, void *text );
@@ -3997,6 +3997,7 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
         ALLEGRO_FULLSCREEN_WINDOW al_set_new_display_flags
         winw winh al_create_display to display
     else
+        $11 al_set_new_display_flags
         winw winh al_create_display to display
         display 0 0 al_set_window_position
     then

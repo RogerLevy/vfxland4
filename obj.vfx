@@ -81,5 +81,5 @@ defer children
 :noname [ is children ] first @ 0; ['] draw me each ;
 
 \ - Indexed child access
-: #children 0 first @ ?dup 0; begin 1 u+ -> next @ ?dup 0= until ;
-: nth-child first @ dup 0= if nip exit then swap 0 ?do -> next @ loop ;
+: #children 0 swap -> first @ ?dup 0; begin 1 u+ -> next @ ?dup 0= until ;
+: nth-child -> first @ dup 0= if nip exit then swap 0 ?do -> next @ loop ;

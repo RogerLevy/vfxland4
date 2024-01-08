@@ -59,6 +59,9 @@ create e /ALLEGRO_EVENT allot&erase
         ALLEGRO_EVENT_KEY_DOWN happened? if
             ekey <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
         then
+        ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
+            display al_acknowledge_resize
+        then
         app-events
     repeat
 ;
@@ -81,12 +84,8 @@ repl as repl-draw
     me to uime r> as
     osp @ uiosp ! r> osp !
 ; 
-: ui-act act> 0 winh 64 - s>p x v! (events) pause ;
-: ui-draw draw> identity -matte ;
-megaphone as ui-act ui-draw
-
-: ui-toggle <tab> pressed? if toggle then ;
-mgmt as :> act> ui-toggle ;
+megaphone as :> act> 0 winh 64 - s>p x v! (events) pause draw> -matte ;
+mgmt as :> act> <tab> pressed? if toggle then ;
 
 : rs reset-stacks ;
 

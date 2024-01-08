@@ -113,6 +113,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : color c 8 << c 8 << c 8 << c drop fcolor ;
 : b >r sf@+ 255e f* f>s r> or ;
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
+: line 1e f>ds >r  pen v@ 2+  at@f 2s>f fore 4f@ r> al_draw_line ;
 
 \ - Bitmaps
 : ?null ?dup 0= if r> drop exit then ;
@@ -144,6 +145,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : orange 1e 0.5e 0e 1e fcolor ;
 : purple 0.5 0e 1e 1e fcolor ;
 : white 1e 1e 1e 1e fcolor ;
+: gray 0.75e fdup fdup 1e fcolor ;
 : black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;

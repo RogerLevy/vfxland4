@@ -1,62 +1,45 @@
+require scripts/tilemap.vfx
+
 motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
 
 \ - Runtime rendering
 : ?+ac ui? ?; delta spd @ p/ ac +! ;
-: keyframe +t { #children mod abs nth-child as children } -t ;
+: keyframe +t { me #children mod abs me nth-child as children } -t ;
 : animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
 
-root { 0 0 at *generic named animations { } }
-object: *timeline me animations push ;
-object: *keyframe ; 
-
-\ - Test
-require scripts/tilemap.vfx
-
+\ - Tile keyframes
 motif var ti
-
 : draw-tile draw> ti @ tile+ ;
 : ser-tile ser> ti ? ." ti !" ;
 object: *tile 16. 16. w v! draw-tile ser-tile ; 
 
-0 0 at *timeline named test.tl {
-    0 0 at *keyframe {
-        0 0 at *tile { $02 ti ! }
-        16 0 at *tile { $03 ti ! }
-        0 16 at *tile { $82 ti ! }
-        16 16 at *tile { $83 ti ! }
-    }
-    0 -1 at *keyframe {
-        -1 -1 at *tile { $04 ti ! }
-        17 -1 at *tile { $05 ti ! }
-        -1 17 at *tile { $84 ti ! }
-        17 17 at *tile { $85 ti ! }
-    }
-    0 -2 at *keyframe {
-        -2 -2 at *tile { $06 ti ! }
-        18 -2 at *tile { $07 ti ! }
-        -2 18 at *tile { $86 ti ! }
-        18 18 at *tile { $87 ti ! }
-    }
-    0 -1 at *keyframe {
-        -3 -3 at *tile { $08 ti ! }
-        19 -3 at *tile { $09 ti ! }
-        -3 19 at *tile { $88 ti ! }
-        19 19 at *tile { $89 ti ! }
-    }
-}
+\ - Editor components
+: crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line ;
+: preview-ser ser> tl @ .name spd p? ." animate" ;
+object: *preview 2. 2. sx 2! preview-ser draw> crosshairs ;
+object: *animations 2. 2. sx 2! draw> crosshairs ;
+object: *aed draw> -matte 0 winh 64 - at z[ ." AED" ]z white stext ;
+object: *timeline ;
+object: *keyframe ; 
 
-object: *preview 32. 32. w v! ser> tl @ .name spd p? ." animate" ;
+\ - Test
+include figures/timelines/test.vfx
+object: *pspr draw> test.tl 0.25 animate ;
 
+\ Editor
+root { }
 apps {
-    0 0 at *generic named aed { 2. 2. sx 2!
-        50 50 at *preview named preview { test.tl 0.25 animate }
+    0 0 at *aed named aed {
+        winw 0.16666 p* 200 at *preview named preview { 
+            0 0 at *pspr named pspr { } 
+        }
+        winw 0.5 p* 200 at *animations named animations {
+            test.tl me push
+        }
     }
 }
-
-animations aed push
-150. 50. test.tl -> x v!
-
 : hide-each each> hide on ;
-: sel test.tl { me hide-each nth-child -> hide off } ;
-
+: sel test.tl dup hide-each  nth-child -> hide off } ;
 0 sel
+
+0.75e fdup fdup 1e backdrop 4f! 

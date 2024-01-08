@@ -1,6 +1,7 @@
 faster
 require lib/window.vfx
 
+
 3e fvalue zoom
 320 3 *  240 3 * 64 +  0 window
 display 1920 2 / 0 al_set_window_position
@@ -22,5 +23,7 @@ obj dbg  dbg root push
     z[ ." mouse: " mouse swap . . ]z red stext nr
 \    z[ this -> ax v@ swap p. p. ]z text
 ; dbg-draw
+
+dbg -> hide on
 
 go 
