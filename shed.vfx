@@ -46,9 +46,9 @@ s" shed.vfx" reload$ place
 : +drag walt 2s>p 1. 1. scale* 2p/ x v+! ;
 : bounding w v@ scale* ;
 : dragging alt? if stage else dragee then { +drag } ;
-: tsnap 8. + dup 16. mod - ;
+: tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap snapping @ if tsnap swap tsnap swap else 2i then ;
-: stop-dragging alt? if stage else dragee then ?dup 0; { x v@ ?snap x v! } 0 to dragee ;
+: plop alt? if stage else dragee then ?dup 0; { x v@ ?snap x v! } 0 to dragee ;
 : gbox x v@ w v@ area v*m 2swap v*m 2swap ;
 : (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
 : hovering 0 to hoveree (hovering) ;
@@ -121,7 +121,7 @@ uiext as *generic named shed {
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
     ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
-        stop-dragging
+        plop
     then
 ; execute
 }
