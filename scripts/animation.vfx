@@ -47,9 +47,8 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 
 object: *preview 32. 32. w v! ser> tl @ .name spd p? ." animate" ;
 
-
-stage {
-    0 0 at *generic named aed { 
+apps {
+    0 0 at *generic named aed { 2. 2. sx 2!
         50 50 at *preview named preview { test.tl 0.25 animate }
     }
 }

@@ -15,7 +15,7 @@ object: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
 : !textbounds 2dup nip 9 * font @ al_get_font_line_height 2s>p w v! ;
 object: *hello draw> white s" Hello" !textbounds >z stext ; 
 
-\ ' shed shed -> constructor !
+\ ' shed shed -> con !
 
 0 value bg
 object: *bg me to bg 0 0 x v! ;
@@ -28,7 +28,7 @@ fget starfield
 \ 160 120 at *hello named hello
 \ } 
 
-\ *bg me dup viewport unshift {
+\ *bg me dup game unshift {
 \     200 stars    
 \ }
 

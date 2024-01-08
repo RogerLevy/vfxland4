@@ -15,4 +15,4 @@ object: *timer act> me kill ; \ suicide after deserializing
 : (timer>)  ( f: sec -- <code> )
     *timer { r> 1timer } ;
 : timer> postpone (timer>) discard-sinline ; immediate
-: clear-timers me each> constructor @ ['] *timer = if me kill then ;
+: clear-timers me each> con @ ['] *timer = if me kill then ;

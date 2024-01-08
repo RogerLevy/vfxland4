@@ -1,18 +1,12 @@
 : s>p 16 lshift ;
-: 2s>p s>p swap s>p swap ;
 : p>s 65536 / ;
-: 2p>s p>s swap p>s swap ;  
 : p>f s>f 65536e f/ ;
 : f>p 65536e f* f>s ;
 : p* 65536 */ ;
 : p/ 65536 swap */ ;
-: 2p>f swap p>f p>f ;
-: 2f>p f>p f>p swap ;
 : p. p>f f. ;
-: 2p. swap p. p. ; 
 : p? @ p. ;
 : 1i $ffff0000 and ;
-: 2i 1i swap 1i swap ;
 : pcos p>f fcos f>p ;
 
 : (>FIXED)	\ c-addr u -- flag ; F: -- f | --

@@ -48,8 +48,15 @@ synonym | locals|
 : 2s>f swap s>f s>f ;
 : x@ @ ;
 : y@ cell+ @ ;
+: 2p>s p>s swap p>s swap ;  
+: 2s>p s>p swap s>p swap ;
+: 2p>f swap p>f p>f ;
+: 2f>p f>p f>p swap ;
+: 2p. swap p. p. ; 
 : vp? v@ 2p. ;
+: 2i 1i swap 1i swap ;
 : 2p* rot p* >r p* r> ;
+: 2p/ rot swap p/ >r p/ r> ;
 
 \ - Ranges
 : area 2over 2+ ;

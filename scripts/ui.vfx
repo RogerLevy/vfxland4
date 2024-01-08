@@ -1,10 +1,9 @@
 obj ui me {
-    me *child constant megaphone
-    megaphone {
-        me *child constant uiext
-        me *child constant mgmt
-        me *child constant repl
+    me *child named megaphone {
+        me *child named repl { }
+        me *child named mgmt { }
     }
+    me *child named uiext { }
 }
 
 true value ui?
@@ -25,7 +24,7 @@ defer app-events ' noop is app-events
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
 : obey cr tib #tib @ ['] evaluate try 0 #tib ! ;
-: ?halt ui? ui-halt? and viewport -> halt ! ;
+: ?halt ui? ui-halt? and game -> halt ! ;
 : toggle ui? not to ui? ui? not megaphone -> hide ! ?halt ;
 : ?charkey  
     case
@@ -58,13 +57,13 @@ create e /ALLEGRO_EVENT allot&erase
 \            e MOUSE_EVENT.dz @ ?dup if ?wheel then
 \         then
         ALLEGRO_EVENT_KEY_DOWN happened? if
-            ekey <f3> = if viewport { halt @ invert dup halt ! to ui-halt? } then
+            ekey <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
         then
         app-events
     repeat
 ;
 
-viewport value uime
+game value uime
 variable uiosp
 bpage uios uios uiosp !
 : nr 0 pen cell+ @ 32 + at ;

@@ -3,7 +3,7 @@ require obj.vfx
 
 0 0 at
 obj root
-obj viewport  me root push
+obj game  me root push
 
 \ - Main loop
 : present display al_flip_display ;

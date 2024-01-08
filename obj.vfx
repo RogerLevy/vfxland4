@@ -38,16 +38,28 @@ include lib/dltree.vfx
 : clear dlclear ;
 
 \ - Basis
-var en var hide var halt
+var en var hide var halt var nam 
 var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy
 /obj to /basis
 defer children
 
+\ - Naming support
+: named
+    >in @ >r bl word find if
+        2dup >name swap -> nam !
+        over swap >body @ !
+        r> drop 
+    else
+        drop r> >in !
+        dup value latest ctrl>nfa over -> nam !
+    then ;
+    
 \ - Instancing
 : init en on 1. dup sx v! ;
 : *child here 256 allot&erase dup rot push dup { init }  ;
-: obj create here as 256 allot&erase init ;
+: obj  here as 256 allot&erase init  me value  latest ctrl>nfa nam ! ;
+\ : obj create here as 256 allot&erase init ;
 
 \ - Basic actions
 : reckon
