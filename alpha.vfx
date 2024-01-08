@@ -118,9 +118,9 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : ?null ?dup 0= if r> drop exit then ;
 : fblit at@f swap al_draw_bitmap ;
 : blit ?null 0 swap fblit ;
-: bmpw al_get_bitmap_width ;
-: bmph al_get_bitmap_height ;
-: bmpwh dup bmpw swap bmph ; 
+: bmpwh 7 cells + v@ ; 
+: bmpw bmpwh drop ;
+: bmph bmpwh nip ;
 : loadbmp al_load_bitmap ;
 : subbmp pen v@ 2swap al_create_sub_bitmap ;
 : hold al_hold_bitmap_drawing ;
