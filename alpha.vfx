@@ -40,8 +40,6 @@ synonym | locals|
 : v+! dup >r 4 + +! r> +! ;
 : v, swap , , ;
 : 2+ rot + >r + r> ;
-: 2* rot * >r * r> ;
-: 2/ rot swap / >r / r> ;
 : 2mod rot swap mod >r mod r> ;
 : 2negate swap negate swap negate ;
 : 2s>f swap s>f s>f ;

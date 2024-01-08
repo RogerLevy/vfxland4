@@ -7,7 +7,14 @@
 : p. p>f f. ;
 : p? @ p. ;
 : 1i $ffff0000 and ;
-: pcos p>f fcos f>p ;
+: pcos p>f  deg>rad fcos f>p ;
+: pacos p>f deg>rad facos f>p ;
+: psin p>f  deg>rad fsin f>p ;
+: pasin p>f deg>rad fasin f>p ;
+: ptan p>f  deg>rad ftan f>p ;
+: patan p>f deg>rad fatan f>p ;
+: psqrt p>f fsqrt f>p ;
+: lerp ( src dest n. -- ) >r over - r> p* + ;
 
 : (>FIXED)	\ c-addr u -- flag ; F: -- f | --
 \ *G Try to convert the string at c-addr/u to a floating point number.

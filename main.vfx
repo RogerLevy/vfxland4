@@ -1,7 +1,6 @@
 faster
 require lib/window.vfx
 
-
 3e fvalue zoom
 320 3 *  240 3 * 64 +  0 window
 display 1920 2 / 0 al_set_window_position
@@ -25,5 +24,10 @@ obj dbg  dbg root push
 ; dbg-draw
 
 dbg -> hide on
+\ snapping on
+
+fget scripts/tween
+pspr as
+overshoot ease-in-out x dup 50. + 2. tween
 
 go 

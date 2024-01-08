@@ -74,12 +74,13 @@ defer children
 : ?execute ?dup 0; catch dup .throw if quit then ;
 : +t +m x v@ 2i 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
-: draw en @ 0; hide @ ?; +t 0 0 at drw @ ?execute children -t ; 
+: ?children first @ if +t children -t then ;
+: draw en @ 0; hide @ ?; drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ; 
+:noname [ is children ] first @ 0; ['] draw me each ;
 : act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
 : physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
 : (draw>) r> drw ! ; : draw> postpone (draw>) discard-sinline ; immediate
 : (act>) r> beh ! ; : act> postpone (act>) discard-sinline ; immediate
-:noname [ is children ] first @ 0; ['] draw me each ;
 
 \ - Indexed child access
 : #children 0 swap -> first @ ?dup 0; begin 1 u+ -> next @ ?dup 0= until ;
