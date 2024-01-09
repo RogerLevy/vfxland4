@@ -2,7 +2,7 @@ require alpha.vfx
 require obj.vfx
 require core.vfx
 require lib/gradient.vfx
-require scripts/ui.vfx
+require ui.vfx
 ui root push
 
 0 value dragee

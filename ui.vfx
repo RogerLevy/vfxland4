@@ -73,7 +73,7 @@ create e /ALLEGRO_EVENT allot&erase
 game value uime
 variable uiosp
 bpage uios uios uiosp !
-: nr 0 pen cell+ @ 32 + at ;
+: nr 0 pen cell+ @ fonth + at ;
 : -matte 0 0 winw winh al_set_clipping_rectangle ;
 : bar blue winw 64 rectf ;
 : ]z. ]z text ; 

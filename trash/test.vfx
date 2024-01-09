@@ -12,7 +12,7 @@ z" data/tbank_test.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 object: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
 
-: !textbounds 2dup nip 9 * font @ al_get_font_line_height 2s>p w v! ;
+: !textbounds 2dup nip 9 * fonth 2s>p w v! ;
 object: *hello draw> white s" Hello" !textbounds >z stext ; 
 
 \ ' shed shed -> con !

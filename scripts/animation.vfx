@@ -18,9 +18,13 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 \ - Editor variables
 0 value kf#
 0 value editor
+0 value anmc
+\ 0 value tool \ object
+\ 
+\ obj modify-tool  
+\ obj create-tool
 
 \ - Editor actions
-: anmc editor ;
 : anm anmc -> first @ ;
 : hide-each each> hide on ;
 : sel anm hide-each  anm nth-child -> hide off ;
@@ -32,10 +36,16 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 : replace anmc -> first @ ?dup if animations push then anmc push 0 kf! ;
 : edit bl word +.tl find if execute replace then ;
 
+: (status)
+    z[ kf# 1 + . ." / " anm #children . ]z white stext nr
+\    z[ tool .name ]z white stext nr
+;
+
 \ - Editor components
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 2. 2. sx 2! draw> crosshairs ;
 object: *editor 2. 2. sx 2! draw> crosshairs ;
+object: *status draw> (status) ;
 object: *aed draw> -matte 0 winh 96 - at z[ ." AED" ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
@@ -51,20 +61,32 @@ apps {
         winw 0.16666 p* 200 at *preview named preview { 
             0 0 at *pspr named pspr { } 
         }
-        winw 0.5 p* 200 at *editor named editor { }
+        winw 0.5 p* 200 at *editor named editor {
+            0 0 at *generic named anmc { }
+            -64 64 at *status { } 
+        }
     }
 }
 
-\ - Editor controls (besides dragging)
+: insert-after 2dup insert swap insert ;
+
+\ - Editor controls (besides shed-provided actions)
 editor { :noname
     respond>
     ui? ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char case
-            [char] [ of -1 +kf endof
-            [char] ] of 1 +kf endof        
+            [char] z of -1 +kf endof
+            [char] x of 1 +kf endof
+            [char] a of *keyframe kf# anm nth-child insert-after endof
         endcase
     then
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key case
+            <del> of anm #children 1 > if kf# anm nth-child remove then endof
+        endcase
+    then
+    0 +kf 
 ; execute }
 
 

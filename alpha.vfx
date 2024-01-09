@@ -159,6 +159,7 @@ variable font  builtin-font font !
 : ?type ?dup if type else drop then ;
 : >z z[ ?type ]z ;
 : text >r font @ fore 4f@ at@f 0 r> al_draw_text ;
+: fonth font @ al_get_font_line_height ;
 
 \ - Delta
 1e fvalue fdelta
