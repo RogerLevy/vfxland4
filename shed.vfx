@@ -117,8 +117,8 @@ uiext as *generic named shed {
     ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
-        ekey <f5> = if s" reload" evaluate then
-        ekey <del> = if ?delete then
+        the-key <f5> = if s" reload" evaluate then
+        the-key <del> = if ?delete then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         hoveree ?dup if dup pick drag then

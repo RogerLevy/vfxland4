@@ -34,7 +34,7 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
         ( tab ) 9 of exit endof
         ( enter ) 13 of obey exit endof
         ( esc ) 27 of exit endof
-    end-case
+    dup-endcase
     dup 32 < over 127 = or if drop exit then
     tib #tib @ + c! 1 #tib +!
 ;
@@ -43,8 +43,8 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
 
 create e /ALLEGRO_EVENT allot&erase
 : happened? e ALLEGRO_EVENT.type @ = ;
-: echar e KEYBOARD_EVENT.unichar @ ;
-: ekey e KEYBOARD_EVENT.keycode @ ;
+: the-char e KEYBOARD_EVENT.unichar @ ;
+: the-key e KEYBOARD_EVENT.keycode @ ;
 : events
     begin  queue e al_get_next_event  while
         root responses
@@ -56,13 +56,13 @@ create e /ALLEGRO_EVENT allot&erase
             reset-keyboard reset-mouse
         then
         ALLEGRO_EVENT_KEY_CHAR happened? if
-            e KEYBOARD_EVENT.unichar @ ?charkey
+            the-char ?charkey
         then
 \         ALLEGRO_EVENT_MOUSE_AXES happened? if
 \            e MOUSE_EVENT.dz @ ?dup if ?wheel then
 \         then
         ALLEGRO_EVENT_KEY_DOWN happened? if
-            ekey <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
+            the-key <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
         then
         ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
             display al_acknowledge_resize

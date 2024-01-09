@@ -6,7 +6,7 @@ motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capabi
 
 \ - Runtime rendering
 : ?+ac delta spd @ p/ ac +! ;
-: keyframe { me #children mod abs me nth-child as children } ;
+: keyframe { 0 me #children wrap me nth-child as children } ;
 : animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
 
 \ - Tile keyframes
@@ -23,8 +23,8 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 : anmc editor ;
 : anm anmc -> first @ ;
 : hide-each each> hide on ;
-: sel anm dup hide-each  nth-child -> hide off ;
-: kf! anm #children mod to kf#  kf# sel ;
+: sel anm hide-each  anm nth-child -> hide off ;
+: kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : tlpath z[ ." figures/timelines/" type ." .vfx" ]z zcount ;
 \ : load anmc clear anmc { 0 parse tlpath included } ;
@@ -54,6 +54,19 @@ apps {
         winw 0.5 p* 200 at *editor named editor { }
     }
 }
+
+\ - Editor controls (besides dragging)
+editor { :noname
+    respond>
+    ui? ?;
+    ALLEGRO_EVENT_KEY_CHAR happened? if
+        the-char case
+            [char] [ of -1 +kf endof
+            [char] ] of 1 +kf endof        
+        endcase
+    then
+; execute }
+
 
 test.tl animations push
 0.75e fdup fdup 1e backdrop 4f!
