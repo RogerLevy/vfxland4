@@ -1,10 +1,12 @@
 require scripts/tilemap.vfx
 
+obj animations
+
 motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
 
 \ - Runtime rendering
 : ?+ac delta spd @ p/ ac +! ;
-: keyframe +t { me #children mod abs me nth-child as children } -t ;
+: keyframe { me #children mod abs me nth-child as children } ;
 : animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
 
 \ - Tile keyframes
@@ -13,10 +15,27 @@ motif var ti
 : ser-tile ser> ti ? ." ti !" ;
 object: *tile 16. 16. w v! draw-tile ser-tile ; 
 
+\ - Editor variables
+0 value kf#
+0 value editor
+
+\ - Editor actions
+: anmc editor ;
+: anm anmc -> first @ ;
+: hide-each each> hide on ;
+: sel anm dup hide-each  nth-child -> hide off ;
+: kf! anm #children mod to kf#  kf# sel ;
+: +kf kf# + kf! ;
+: tlpath z[ ." figures/timelines/" type ." .vfx" ]z zcount ;
+\ : load anmc clear anmc { 0 parse tlpath included } ;
+: +.tl count pad place s" .tl" pad append pad ;
+: replace anmc -> first @ ?dup if animations push then anmc push 0 kf! ;
+: edit bl word +.tl find if execute replace then ;
+
 \ - Editor components
-: crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line ;
+: crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 2. 2. sx 2! draw> crosshairs ;
-object: *animations 2. 2. sx 2! draw> crosshairs ;
+object: *editor 2. 2. sx 2! draw> crosshairs ;
 object: *aed draw> -matte 0 winh 96 - at z[ ." AED" ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
@@ -24,21 +43,18 @@ object: *keyframe ;
 \ - Test
 include figures/timelines/test.vfx
 : pspr-ser ser> tl @ .name spd p? ." animate" ;
-object: *pspr pspr-ser draw> test.tl 0.25 animate ;
+object: *pspr pspr-ser draw> anm 0.25 animate ;
 
-\ - Editor
+\ - Editor layout
 apps {
     0 0 at *aed named aed {
         winw 0.16666 p* 200 at *preview named preview { 
             0 0 at *pspr named pspr { } 
         }
-        winw 0.5 p* 200 at *animations named animations {
-            test.tl me push
-        }
+        winw 0.5 p* 200 at *editor named editor { }
     }
 }
-: hide-each each> hide on ;
-: sel test.tl dup hide-each  nth-child -> hide off } ;
-0 sel
 
-0.75e fdup fdup 1e backdrop 4f! 
+test.tl animations push
+0.75e fdup fdup 1e backdrop 4f!
+edit test

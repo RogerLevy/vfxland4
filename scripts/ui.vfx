@@ -10,7 +10,7 @@ true value ui?
 true value ui-halt?
 
 motif var eh /obj to /basis
-: respond> r> eh ! ;
+: (respond>) r> eh ! ; : respond> postpone (respond>) discard-sinline ; immediate
 
 \ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 \     constant ibm8x16.fnt 

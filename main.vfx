@@ -26,8 +26,14 @@ obj dbg  dbg root push
 dbg -> hide on
 \ snapping on
 
-fget scripts/tween
-pspr as
-overshoot ease-in-out x dup 50. + 2. tween
+: from -> x v@ p>s at ;
+
+\ fget scripts/tween
+\ pspr as
+\ :noname
+\     overshoot ease-in-out x dup @ 50. + 2. tween
+\     overshoot ease-in-out y 50. 2. tween> 
+\     overshoot ease-in-out y 0. 2. tween drop ;
+\ execute
 
 go 

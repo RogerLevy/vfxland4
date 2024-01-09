@@ -30,15 +30,17 @@ constant EASE-IN-OUT
 :noname 1.70158 (overshoot) ;                            constant OVERSHOOT  
 
 \ - Tween object
-motif var dir var adr var xt var ctx var ease var n1 var n2 var s1 var spd
+motif var dir var adr var xt var ease var n1 var n2 var s1 var spd
 
-: upd xt @ if ctx @ { adr @ xt @ ?execute } else adr @ ! then ; 
 : curval n1 @ n2 @ over - s1 @ 1. min dir @ execute ease @ execute ;
 : step spd @ delta* s1 +! ;
-: ?done s1 @ 1. >= if me kill then ;
-object: *tween parent @ ctx ! act> step curval upd ?done ;
+: ?done s1 @ 1. >= if xt @ parent @ { ?execute } me kill then ;
+: 1tween act> step curval adr @ ! ?done ;
+object: *tween act> me kill ;
+: len! 1. swap p/ framerate f>p p/ spd ! ;
 
 \ - Tweening
-( ease dir adr n2 len - tween )
-: tween *tween { 1. swap p/ framerate f>p p/ spd ! n2 ! adr ! dir ! ease ! adr @ @ n1 ! me } ;
-
+( ease dir adr n2. len. - tween )
+: tween *tween { len! n2 ! adr ! dir ! ease ! adr @ @ n1 ! 1tween me } ;
+( ease dir adr n2. len - <code> ) ( me=parent - )
+: (tween>) tween { r> xt ! }  ; : tween> postpone (tween>) discard-sinline ; immediate

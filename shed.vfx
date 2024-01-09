@@ -96,15 +96,19 @@ variable indent
 obj apps  me root push
 ui root push \ bring ui to front
 
+
 \ - UI extension
+: ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
+: outlines
+    hoveree ?dup if { yellow outline } then
+    this ?dup if { red outline white info } then
+;
 uiext as *generic named shed {
 :noname
     act>
-        ui? 0; dragee alt? 1 mheld? and or if dragging else root { hovering } then
+        ui? 0; root ?drag
     draw>
-        ui? 0;
-        hoveree ?dup if { yellow outline } then
-        this ?dup if { red outline white info } then
+        ui? 0; outlines
 ; execute
 
 : ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;

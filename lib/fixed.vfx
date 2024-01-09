@@ -14,7 +14,6 @@
 : ptan p>f  deg>rad ftan f>p ;
 : patan p>f deg>rad fatan f>p ;
 : psqrt p>f fsqrt f>p ;
-: lerp ( src dest n. -- ) >r over - r> p* + ;
 
 : (>FIXED)	\ c-addr u -- flag ; F: -- f | --
 \ *G Try to convert the string at c-addr/u to a floating point number.
