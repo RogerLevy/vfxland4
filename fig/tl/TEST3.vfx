@@ -1,0 +1,45 @@
+
+0 0 at *TIMELINE named TEST3.TL {  
+    0 0 at *KEYFRAME {  
+        0 0 at *TILE { 16. 16. w v! 2 ti ! } 
+        16 0 at *TILE { 16. 16. w v! 3 ti ! } 
+        0 16 at *TILE { 16. 16. w v! 130 ti ! } 
+        16 16 at *TILE { 16. 16. w v! 131 ti ! } 
+        -37 19 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        0 0 at *TILE { 16. 16. w v! 2 ti ! } 
+        16 0 at *TILE { 16. 16. w v! 3 ti ! } 
+        0 16 at *TILE { 16. 16. w v! 130 ti ! } 
+        16 16 at *TILE { 16. 16. w v! 131 ti ! } 
+        -39 18 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        0 0 at *TILE { 16. 16. w v! 2 ti ! } 
+        16 0 at *TILE { 16. 16. w v! 3 ti ! } 
+        0 16 at *TILE { 16. 16. w v! 130 ti ! } 
+        16 16 at *TILE { 16. 16. w v! 131 ti ! } 
+        -34 18 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        -1 -1 at *TILE { 16. 16. w v! 4 ti ! } 
+        17 -1 at *TILE { 16. 16. w v! 5 ti ! } 
+        -1 17 at *TILE { 16. 16. w v! 132 ti ! } 
+        17 17 at *TILE { 16. 16. w v! 133 ti ! } 
+        -29 13 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        -2 -2 at *TILE { 16. 16. w v! 6 ti ! } 
+        18 -2 at *TILE { 16. 16. w v! 7 ti ! } 
+        -2 18 at *TILE { 16. 16. w v! 134 ti ! } 
+        18 18 at *TILE { 16. 16. w v! 135 ti ! } 
+        -22 20 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        -3 -3 at *TILE { 16. 16. w v! 8 ti ! } 
+        19 -3 at *TILE { 16. 16. w v! 9 ti ! } 
+        -3 19 at *TILE { 16. 16. w v! 136 ti ! } 
+        19 19 at *TILE { 16. 16. w v! 137 ti ! } 
+        -30 26 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+} 

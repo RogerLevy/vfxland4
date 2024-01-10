@@ -57,7 +57,8 @@ object: *pspr ser> tl @ .name spd p? ." animate" ;
 : load chooser ?dup if loadfig edit then ;
 : new *timeline { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
-: saveas chooser ?dup if -path -ext rename (save) then ;
+: ?clone anm -> nam @ if anm clone edit then ;
+: saveas chooser ?dup if -path -ext ?clone rename (save) then ;
 : save anm -> nam @ if (save) else saveas then ;
 
 \ - Test
