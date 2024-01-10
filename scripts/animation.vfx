@@ -21,21 +21,16 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 0 value kf#
 0 value editor
 0 value anmc
-\ 0 value tool \ object
 0 value pspr
-
-\ obj modify-tool  
-\ obj create-tool
 
 \ - Editor actions
 : anm anmc -> first @ ;
+: ckf kf# anm nth-child ;
 : hide-each each> hide on ;
 : sel anm hide-each  anm nth-child -> hide off ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
-\ : tlpath z[ ." fig/tl/" type ." .vfx" ]z zcount ;
-\ : load anmc clear anmc { 0 parse tlpath included } ;
-: +.tl count pad place s" .tl" pad append pad ;
+: duplicate ckf clone ckf insert-after 1 +kf ;
 
 \ - Editor components 1/2
 : (status)
@@ -81,13 +76,10 @@ apps {
     }
 }
 
-: insert-after 2dup insert swap insert ;
-
-: ckf kf# anm nth-child ;
 : spos -> x v@ 2p>s ;
 
 \ - Editor controls (besides shed-provided actions)
-editor { :noname
+editor as :noname
     respond>
     ui? ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
@@ -95,7 +87,7 @@ editor { :noname
             [char] z of -1 +kf endof
             [char] x of 1 +kf endof
             [char] a of *keyframe ckf insert-after endof
-            [char] d of anm #children 1 > if ckf remove then endof
+            ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
@@ -106,10 +98,11 @@ editor { :noname
             <l> of ctrl? if load then endof
             <o> of ctrl? if load then endof
             <n> of ctrl? if new then endof
+            <d> of ctrl? if duplicate then endof
         endcase
     then
     0 +kf 
-; execute }
+; execute
 
 0.75e fdup fdup 1e backdrop 4f!
 test.tl edit 

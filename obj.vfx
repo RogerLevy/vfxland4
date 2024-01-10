@@ -36,9 +36,12 @@ include lib/dltree.vfx
 : (each>) r> swap dleach ;
 : each> postpone (each>) discard-sinline ; immediate
 : clear dlclear ;
+: insert-after 2dup insert swap insert ;
 
 \ - Basis
-var en var hide var halt var nam 
+var nam
+/obj constant /linkage
+var en var hide var halt 
 var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy
 /obj to /basis
@@ -58,8 +61,9 @@ defer children
     
 \ - Instancing
 : init en on 1. dup sx v! ;
-: *child here 256 allot&erase dup rot push dup { init }  ;
-: obj  here as 256 allot&erase init  me value  latest ctrl>nfa nam ! ;
+: *slot here 256 allot&erase ;
+: *child ( parent - obj ) *slot dup rot push dup { init }  ;
+: obj here as 256 allot&erase init  me value  latest ctrl>nfa nam ! ;
 
 \ - Basic actions
 : reckon

@@ -32,6 +32,14 @@ motif var con var ser /obj to /basis
 : kill -> en off ;
 object: *generic ;
 : ??? me ;
+: copy *slot { /linkage + me /linkage + 256 /linkage - move  me } ;
+: (*clone) ( orig new ) | p |
+    -> first @ begin ?dup while
+        dup dup copy dup p push
+        recurse
+        -> next @
+    repeat ;
+: clone dup copy dup >r (*clone) r> ;
 
 \ - Stage
 game { *generic named stage }
@@ -96,7 +104,6 @@ variable indent
 \ - App support
 obj apps  me root push
 ui root push \ bring ui to front
-
 
 \ - UI extension
 : ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
