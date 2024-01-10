@@ -6,6 +6,12 @@
         0 16 at *TILE { 16. 16. w v! 130 ti ! } 
         16 16 at *TILE { 16. 16. w v! 131 ti ! } 
         -37 19 at *TILE { 16. 16. w v! 1 ti ! } 
+        -32 -32 at *TILE { 16. 16. w v! 6 ti ! } 
+        0 -48 at *TILE { 16. 16. w v! 397 ti ! } 
+        0 -32 at *TILE { 16. 16. w v! 272 ti ! } 
+        -32 -16 at *TILE { 16. 16. w v! 132 ti ! } 
+        -16 -16 at *TILE { 16. 16. w v! 135 ti ! } 
+        16 -32 at *TILE { 16. 16. w v! 3 ti ! } 
     } 
     0 0 at *KEYFRAME {  
         0 0 at *TILE { 16. 16. w v! 2 ti ! } 

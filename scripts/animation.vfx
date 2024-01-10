@@ -22,6 +22,7 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 0 value editor
 0 value anmc
 0 value pspr
+variable cti
 
 \ - Editor actions
 : anm anmc -> first @ ;
@@ -31,12 +32,17 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
+: spos x v@ 2p>s ;
+: lay ckf { mouse editor { spos } 2- 2. 2. 2p/ 8 8 2- at *tile { cti @ ti ! ?snap } } ;
 
 \ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
 \    z[ tool .name ]z white stext nr
 ;
+
+: tbank-act act> mouse 2s>p x v@ w v@ area inside? if
+    1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
 
 \ - Editor components 2/2
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
@@ -47,6 +53,7 @@ object: *aed draw> z[ ." AED" ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
 object: *pspr ser> tl @ .name spd p? ." animate" ;
+object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 
 \ Save/load
 : loadfig included me -> last @ ;
@@ -74,10 +81,10 @@ apps {
             0 0 at *generic named anmc { }
             -64 64 at *status { } 
         }
+        0 416 at *tbank { }
     }
 }
 
-: spos -> x v@ 2p>s ;
 
 \ - Editor controls (besides shed-provided actions)
 editor as :noname
@@ -94,7 +101,7 @@ editor as :noname
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key case
             <del> of ?delete endof
-            <space> of ckf { mouse editor spos 2- 2. 2. 2p/ 8 8 2- at *tile { 1 ti ! } } endof
+            <space> of lay endof
             <s> of ctrl? if shift? if saveas else save then then endof
             <l> of ctrl? if load then endof
             <o> of ctrl? if load then endof
