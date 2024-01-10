@@ -81,7 +81,7 @@ apps {
             0 0 at *generic named anmc { }
             -64 64 at *status { } 
         }
-        0 416 at *tbank { }
+        0 416 at *tbank named tselector { _bolted aon }
     }
 }
 
@@ -115,5 +115,4 @@ editor as :noname
 0.75e fdup fdup 1e backdrop 4f!
 test.tl edit 
 
--1 to always-drag?
-
+\ -1 to always-drag?

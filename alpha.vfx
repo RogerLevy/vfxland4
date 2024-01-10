@@ -30,6 +30,7 @@ synonym | locals|
 : ]f ]write ;
 : u+ rot + swap ;
 synonym dup-endcase end-case
+: bit dup constant 1 lshift ;
 
 \ - Arrays
 : get  swap cells + @ ;

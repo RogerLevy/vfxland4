@@ -9,9 +9,11 @@ ui root push
 0 value this
 0 value hoveree
 variable snapping
-0 value always-drag?
+\ 0 value always-drag?
 
-\ - game config
+1 constant _bolted
+
+\ - Game config
 : matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
 : center
     winw 2 /  gamew zoom sf* 2 / -
@@ -21,7 +23,7 @@ variable snapping
 game as :> act> center zoom f>p dup sx v! draw> matte ;
 
 \ - Scripting
-motif var con var ser /obj to /basis
+motif var con var ser var attr /obj to /basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 : ?literal state @ if postpone literal then ;
@@ -40,6 +42,9 @@ object: *generic ;
         -> next @
     repeat ;
 : clone dup copy dup >r (*clone) r> ;
+: attr? attr @ and ;
+: aoff invert attr @ and attr ! ;
+: aon attr @ or attr ! ;
 
 \ - Stage
 game { *generic named stage }
@@ -59,7 +64,8 @@ s" shed.vfx" reload$ place
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop alt? if stage else dragee then ?dup 0; { ?snap } 0 to dragee ;
 : gbox x v@ w v@ area v*m 2swap v*m 2swap ;
-: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
+: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; _bolted attr? ?;
+    mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
 : hovering 0 to hoveree (hovering) ;
 : pick to this ;
 : drag to dragee ;
@@ -114,9 +120,9 @@ ui root push \ bring ui to front
 uiext as *generic named shed {
 :noname
     act>
-        always-drag? not if ui? 0; then root ?drag
+        root ?drag
     draw>
-        always-drag? not if ui? 0; then outlines
+        outlines
 ; execute
 
 : ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
