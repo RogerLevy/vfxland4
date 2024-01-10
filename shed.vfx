@@ -9,6 +9,7 @@ ui root push
 0 value this
 0 value hoveree
 variable snapping
+0 value always-drag?
 
 \ - game config
 : matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
@@ -71,7 +72,7 @@ variable indent
 : (o.) .xy ." at " .con ?.named .{ ?.wh ?.s ;
 : o. { (o.) .} ;
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
-: figpath z[ ." figures/" type ." .vfx" ]z zcount ;
+: figpath z[ ." fig/" type ." .vfx" ]z zcount ;
 : save figpath f[ game o.r ]f ;
 : save-to 0 parse save ;
 : load 0 pick game clear game { 0 parse figpath included } ;
@@ -101,14 +102,14 @@ ui root push \ bring ui to front
 : ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
 : outlines
     hoveree ?dup if { yellow outline } then
-    this ?dup if { red outline white info } then
+    this ?dup if { red outline white ui? if info then } then
 ;
 uiext as *generic named shed {
 :noname
     act>
-        ui? 0; root ?drag
+        always-drag? not if ui? 0; then root ?drag
     draw>
-        ui? 0; outlines
+        always-drag? not if ui? 0; then outlines
 ; execute
 
 : ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;

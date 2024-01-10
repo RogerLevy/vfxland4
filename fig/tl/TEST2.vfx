@@ -1,0 +1,15 @@
+
+0 0 at *TIMELINE named TEST2.TL {  
+    0 0 at *KEYFRAME {  
+        -21 -36 at *TILE { 16. 16. w v! 1 ti ! } 
+        -27 4 at *TILE { 16. 16. w v! 1 ti ! } 
+        10 14 at *TILE { 16. 16. w v! 1 ti ! } 
+        15 -22 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+    0 0 at *KEYFRAME {  
+        -27 2 at *TILE { 16. 16. w v! 1 ti ! } 
+        -23 -36 at *TILE { 16. 16. w v! 1 ti ! } 
+        15 -23 at *TILE { 16. 16. w v! 1 ti ! } 
+        10 12 at *TILE { 16. 16. w v! 1 ti ! } 
+    } 
+} 

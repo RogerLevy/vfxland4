@@ -39,7 +39,7 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
     tib #tib @ + c! 1 #tib +!
 ;
 
-: responses eh @ ?execute each> me recurse ;
+: responses halt @ ?; eh @ ?execute me each> recurse ;
 
 create e /ALLEGRO_EVENT allot&erase
 : happened? e ALLEGRO_EVENT.type @ = ;
@@ -47,7 +47,7 @@ create e /ALLEGRO_EVENT allot&erase
 : the-key e KEYBOARD_EVENT.keycode @ ;
 : events
     begin  queue e al_get_next_event  while
-        root responses
+        root { responses }
         ui? 0;
         ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
             bye

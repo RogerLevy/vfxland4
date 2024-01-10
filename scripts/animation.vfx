@@ -1,6 +1,8 @@
 require scripts/tilemap.vfx
+require lib/filetypes.vfx
 
 obj animations
+obj temp
 
 motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
 
@@ -20,7 +22,8 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 0 value editor
 0 value anmc
 \ 0 value tool \ object
-\ 
+0 value pspr
+
 \ obj modify-tool  
 \ obj create-tool
 
@@ -30,30 +33,40 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 : sel anm hide-each  anm nth-child -> hide off ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
-: tlpath z[ ." figures/timelines/" type ." .vfx" ]z zcount ;
+\ : tlpath z[ ." fig/tl/" type ." .vfx" ]z zcount ;
 \ : load anmc clear anmc { 0 parse tlpath included } ;
 : +.tl count pad place s" .tl" pad append pad ;
-: replace anmc -> first @ ?dup if animations push then anmc push 0 kf! ;
-: edit bl word +.tl find if execute replace then ;
 
+\ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
 \    z[ tool .name ]z white stext nr
 ;
 
-\ - Editor components
+\ - Editor components 2/2
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 2. 2. sx 2! draw> crosshairs ;
 object: *editor 2. 2. sx 2! draw> crosshairs ;
 object: *status draw> (status) ;
-object: *aed draw> -matte 0 winh 96 - at z[ ." AED" ]z white stext ;
+object: *aed draw> z[ ." AED" ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
+object: *pspr ser> tl @ .name spd p? ." animate" ;
+
+\ Save/load
+: loadfig included me -> last @ ;
+: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 0.25 animate } ;
+: (save) anm -> nam @ count tlpath name>path 2dup f[ anm o.r ]f cr ." Saved to " type ;
+: ?ext ?dup if -ext pad place s" .vfx" pad append pad count then ;
+: chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
+: load chooser ?dup if loadfig edit then ;
+: new *timeline { *keyframe { } me } edit ;
+: rename pad place s" .tl" pad append anm pad name drop ;
+: saveas chooser ?dup if -path -ext rename (save) then ;
+: save anm -> nam @ if (save) else saveas then ;
 
 \ - Test
-include figures/timelines/test.vfx
-: pspr-ser ser> tl @ .name spd p? ." animate" ;
-object: *pspr pspr-ser draw> anm 0.25 animate ;
+include fig/tl/test.vfx
 
 \ - Editor layout
 apps {
@@ -70,6 +83,9 @@ apps {
 
 : insert-after 2dup insert swap insert ;
 
+: ckf kf# anm nth-child ;
+: spos -> x v@ 2p>s ;
+
 \ - Editor controls (besides shed-provided actions)
 editor { :noname
     respond>
@@ -78,18 +94,25 @@ editor { :noname
         the-char case
             [char] z of -1 +kf endof
             [char] x of 1 +kf endof
-            [char] a of *keyframe kf# anm nth-child insert-after endof
+            [char] a of *keyframe ckf insert-after endof
+            [char] d of anm #children 1 > if ckf remove then endof
         endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key case
-            <del> of anm #children 1 > if kf# anm nth-child remove then endof
+            <del> of ?delete endof
+            <space> of ckf { mouse editor spos 2- 2. 2. 2p/ 8 8 2- at *tile { 1 ti ! } } endof
+            <s> of ctrl? if shift? if saveas else save then then endof
+            <l> of ctrl? if load then endof
+            <o> of ctrl? if load then endof
+            <n> of ctrl? if new then endof
         endcase
     then
     0 +kf 
 ; execute }
 
-
-test.tl animations push
 0.75e fdup fdup 1e backdrop 4f!
-edit test
+test.tl edit 
+
+-1 to always-drag?
+

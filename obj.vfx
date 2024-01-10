@@ -45,15 +45,15 @@ var beh var drw var phy
 defer children
 
 \ - Naming support
-: named
-    >in @ >r bl word find if
+: $create-name $create , does> @ ;
+: name ( obj $ - )
+    find if
         2dup >name swap -> nam !
         over swap >body @ !
-        r> drop 
     else
-        drop r> >in !
-        dup value latest ctrl>nfa over -> nam !
+        over swap $create-name latest ctrl>nfa over -> nam !
     then ;
+: named bl word name ;
 : .name -> nam @ ?dup if count type space then ;
     
 \ - Instancing

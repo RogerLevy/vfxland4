@@ -2607,7 +2607,7 @@ extern "C" void * al_create_mixer( int rate, int depth, int conf );
 \ extern "C" al_create_mouse_cursor( );
 \ extern "C" al_create_mutex( );
 \ extern "C" al_create_mutex_recursive( );
-\ extern "C" al_create_native_file_dialog( );
+extern "C" void * al_create_native_file_dialog( char *initial_path, char *title, char *patterns, int mode );
 \ extern "C" al_create_path( );
 \ extern "C" al_create_path_for_directory( );
 \ extern "C" al_create_popup_menu( );
@@ -2636,7 +2636,7 @@ extern "C" void al_destroy_fs_entry( void * entry );
 \ extern "C" al_destroy_mixer( );
 \ extern "C" al_destroy_mouse_cursor( );
 \ extern "C" al_destroy_mutex( );
-\ extern "C" al_destroy_native_file_dialog( );
+extern "C" void al_destroy_native_file_dialog( void *dialog );
 \ extern "C" al_destroy_path( );
 extern "C" void al_destroy_sample( void * sample );
 \ extern "C" al_destroy_sample_instance( );
@@ -2923,8 +2923,8 @@ extern "C" void * al_get_mouse_event_source( );
 extern "C" void al_get_mouse_state( void * state );
 extern "C" int al_get_mouse_state_axis( void * state, int axis );
 \ extern "C" al_get_mouse_wheel_precision( );
-\ extern "C" al_get_native_file_dialog_count( );
-\ extern "C" al_get_native_file_dialog_path( );
+extern "C" int al_get_native_file_dialog_count( void *dialog );
+extern "C" const char *al_get_native_file_dialog_path( void *dialog, size_t i );
 \ extern "C" al_get_native_text_log_event_source( );
 \ extern "C" al_get_new_bitmap_depth( );
 \ extern "C" al_get_new_bitmap_flags( );
@@ -3298,7 +3298,7 @@ extern "C" void al_set_target_bitmap( void * bitmap );
 extern "C" void al_set_window_position( void * display, int x, int y );
 \ extern "C" al_set_window_title( );
 \ extern "C" al_show_mouse_cursor( );
-\ extern "C" al_show_native_file_dialog( );
+extern "C" bool al_show_native_file_dialog( void * display, void * dialog );
 \ extern "C" al_show_native_message_box( );
 \ extern "C" al_shutdown_font_addon( );
 \ extern "C" al_shutdown_image_addon( );
@@ -4063,6 +4063,22 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
         cr dup zcount type
         al_load_bitmap swap !
     else  2drop  then ;
+
+
+$01 constant ALLEGRO_FILECHOOSER_FILE_MUST_EXIST
+$02 constant ALLEGRO_FILECHOOSER_SAVE           
+$04 constant ALLEGRO_FILECHOOSER_FOLDER         
+$08 constant ALLEGRO_FILECHOOSER_PICTURES       
+$10 constant ALLEGRO_FILECHOOSER_SHOW_HIDDEN    
+$20 constant ALLEGRO_FILECHOOSER_MULTIPLE      
+
+: file-dialog  ( zpath ztitle zformats - a n ) 
+    al_create_native_file_dialog >r  
+    display r@ al_show_native_file_dialog drop
+    r@ al_get_native_file_dialog_count if
+        r@ 0 al_get_native_file_dialog_path zcount 
+    else 0 then
+    r> al_destroy_native_file_dialog ;
 
 \ - Key constants
 
