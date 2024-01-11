@@ -1,4 +1,4 @@
-require alpha.vfx
+require alpha.vfx 
 require obj.vfx
 require core.vfx
 require lib/gradient.vfx
@@ -47,7 +47,7 @@ object: *generic ;
 : aon attr @ or attr ! ;
 
 \ - Stage
-game { *generic named stage }
+game { *generic named stage { } }
 
 \ - Quickly reload a set file
 create reload$ 64 allot
@@ -85,6 +85,7 @@ variable indent
 : ?.named nam @ if ." named " me .name then ;
 : (o.) .xy ." at " .con ?.named .{ ?.wh ?.s ;
 : o. { (o.) .} ;
+: o.c each> cr me o. ;
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
 : figpath z[ ." fig/" type ." .vfx" ]z zcount ;
 : save figpath f[ game o.r ]f ;

@@ -2,7 +2,6 @@ require scripts/tilemap.vfx
 require lib/filetypes.vfx
 
 obj animations
-obj temp
 
 motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
 
@@ -40,16 +39,17 @@ variable cti
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
 \    z[ tool .name ]z white stext nr
 ;
-
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
     1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
+: .anm anm ?dup if ." - " .name then ;
+
 
 \ - Editor components 2/2
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 2. 2. sx 2! draw> crosshairs ;
 object: *editor 2. 2. sx 2! draw> crosshairs ;
 object: *status draw> (status) ;
-object: *aed draw> z[ ." AED" ]z white stext ;
+object: *aed draw> z[ ." AED " .anm ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
 object: *pspr ser> tl @ .name spd p? ." animate" ;
