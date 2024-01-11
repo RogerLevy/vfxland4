@@ -1,9 +1,9 @@
 obj ui me {
-    me *child named megaphone {
-        me *child named repl { }
-        me *child named mgmt { }
+    *generic named megaphone {
+        *generic named repl { }
+        *generic named mgmt { }
     }
-    me *child named uiext { }
+    *generic named uiext { }
 }
 
 true value ui?

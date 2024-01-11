@@ -41,7 +41,7 @@ include lib/dltree.vfx
 \ - Basis
 var nam
 /obj constant /linkage
-var en var hide var halt 
+var en var hide var halt var con 
 var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy
 /obj to /basis
@@ -60,12 +60,18 @@ defer children
     then ;
 : named bl word name ;
 : .name -> nam @ ?dup if count type space then ;
-    
+
 \ - Instancing
+defer 1object
+:noname [ is 1object ] body> con ! pen v@ 2s>p x v! ;
 : init en on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
-: obj reference  *slot as  init  latest-xt  me over >body !  >name nam ! ;
+: object:
+    create here 0 , :noname swap !
+    does> me *child { dup 1object @ execute me } ;    
+object: *generic ;
+: obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 
 \ - Basic actions
 : reckon

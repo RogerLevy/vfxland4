@@ -13,7 +13,7 @@ motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capabi
 \ - Tile keyframes
 motif var ti
 : draw-tile draw> ti @ tile+ ;
-: ser-tile ser> ti ? ." ti !" ;
+: ser-tile ser> ti ? ." ti ! " ;
 object: *tile 16. 16. w v! draw-tile ser-tile ; 
 
 \ - Editor variables
@@ -44,17 +44,18 @@ variable cti
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
     1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
 : .anm anm ?dup if ." - " .name then ;
-
+: aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ;
+defer editor-respond
 
 \ - Editor components 2/2
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 3. 3. sx 2! draw> crosshairs ;
-object: *editor 3. 3. sx 2! draw> crosshairs ;
+object: *editor 3. 3. sx 2! editor-respond draw> crosshairs ;
 object: *status draw> small (status) ;
-object: *aed draw> -matte big z[ ." AED " .anm ]z white stext ;
+object: *aed aed-ser draw> -matte big z[ ." AED " .anm ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
-object: *pspr ser> tl @ .name spd p? ." animate" ;
+object: *pspr ser> tl @ .name spd p? ." animate " ;
 object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 
 \ Save/load
@@ -84,7 +85,7 @@ apps {
 }
 
 \ - Editor controls (besides shed-provided actions)
-editor as :noname
+:noname [ is editor-respond ]
     respond>
     ui? ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
@@ -113,10 +114,10 @@ editor as :noname
         endcase
     then
     0 +kf 
-; execute
+;
+editor as editor-respond
 
 0.75e fdup fdup 1e backdrop 4f!
-animations aed push
 
 \ - Test
 include fig/tl/test.tl.vfx

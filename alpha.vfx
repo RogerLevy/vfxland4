@@ -32,6 +32,7 @@ synonym | locals|
 synonym dup-endcase end-case
 : bit dup constant 1 lshift ;
 : udup over swap ;
+: defer defer ['] noop latest-xt defer! ;
 
 \ - Arrays
 : get  swap cells + @ ;

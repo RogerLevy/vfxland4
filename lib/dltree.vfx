@@ -39,7 +39,8 @@
     p n -> parent ! ;
 
 : dlinsert-after  ( node dest -- )
-    2dup = abort" dlinsert: Same node!" 
+    2dup = abort" dlinsert: Same node!"
+    dup -> parent @ 0= if 2drop exit then
     over dlremove 
     dup -> next @ 0= if  -> parent @ dlpush exit  then
     dup -> next @ .s locals| neighbor dest src |
