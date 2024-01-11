@@ -18,9 +18,9 @@ object: *tile 16. 16. w v! draw-tile ser-tile ;
 
 \ - Editor variables
 0 value kf#
-0 value editor
-0 value anmc
-0 value pspr
+reference editor
+reference anmc
+reference pspr
 variable cti
 
 \ - Editor actions
@@ -32,7 +32,9 @@ variable cti
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
 : spos x v@ 2p>s ;
-: lay ckf { mouse editor { spos } 2- 2. 2. 2p/ 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: lay ckf { mouse editor { spos } 2- 3. 3. 2p/ 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: small sherry16.fnt font ! ;
+: big sherry32.fnt font ! ;
 
 \ - Editor components 1/2
 : (status)
@@ -46,30 +48,26 @@ variable cti
 
 \ - Editor components 2/2
 : crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
-object: *preview 2. 2. sx 2! draw> crosshairs ;
-object: *editor 2. 2. sx 2! draw> crosshairs ;
-object: *status draw> (status) ;
-object: *aed draw> z[ ." AED " .anm ]z white stext ;
+object: *preview 3. 3. sx 2! draw> crosshairs ;
+object: *editor 3. 3. sx 2! draw> crosshairs ;
+object: *status draw> small (status) ;
+object: *aed draw> -matte big z[ ." AED " .anm ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
 object: *pspr ser> tl @ .name spd p? ." animate" ;
 object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 
 \ Save/load
-: loadfig included me -> last @ ;
 : edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 0.25 animate } ;
-: (save) anm -> nam @ count tlpath name>path 2dup f[ anm o.r ]f cr ." Saved to " type ;
+: (save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .vfx" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
-: load chooser ?dup if loadfig edit then ;
+: anm-load chooser ?dup if oload edit then ;
 : new *timeline { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
-: saveas chooser ?dup if -path -ext ?clone rename (save) then ;
-: save anm -> nam @ if (save) else saveas then ;
-
-\ - Test
-include fig/tl/test.vfx
+: anm-saveas chooser ?dup if -path -ext ?clone rename (save) then ;
+: anm-save anm -> nam @ if (save) else anm-saveas then ;
 
 \ - Editor layout
 apps {
@@ -77,14 +75,13 @@ apps {
         winw 0.16666 p* 200 at *preview named preview { 
             0 0 at *pspr named pspr { } 
         }
-        winw 0.5 p* 200 at *editor named editor {
+        winw 0.6 p* 200 at *editor named editor {
             0 0 at *generic named anmc { }
-            -64 64 at *status { } 
+            64 -64 at *status { } 
         }
-        0 416 at *tbank named tselector { _bolted aon }
+        0 winh 2 / at *tbank named tselector { _bolted aon }
     }
 }
-
 
 \ - Editor controls (besides shed-provided actions)
 editor as :noname
@@ -97,12 +94,18 @@ editor as :noname
             [char] a of *keyframe ckf insert-after endof
             ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
+        the-key case
+            <del> of ?delete endof
+            <left> of -1. 0 this -> x v+! endof
+            <right> of 1. 0 this -> x v+! endof
+            <up> of 0 -1. this -> x v+! endof
+            <down> of 0 1. this -> x v+! endof
+        endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key case
-            <del> of ?delete endof
             <space> of lay endof
-            <s> of ctrl? if shift? if saveas else save then then endof
+            <s> of ctrl? if shift? if anm-saveas else anm-save then then endof
             <l> of ctrl? if load then endof
             <o> of ctrl? if load then endof
             <n> of ctrl? if new then endof
@@ -113,6 +116,8 @@ editor as :noname
 ; execute
 
 0.75e fdup fdup 1e backdrop 4f!
-test.tl edit 
+animations aed push
 
-\ -1 to always-drag?
+\ - Test
+include fig/tl/test.tl.vfx
+test.tl edit 

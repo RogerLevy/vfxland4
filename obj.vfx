@@ -31,12 +31,12 @@ include lib/dltree.vfx
 : remove dlremove ;
 : push dlpush ;
 : unshift dlunshift ;
-: insert dlinsert ;
+: insert-after dlinsert-after ;
 : each dleach ;
 : (each>) r> swap dleach ;
 : each> postpone (each>) discard-sinline ; immediate
 : clear dlclear ;
-: insert-after 2dup insert swap insert ;
+: insert 2dup 2>r insert-after 2r> swap insert-after ;
 
 \ - Basis
 var nam
@@ -48,13 +48,15 @@ var beh var drw var phy
 defer children
 
 \ - Naming support
+: reference create 0 , does> @ ; 
 : $create-name $create , does> @ ;
 : name ( obj $ - )
     find if
-        2dup >name swap -> nam !
-        over swap >body @ !
+        cr ." REASSIGN: "
+        2dup >name dup count type swap -> nam !
+        udup >body !
     else
-        over swap $create-name latest ctrl>nfa over -> nam !
+        udup $create-name latest ctrl>nfa over -> nam !
     then ;
 : named bl word name ;
 : .name -> nam @ ?dup if count type space then ;
@@ -63,14 +65,14 @@ defer children
 : init en on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
-: obj here as 256 allot&erase init  me value  latest ctrl>nfa nam ! ;
+: obj reference  *slot as  init  latest-xt  me over >body !  >name nam ! ;
 
 \ - Basic actions
 : reckon
     first @ {  begin  me while
         next @ >r
             recurse
-            en @ 0= if me remove  then
+            en @ 0= if me remove then
         r> as
     repeat }
 ;

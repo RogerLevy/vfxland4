@@ -36,4 +36,14 @@ dbg -> hide on
 \     overshoot ease-in-out y 0. 2. tween drop ;
 \ execute
 
+\ apps *child named c2 { }
+\ apps *child named c3 { }
+\ c3 c2 insert
+\ apps o.c
+\ aed c2 insert-after
+\ apps o.c
+
+\ aed constant oldaed
+\ s" aed" figpath oload dup . o.
+
 go 

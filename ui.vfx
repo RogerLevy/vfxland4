@@ -20,7 +20,7 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
     constant sherry32.fnt 
 
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
-: h. base @ swap hex . base ! ;
+: h. ." $" base @ swap hex . base ! ;
 : .s depth | d | d 0 ?do d 1 - i - pick . loop cr ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
