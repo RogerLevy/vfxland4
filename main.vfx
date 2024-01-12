@@ -16,17 +16,14 @@ z" data/tbank_test.png" loadbmp constant b
 include scripts/animation.vfx
 
 \ - Debugging info
-obj dbg  dbg root push
-: dbg-draw draw>
-    sherry32.fnt font !
-    z[ ." mouse: " mouse swap . . ]z red stext nr
-\    z[ this -> ax v@ swap p. p. ]z text
-; dbg-draw
-
-dbg -> hide on
+\ : dbg-draw draw>
+\     sherry32.fnt font !
+\     z[ ." mouse: " mouse swap . . ]z red stext nr
+\ \    z[ this -> ax v@ swap p. p. ]z text
+\ ; dbg-draw
+\ 
+\ dbg -> hide on
 \ snapping on
-
-: from -> x v@ p>s at ;
 
 \ fget scripts/tween
 \ pspr as

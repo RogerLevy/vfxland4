@@ -3,7 +3,6 @@ require obj.vfx
 require core.vfx
 require lib/gradient.vfx
 require ui.vfx
-ui root push
 require lib/filetypes.vfx
 
 0 value dragee
@@ -24,7 +23,7 @@ variable snapping
 game as :> act> center zoom f>p dup sx v! draw> matte ;
 
 \ - Scripting
-motif var ser var attr /obj to /basis
+motif var ser var attr var post /obj to /basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] body> con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
@@ -41,6 +40,7 @@ motif var ser var attr /obj to /basis
 : aoff invert attr @ and attr ! ;
 : aon attr @ or attr ! ;
 : replace dup >r insert r> kill ;
+: from -> x v@ p>s at ;
 
 \ - Stage
 game { *generic named stage { } }
@@ -67,7 +67,6 @@ s" shed.vfx" reload$ place
 : drag to dragee ;
 
 \ - Serialize
-create postload$ 256 allot&erase
 variable indent
 : +i  4 indent +! ;
 : -i  -4 indent +! ;
@@ -83,16 +82,17 @@ variable indent
 : ?.named nam @ if ." named " me .name then ;
 : (o.) .xy ." at " .con ?.named .{ ?.a ?.wh ?.s ;
 : o. { (o.) .} ;
-: o.c each> cr me o. ;
+: o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
 : osave >r dup -> nam @ count r> name>path 2dup 2>r f[ o.r ]f cr ." Saved to " 2r> type ;
 : save ' execute figpath osave ;
-: oload 0 pick name>path me { included } me -> last @ dup o. ;
+: oload 0 pick name>path me { included } me -> last @ ;
 : ?existing find if execute else drop 0 then ;
-: ?replace ?dup 0; dup -> parent @ 0= if ." orphan" drop dup remove exit then udup replace ;
-: load bl word dup ?existing >r count figpath oload r> ?replace { postload$ count evaluate } ;
+: ?replace ?dup 0; dup -> parent @ 0= if ."  orphan " drop dup remove exit then udup replace ;
+: postload post @ ?dup if count evaluate then me each> recurse ;
+: load bl word dup ?existing >r count figpath oload r> ?replace { postload } ;
 : ser> r> ser ! ;
-: post: 0 parse postload$ place ;
+: post: here aligned post ! 0 parse $, ;
 
 \ - Info
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
@@ -110,8 +110,7 @@ variable indent
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - App support
-obj apps  me root push
-ui root push \ bring ui to front
+obj apps  apps ui insert
 
 \ - UI extension
 : ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
@@ -119,16 +118,9 @@ ui root push \ bring ui to front
     hoveree ?dup if { yellow outline } then
     this ?dup if { red outline white ui? if info then } then
 ;
-uiext as *generic named shed {
-:noname
-    act>
-        root ?drag
-    draw>
-        outlines
-; execute
 
 : ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
-:noname
+: shed-respond
     respond>
     ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
     then
@@ -143,5 +135,10 @@ uiext as *generic named shed {
     ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
         plop
     then
-; execute
+; 
+
+object: *shed shed-respond act> root ?drag draw> outlines ;
+
+uiext {
+    *shed named shed { }
 }

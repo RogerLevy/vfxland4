@@ -1,5 +1,5 @@
 
-0 0 at *AED named AED { post: TEST.TL edit 3 kf!  
+0 0 at *AED named AED { post: TEST.TL edit 3 kf! me apps push  
     159 200 at *PREVIEW named PREVIEW { 3. 3. sx v!  
         0 0 at *PSPR named PSPR { TEST.TL 0.25 animate  } 
     } 

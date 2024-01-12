@@ -3,7 +3,11 @@ require obj.vfx
 
 0 0 at
 obj root
-obj game  me root push
+root {
+    *generic named game {
+        *generic named dbg { }
+    }
+}
 
 \ - Main loop
 : present display al_flip_display ;

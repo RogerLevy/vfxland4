@@ -34,15 +34,13 @@ create file-vectors
 
 create filedev  0 , file-vectors ,
 
-0 value old-dev
-
 : write[  ( filename c )
     2dup fileexists? if 2dup delete-file throw then
     w/o create-file throw to file#
-    op-handle @ to old-dev  filedev op-handle !
+    filedev op-handle !
 ;
 
 : ]write
-    old-dev op-handle !
+    ConsoleDev op-handle !
     file# close-file drop
 ; 

@@ -1,10 +1,4 @@
-obj ui me {
-    *generic named megaphone {
-        *generic named repl { }
-        *generic named mgmt { }
-    }
-    *generic named uiext { }
-}
+reference megaphone
 
 true value ui?
 true value ui-halt?
@@ -78,8 +72,6 @@ bpage uios uios uiosp !
 : bar blue winw 64 rectf ;
 : ]z. ]z text ; 
 : bar-text sherry32.fnt font ! white z[ .s ]z. nr z[ .tib ]z. ;
-: repl-draw draw> bar bar-text ;
-repl as repl-draw
 
 : (events)
     osp @ >r uiosp @ osp !
@@ -88,10 +80,21 @@ repl as repl-draw
     me to uime r> as
     osp @ uiosp ! r> osp !
 ; 
-megaphone as :> act> 0 winh 64 - s>p x v! (events) pause draw> -matte ;
-mgmt as :> act> <tab> pressed? if toggle then ;
 
+object: *megaphone act> 0 winh 64 - s>p x v! (events) pause draw> -matte ;
+object: *mgmt act> <tab> pressed? if toggle then ;
+object: *repl draw> bar bar-text ;
 : rs reset-stacks ;
 
 ' noop is EditOnError
-?halt 
+\ ?halt 
+
+root {
+    *generic named ui {
+        *megaphone named megaphone {
+            *repl named repl { }
+            *mgmt named mgmt { }
+        }
+        *generic named uiext { }
+    }
+}

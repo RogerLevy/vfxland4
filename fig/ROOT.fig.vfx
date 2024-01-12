@@ -1,10 +1,11 @@
 
 0 0 at *GENERIC named ROOT {  
-    0 0 at *GENERIC named GAME {  
+    0 0 at *GENERIC named GAME { 3. 3. sx v!  
+        0 0 at *GENERIC named DBG {  } 
         0 0 at *GENERIC named STAGE {  } 
     } 
     0 0 at *GENERIC named APPS {  
-        0 0 at *AED named AED {  
+        0 0 at *AED named AED { post: TEST.TL edit 0 kf! me apps push  
             159 200 at *PREVIEW named PREVIEW { 3. 3. sx v!  
                 0 0 at *PSPR named PSPR { TEST.TL 0.25 animate  } 
             } 
@@ -65,17 +66,15 @@
                 64 -64 at *STATUS {  } 
             } 
             0 392 at *TBANK named TSELECTOR { $1 attr ! 2048. 2048. w v!  } 
-            0 0 at *GENERIC named ANIMATIONS {  } 
         } 
     } 
     0 0 at *GENERIC named UI {  
-        0 720 at *GENERIC named MEGAPHONE {  
-            0 0 at *GENERIC named REPL {  } 
-            0 0 at *GENERIC named MGMT {  } 
+        0 720 at *MEGAPHONE named MEGAPHONE {  
+            0 0 at *REPL named REPL {  } 
+            0 0 at *MGMT named MGMT {  } 
         } 
         0 0 at *GENERIC named UIEXT {  
-            0 0 at *GENERIC named SHED {  } 
+            0 0 at *SHED named SHED {  } 
         } 
     } 
-    0 0 at *GENERIC named DBG {  } 
 } 

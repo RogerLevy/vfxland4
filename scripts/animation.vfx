@@ -44,7 +44,7 @@ variable cti
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
     1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
 : .anm anm ?dup if ." - " .name then ;
-: aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ;
+: aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me apps push " ;
 defer editor-respond
 
 \ - Editor components 2/2

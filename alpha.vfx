@@ -149,6 +149,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : purple 0.5 0e 1e 1e fcolor ;
 : white 1e 1e 1e 1e fcolor ;
 : gray 0.75e fdup fdup 1e fcolor ;
+: grey gray ;
 : black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
