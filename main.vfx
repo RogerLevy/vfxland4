@@ -6,7 +6,7 @@ require lib/window.vfx
 display 1920 2 / 0 al_set_window_position
 \ 1920 1080  1 window
 
-vfx-hwnd 0 -10 0 1920 2 / 20 + 1040 $40 SetWindowPos drop
+vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
 include shed.vfx
 
