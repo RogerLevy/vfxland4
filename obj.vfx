@@ -63,13 +63,13 @@ defer children
 
 \ - Instancing
 defer 1object
-:noname [ is 1object ] body> con ! pen v@ 2s>p x v! ;
+:noname [ is 1object ] con ! pen v@ 2s>p x v! ;
 : init en on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
 : object:
     create here 0 , :noname swap !
-    does> me *child { dup 1object @ execute me } ;    
+    does> me *child { dup body> 1object @ execute me } ;    
 object: *generic ;
 : obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 

@@ -21,7 +21,6 @@ require lib/fileout.vfx
 : sf-! cell- dup sf! ;
 : f>ds 0 >r rp@ sf! r> ;
 synonym | locals|
-: :> :noname  [char] ; parse evaluate  postpone ;  execute ;
 : >> rshift ;
 : << lshift ;
 : sf/ s>f fswap f/ f>s ;
@@ -33,10 +32,7 @@ synonym dup-endcase end-case
 : bit dup constant 1 lshift ;
 : udup over swap ;
 : defer defer ['] noop latest-xt defer! ;
-
-\ - Arrays
-: get  swap cells + @ ;
-: set  swap cells + ! ;
+: [] swap cells + ; \ "indexed"
 
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;

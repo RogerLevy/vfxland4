@@ -70,5 +70,5 @@ variable level#
     load-holes ;
         
 : level  ( n - )
-    dup levels get dup 0= if  2drop  exit  then
+    dup levels [] @ dup 0= if  2drop  exit  then
     swap  level# !  load ;

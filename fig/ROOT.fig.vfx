@@ -1,6 +1,6 @@
 
 0 0 at *GENERIC named ROOT {  
-    0 0 at *GENERIC named GAME { 3. 3. sx v!  
+    0 0 at *GAME named GAME { 3. 3. sx v!  
         0 0 at *GENERIC named DBG {  } 
         0 0 at *GENERIC named STAGE {  } 
     } 
