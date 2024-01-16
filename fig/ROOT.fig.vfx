@@ -1,80 +1,24 @@
 
 0 0 at *GENERIC named ROOT {  
     0 0 at *GAME named GAME { 3. 3. sx v!  
-        0 0 at *GENERIC named DBG {  } 
         0 0 at *GENERIC named STAGE {  } 
     } 
-    0 0 at *GENERIC named APPS {  
-        0 0 at *AED named AED { post: TEST.TL edit 0 kf! me apps push  
-            159 200 at *PREVIEW named PREVIEW { 3. 3. sx v!  
-                0 0 at *PSPR named PSPR { TEST.TL 0.25 animate  } 
-            } 
-            575 200 at *EDITOR named EDITOR { 3. 3. sx v!  
-                0 0 at *GENERIC named ANMC {  
-                    0 0 at *TIMELINE named TEST.TL {  
-                        0 0 at *KEYFRAME {  
-                            0 0 at *TILE { 16. 16. w v! 2 ti !  } 
-                            16 0 at *TILE { 16. 16. w v! 3 ti !  } 
-                            0 16 at *TILE { 16. 16. w v! 130 ti !  } 
-                            16 16 at *TILE { 16. 16. w v! 131 ti !  } 
-                            -37 19 at *TILE { 16. 16. w v! 1 ti !  } 
-                            -32 -32 at *TILE { 16. 16. w v! 6 ti !  } 
-                            0 -48 at *TILE { 16. 16. w v! 397 ti !  } 
-                            0 -32 at *TILE { 16. 16. w v! 272 ti !  } 
-                            -32 -16 at *TILE { 16. 16. w v! 132 ti !  } 
-                            16 -32 at *TILE { 16. 16. w v! 3 ti !  } 
-                            -16 -32 at *TILE { 16. 16. w v! 3 ti !  } 
-                            -16 -16 at *TILE { 16. 16. w v! 137 ti !  } 
-                        } 
-                        0 0 at *KEYFRAME {  
-                            0 0 at *TILE { 16. 16. w v! 2 ti !  } 
-                            16 0 at *TILE { 16. 16. w v! 3 ti !  } 
-                            0 16 at *TILE { 16. 16. w v! 130 ti !  } 
-                            16 16 at *TILE { 16. 16. w v! 131 ti !  } 
-                            -39 18 at *TILE { 16. 16. w v! 1 ti !  } 
-                        } 
-                        0 0 at *KEYFRAME {  
-                            0 0 at *TILE { 16. 16. w v! 2 ti !  } 
-                            16 0 at *TILE { 16. 16. w v! 3 ti !  } 
-                            0 16 at *TILE { 16. 16. w v! 130 ti !  } 
-                            16 16 at *TILE { 16. 16. w v! 131 ti !  } 
-                            -34 18 at *TILE { 16. 16. w v! 1 ti !  } 
-                        } 
-                        0 0 at *KEYFRAME {  
-                            -1 -1 at *TILE { 16. 16. w v! 4 ti !  } 
-                            17 -1 at *TILE { 16. 16. w v! 5 ti !  } 
-                            -1 17 at *TILE { 16. 16. w v! 132 ti !  } 
-                            17 17 at *TILE { 16. 16. w v! 133 ti !  } 
-                            -29 13 at *TILE { 16. 16. w v! 1 ti !  } 
-                        } 
-                        0 0 at *KEYFRAME {  
-                            -2 -2 at *TILE { 16. 16. w v! 6 ti !  } 
-                            18 -2 at *TILE { 16. 16. w v! 7 ti !  } 
-                            -2 18 at *TILE { 16. 16. w v! 134 ti !  } 
-                            18 18 at *TILE { 16. 16. w v! 135 ti !  } 
-                            -22 20 at *TILE { 16. 16. w v! 1 ti !  } 
-                        } 
-                        0 0 at *KEYFRAME {  
-                            -3 -3 at *TILE { 16. 16. w v! 8 ti !  } 
-                            19 -3 at *TILE { 16. 16. w v! 9 ti !  } 
-                            -3 19 at *TILE { 16. 16. w v! 136 ti !  } 
-                            19 19 at *TILE { 16. 16. w v! 137 ti !  } 
-                            -30 26 at *TILE { 16. 16. w v! 1 ti !  } 
+    0 0 at *UI named UI {  
+        0 0 at *SHED named SHED {  
+            0 0 at *GENERIC named TOOLS {  
+                0 0 at *GENERIC named WIDGETS {  
+                    0 0 at *TOOLBOX { 144. 28. w v! ` This is a test` data!  
+                        0 32 at *PANEL { $1 attr ! 279. 68. w v!  
+                            8 8 at *LABEL { $9 attr ! 136. 16. w v! ` aosdfjaosdifj` data!  } 
+                            8 32 at *BUTTON { $1 attr ! 136. 28. w v! ` editmode not!` data!  } 
+                            159 32 at *BUTTON { $1 attr ! 112. 28. w v! ` dbg toggle` data!  } 
                         } 
                     } 
                 } 
-                64 -64 at *STATUS {  } 
             } 
-            0 392 at *TBANK named TSELECTOR { $1 attr ! 2048. 2048. w v!  } 
+            0 0 at *INFO named INFO {  } 
         } 
+        0 720 at *REPL named REPL {  } 
     } 
-    0 0 at *GENERIC named UI {  
-        0 720 at *MEGAPHONE named MEGAPHONE {  
-            0 0 at *REPL named REPL {  } 
-            0 0 at *MGMT named MGMT {  } 
-        } 
-        0 0 at *GENERIC named UIEXT {  
-            0 0 at *SHED named SHED {  } 
-        } 
-    } 
+    0 0 at *DBG named DBG {  } 
 } 

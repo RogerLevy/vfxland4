@@ -37,8 +37,8 @@ z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
 
 : ` [char] ` parse ;
 : ser-data ser> data @ ?dup 0; ." ` " count type ." ` data! " ;
-: 1w data @ ?dup 0; count 8. * 32. + w ! ;
-: data! dup 1 + allocate drop >r r@ place r> data ! 1w ;
+: 1w data @ ?dup 0; count 8. * 32. + w ! drop ;
+: data! dup count+ allocate drop >r r@ place r> data ! 1w ;
 
 object: *label 16. h ! _bolted aon label-draw ser-data act> ?layout ;
 object: *button 28. h !  _bolted aon button-draw ser-data button-respond act> ?layout ;

@@ -67,7 +67,7 @@ s" shed.vfx" reload$ place
 : m*box x v@ w v@ area v*m 2swap v*m 2swap ;
 : (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; 
     mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
-: hovering 0 to hoveree (hovering) ;
+: hovering { 0 to hoveree (hovering) } ;
 : pick to this ;
 : drag to dragee ;
 
@@ -118,7 +118,8 @@ variable indent
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - UI extension
-: ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
+: drag? alt? 1 mheld? or dragee 0<> and ;
+: ?drag ( obj - ) drag? if drop dragging else hovering then ;
 : outlines
     hoveree ?dup if { yellow outline } then
     this ?dup if { red outline (info) } then
