@@ -1,6 +1,8 @@
-reference megaphone
+reference ui
+reference repl
 
-true value ui?
+variable editmode
+\ 0 value kbfocus
 true value ui-halt?
 
 motif var eh /obj to /basis
@@ -16,12 +18,13 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
 \ : .fs fdepth | d | d 0 ?do d 1 - i - fpick f. loop ;
 : h. ." $" base @ swap hex . base ! ;
 : .s depth | d | d 0 ?do d 1 - i - pick . loop cr ; \ .fs ;
+: p.s depth | d | d 0 ?do d 1 - i - pick p. loop cr ; \ .fs ;
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
 : obey >vfx >display cr tib #tib @ ['] evaluate try 0 #tib ! ;
-: ?halt ui? ui-halt? and game -> halt ! ;
-: toggle ui? not to ui? ui? not megaphone -> hide ! ?halt ;
+: ?halt repl -> hide @ 0= ui-halt? and game -> halt ! ;
+: toggle-repl repl { hide not! } ?halt ;
 : ?charkey  
     case
         ( bksp ) 8 of #tib @ 0; -1 #tib +! exit endof
@@ -42,27 +45,29 @@ create e /ALLEGRO_EVENT allot&erase
 : events
     begin  queue e al_get_next_event  while
         root { responses }
-        ui? 0;
         ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
             bye
         then
         ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? if
             reset-keyboard reset-mouse
         then
-        ALLEGRO_EVENT_KEY_CHAR happened? if
-            the-char ?charkey
-        then
 \         ALLEGRO_EVENT_MOUSE_AXES happened? if
 \            e MOUSE_EVENT.dz @ ?dup if ?wheel then
 \         then
-        ALLEGRO_EVENT_KEY_DOWN happened? if
-            the-key <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
-        then
         ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
             display al_acknowledge_resize
         then
     repeat
 ;
+: repl-events
+    ALLEGRO_EVENT_KEY_CHAR happened? if
+        the-char ?charkey
+    then
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key <f3> = if game { halt @ invert dup halt ! to ui-halt? } then
+    then
+;
+
 
 game value uime
 variable uiosp
@@ -81,20 +86,22 @@ bpage uios uios uiosp !
     osp @ uiosp ! r> osp !
 ; 
 
-object: *megaphone act> 0 winh 64 - s>p x v! (events) pause draw> -matte ;
-object: *mgmt act> <tab> pressed? if toggle then ;
-object: *repl draw> bar bar-text ;
+object: *ui
+    act> (events) \ pause
+    draw> -matte ;
+object: *repl
+    act>
+        <tab> pressed? if toggle-repl then
+        0 winh 64 - s>p x v! 
+    draw> bar bar-text
+    respond> hide @ ?; repl-events ;
 : rs reset-stacks ;
 
 ' noop is EditOnError
 \ ?halt 
 
 root {
-    *generic named ui {
-        *megaphone named megaphone {
-            *repl named repl { }
-            *mgmt named mgmt { }
-        }
-        *generic named uiext { }
+    *ui named ui {
+        *repl named repl { }
     }
 }

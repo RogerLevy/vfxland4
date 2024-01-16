@@ -44,7 +44,7 @@ variable cti
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
     1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
 : .anm anm ?dup if ." - " .name then ;
-: aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me apps push " ;
+: aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me tools push " ;
 defer editor-respond
 
 \ - Editor components 2/2
@@ -71,7 +71,7 @@ object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 : anm-save anm -> nam @ if (save) else anm-saveas then ;
 
 \ - Editor layout
-apps {
+tools {
     0 0 at *aed named aed {
         winw 0.16666 p* 200 at *preview named preview { 
             0 0 at *pspr named pspr { } 
@@ -87,7 +87,7 @@ apps {
 \ - Editor controls (besides shed-provided actions)
 :noname [ is editor-respond ]
     respond>
-    ui? ?;
+    editmode @ ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char case
             [char] z of -1 +kf endof
@@ -107,8 +107,8 @@ apps {
         the-key case
             <space> of lay endof
             <s> of ctrl? if shift? if anm-saveas else anm-save then then endof
-            <l> of ctrl? if load then endof
-            <o> of ctrl? if load then endof
+            <l> of ctrl? if anm-load then endof
+            <o> of ctrl? if anm-load then endof
             <n> of ctrl? if new then endof
             <d> of ctrl? if duplicate then endof
         endcase
@@ -120,5 +120,8 @@ editor as editor-respond
 0.75e fdup fdup 1e backdrop 4f!
 
 \ - Test
+require scripts/tilemap.vfx
+z" data/tbank_test.png" loadbmp constant b
+0 0 at b tbank bmpwrite
 include fig/tl/test.tl.vfx
 test.tl edit 

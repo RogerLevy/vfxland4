@@ -11,7 +11,7 @@ require lib/filetypes.vfx
 variable snapping
 \ 0 value always-drag?
 
-1 constant _bolted
+1 bit _bolted bit _locked value _attributes
 
 \ - Game config
 : matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
@@ -43,6 +43,7 @@ motif var ser var attr var post /obj to /basis
 : aon attr @ or attr ! ;
 : replace dup >r insert r> kill ;
 : from -> x v@ p>s at ;
+: toggle { hide not! halt not! } ;
 
 \ - Stage
 game {
@@ -56,18 +57,20 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
-: scale* parent @ ?dup if { sx v@ 2p* recurse } then ; 
-: +drag walt 2s>p 1. 1. scale* 2p/ x v+! ;
+: ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
+: ascale/ 1. 1. ascale* 2p/ ;
+: +drag _bolted a? ?; walt 2s>p ascale/ x v+! ;
 : dragging alt? if stage else dragee then { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop alt? if stage else dragee then ?dup 0; { ?snap } 0 to dragee ;
-: gbox x v@ w v@ area v*m 2swap v*m 2swap ;
-: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; _bolted a? ?;
-    mouse 2s>p gbox inside? if me to hoveree then +t recurse -t ;
+: m*box x v@ w v@ area v*m 2swap v*m 2swap ;
+: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; 
+    mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hovering 0 to hoveree (hovering) ;
 : pick to this ;
 : drag to dragee ;
+
 
 \ - Serialize
 variable indent
@@ -75,6 +78,8 @@ variable indent
 : -i  -4 indent +! ;
 : cri cr indent @ 0 ?do space loop ;
 : .xy x v@ 2p>s swap . . ;
+: ?.hide hide @ ?dup if ." hide on " then ;
+: ?.halt halt @ ?dup if ." halt on " then ;
 : ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
 : ?.wh w v@ or if w vp? ." w v! " then ;
 : ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
@@ -83,7 +88,7 @@ variable indent
 : .} ." } " } ;
 : .}r first @ if cri then .} ;
 : ?.named nam @ if ." named " me .name then ;
-: (o.) .xy ." at " .con ?.named .{ ?.a ?.wh ?.s ;
+: (o.) .xy ." at " .con ?.named .{ ?.hide ?.halt ?.a ?.wh ?.s ;
 : o. { (o.) .} ;
 : o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
@@ -109,27 +114,27 @@ variable indent
     m al_use_transform
 ;
 : tiny a+t x v@ v*m 2p>s at -t identity ;
-: info +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
+: (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
-
-\ - App support
-obj apps  apps ui insert
 
 \ - UI extension
 : ?drag dragee alt? 1 mheld? and or if nip dragging else { hovering } then ;
 : outlines
     hoveree ?dup if { yellow outline } then
-    this ?dup if { red outline white ui? if info then } then
+    this ?dup if { red outline (info) } then
 ;
 
-: ?delete this ?dup 0; kill 0 pick 0 drag 0 to hoveree root { reckon } ;
+: ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;
+: ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree root { reckon } ;
 : shed-respond
     respond>
-    ALLEGRO_EVENT_DISPLAY_SWITCH_IN happened? if
-    then
     ALLEGRO_EVENT_KEY_DOWN happened? if
-        the-key <f5> = if s" reload" evaluate then
-        the-key <del> = if ?delete then
+        the-key <f5> = if s" reload" evaluate exit then
+    then
+    editmode @ if
+        ALLEGRO_EVENT_KEY_DOWN happened? if
+            the-key <del> = if ?delete then
+        then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         hoveree ?dup if dup pick drag then
@@ -140,8 +145,14 @@ obj apps  apps ui insert
     then
 ; 
 
-object: *shed shed-respond act> root ?drag draw> outlines ;
+object: *shed shed-respond act> root ?drag ;
+object: *info draw> editmode @ 0; outlines ;
 
-uiext {
-    *shed named shed { }
+ui {
+    *shed named shed {
+        *generic named tools { }
+        *info named info { }
+    }
 }
+
+shed ui unshift

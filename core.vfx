@@ -5,13 +5,11 @@ require obj.vfx
 obj root
 root {
     *generic named game {
-        *generic named dbg { }
     }
 }
 
 \ - Main loop
 : present display al_flip_display ;
-: poll poll-keyboard poll-mouse ;
 : think me >r root as physics act reckon r> as ;
 : paint identity cls me >r root as draw r> as ;
 : frame !delta poll think paint present pause ;

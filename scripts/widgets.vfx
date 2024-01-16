@@ -1,0 +1,64 @@
+_attributes bit _click bit _nr drop \ to _attributes
+/basis var data drop
+
+z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
+   constant ascii8x8.fnt 
+
+: abox a+t x v@ v*m w v@ ascale* area -t ;
+: click  { _click aon } ;
+: ?click hoveree ?dup 0; click ;
+: unclick each> _click aoff me recurse ;
+: over? mouse 2s>p abox inside? ;
+: !font ascii8x8.fnt font ! ;
+
+: exec data @ ?dup 0; count evaluate ;
+: button-respond
+    respond> 
+    over? 0; 
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if ?click then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if root unclick ['] exec try then
+;
+
+: sdims w v@ 2p>s ;
+: boxshadow  5 5 +at  sdims 0e 0e 0e 0.25e fcolor rectf  -5 -5 +at ;
+: (data) data @ ?dup 0; !font z[ count type ]z stext ;
+: 2max rot max >r max r> ;
+: ?expand x v@ w v@ 2+ 8. 8. 2+ parent @ { w v@ 2max w v! } ;
+: ?nr _nr a? 0; next 0; 8. y @ h @ + 8. + next @ -> x v! ;
+: ?layout next @ if x @ w @ + 15. + y @ next @ -> x v! then ?nr ?expand ;
+
+: label-draw draw> white (data) ?layout ;
+: (down) 2 2 +at sdims 2dup grey <d rectf grey rect -2 -2 +at ;
+: (up) boxshadow sdims 2dup grey rectf white rect ;
+: button-draw draw> _click a? if (down) else (up) then 16 10 +at (data) ;
+: toolbox-draw draw> white sdims rectf black sdims rect sdims drop 8 black rectf 16 15 +at (data) ;
+: toolbox-respond respond> over? 0; 1 mpressed? 0; first @ ?dup 0; toggle ;
+: panel-draw draw> -5 -5 +at boxshadow ;
+
+: ` [char] ` parse ;
+: ser-data ser> data @ ?dup 0; ." ` " count type ." ` data! " ;
+: 1w data @ ?dup 0; count 8. * 32. + w ! ;
+: data! dup 1 + allocate drop >r r@ place r> data ! 1w ;
+
+object: *label 16. h ! _bolted aon label-draw ser-data act> ?layout ;
+object: *button 28. h !  _bolted aon button-draw ser-data button-respond act> ?layout ;
+object: *toolbox 28. h ! toolbox-draw ser-data toolbox-respond ;
+object: *panel _bolted aon panel-draw act> 0 0 w v! ;
+
+\ : [toolbox] *toolbox 0 32 at ;
+\ : [panel] *panel 8 8 at ;
+
+: nr _nr aon ;
+
+0.75e fdup fdup 1e backdrop 4f!
+tools {
+    0 0 at *generic named widgets { \ 2. 2. sx v!
+        0 0 at *toolbox { ` This is a test` data!
+            0 32 at *panel { 
+                8 8 at *label { ` aosdfjaosdifj` data! nr }
+                0 0 at *button { ` editmode not!` data! }
+                0 0 at *button { ` dbg toggle` data! }
+            }
+        }
+    }
+}

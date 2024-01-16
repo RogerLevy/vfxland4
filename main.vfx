@@ -10,17 +10,24 @@ vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
 include shed.vfx
 
-require scripts/tilemap.vfx
-z" data/tbank_test.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-include scripts/animation.vfx
+fget scripts/widgets
+
+\ require scripts/tilemap.vfx
+\ z" data/tbank_test.png" loadbmp constant b
+\ 0 0 at b tbank bmpwrite
+\ include scripts/animation.vfx
 
 \ - Debugging info
-\ : dbg-draw draw>
-\     sherry32.fnt font !
-\     z[ ." mouse: " mouse swap . . ]z red stext nr
-\ \    z[ this -> ax v@ swap p. p. ]z text
-\ ; dbg-draw
+object: *dbg draw>
+    sherry32.fnt font !
+\      z[ ." mouse: " mouse swap . . ]z red stext nr
+    hoveree 0; z[ hoveree o. ]z yellow stext
+;
+
+root {
+    *dbg named dbg { }
+}
+
 \ 
 \ dbg -> hide on
 \ snapping on
@@ -32,13 +39,6 @@ include scripts/animation.vfx
 \     overshoot ease-in-out y 50. 2. tween> 
 \     overshoot ease-in-out y 0. 2. tween drop ;
 \ execute
-
-\ apps *child named c2 { }
-\ apps *child named c3 { }
-\ c3 c2 insert
-\ apps o.c
-\ aed c2 insert-after
-\ apps o.c
 
 \ aed constant oldaed
 \ s" aed" figpath oload dup . o.

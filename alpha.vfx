@@ -33,6 +33,7 @@ synonym dup-endcase end-case
 : udup over swap ;
 : defer defer ['] noop latest-xt defer! ;
 : [] swap cells + ; \ "indexed"
+: not! dup @ not swap ! ;
 
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;
@@ -77,7 +78,7 @@ synonym dup-endcase end-case
 : 2- rot swap - >r - r> ;
 : walt mouse mickey 2- ;
 : mheld? ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
-: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0< 1 and - ;
+: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0<> 1 and - ;
 : mpressed? mdelta 1 = ;
 : mletgo? mdelta -1 = ;
 : poll poll-keyboard poll-mouse ;
