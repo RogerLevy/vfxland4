@@ -24,7 +24,6 @@ motif var ser var attr var post /obj to /basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
-: kill -> en off ;
 : copy *slot { /linkage + me /linkage + 256 /linkage - move  me } ;
 : (*clone) ( orig new ) | p |
     -> first @ begin ?dup while
@@ -38,7 +37,6 @@ motif var ser var attr var post /obj to /basis
 : aon attr @ or attr ! ;
 : replace dup >r insert r> kill ;
 : from -> x v@ p>s at ;
-: toggle { hide not! halt not! } ;
 : a+t
     +m identity
     parent @ begin ?dup while

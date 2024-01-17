@@ -33,7 +33,7 @@ synonym dup-endcase end-case
 : udup over swap ;
 : defer defer ['] noop latest-xt defer! ;
 : [] swap cells + ; \ "indexed"
-: not! dup @ not swap ! ;
+: toggle dup @ not swap ! ;
 : count+ 1 + ;
 
 \ - 2D Vectors p1

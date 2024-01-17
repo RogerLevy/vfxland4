@@ -10,7 +10,7 @@
                     0 0 at *TOOLBOX { 144. 28. w v! ` This is a test` data!  
                         0 32 at *PANEL { $1 attr ! 279. 68. w v!  
                             8 8 at *LABEL { $9 attr ! 136. 16. w v! ` aosdfjaosdifj` data!  } 
-                            8 32 at *BUTTON { $1 attr ! 136. 28. w v! ` editmode not!` data!  } 
+                            8 32 at *BUTTON { $1 attr ! 136. 28. w v! ` editmode toggle` data!  } 
                             159 32 at *BUTTON { $1 attr ! 112. 28. w v! ` dbg toggle` data!  } 
                         } 
                     } 

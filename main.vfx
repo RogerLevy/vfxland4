@@ -53,7 +53,7 @@ tools {
         100 100 at *toolbox { ` This is a test` data!
             0 32 at *panel { 
                 8 8 at *label { ` aosdfjaosdifj` data! nr }
-                0 0 at *button { ` editmode not!` data! }
+                0 0 at *button { ` editmode toggle` data! }
                 0 0 at *button { ` dbg toggle` data! }
             }
         }
