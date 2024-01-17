@@ -120,7 +120,17 @@ variable indent
     this ?dup if { red outline (info) } then
 ;
 
-: +zoom 0.25 * workspace { sx @ + 0.25 max 2. min dup sx v! } ;
+\ side_ratio = (mouse_x - (view_width / 2)) / view_width
+\ pixels_difference = (view_width / old_zoom) - (view_width / new_zoom)
+\ view_x_offset += pixels_difference * side_ratio
+
+: +zoom
+    \ dup 0.25 = over 2. = or if drop r> drop } exit then
+    workspace { 
+    0.25 * sx @ dup >r + 0.25 2. clamp dup sx v!    
+    mouse winw 2 / winh 2 / 2-  winw winh 2p/ 
+        winw winh r> dup 2p/  winw winh sx @ dup 2p/  2swap 2-  2s>p   
+        2p* p.s sx v@ 2p* x v+! } ;
 
 : ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;
 : ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
