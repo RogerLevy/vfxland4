@@ -1,7 +1,7 @@
 /
     program components; component dependencies are largely defined externally
     they can bring in libraries and objects but not each other,
-    except chapter-load-style components
+    except chapter-load-style components such as main.vfx
 
 obj/
     scripts defining one exposed constructor

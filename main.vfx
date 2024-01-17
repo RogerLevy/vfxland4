@@ -14,6 +14,7 @@ require core.vfx
 require tool/ui.vfx
 require gradient.vfx
 require tool/shed.vfx
+require tool/widgets.vfx
 
 \ - Debugging info
 object: *dbg draw>
@@ -49,7 +50,7 @@ z" data/tbank_test.png" loadbmp constant b
 0.75e fdup fdup 1e backdrop 4f!
 tools {
     0 0 at *generic named widgets { \ 2. 2. sx v!
-        0 0 at *toolbox { ` This is a test` data!
+        100 100 at *toolbox { ` This is a test` data!
             0 32 at *panel { 
                 8 8 at *label { ` aosdfjaosdifj` data! nr }
                 0 0 at *button { ` editmode not!` data! }

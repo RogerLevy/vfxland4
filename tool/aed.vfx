@@ -1,7 +1,6 @@
 require obj/tilemap.vfx
 require obj/tile.vfx
 require lib/filetypes.vfx
-require tool/widgets.vfx
 
 obj animations
 
@@ -32,7 +31,7 @@ variable cti
 ;
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
     1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
-: .anm anm ?dup if ." - " .name then ;
+: .anm anm ?dup if .name then ;
 : aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me tools push " ;
 defer editor-respond
 
@@ -41,7 +40,7 @@ defer editor-respond
 object: *preview 3. 3. sx 2! draw> crosshairs ;
 object: *editor 3. 3. sx 2! editor-respond draw> crosshairs ;
 object: *status draw> small (status) ;
-object: *aed aed-ser draw> -matte big z[ ." AED " .anm ]z white stext ;
+object: *aed aed-ser draw> -matte big z[ .anm ]z white stext ;
 object: *timeline ;
 object: *keyframe ; 
 object: *pspr ser> tl @ .name spd p? ." animate " ;
@@ -62,14 +61,18 @@ object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 \ - Editor layout
 tools {
     0 0 at *aed named aed {
-        winw 0.16666 p* 200 at *preview named preview { 
-            0 0 at *pspr named pspr { } 
+        0 0 at *toolbox { ` AED` data!
+            0 32 at *generic {
+                winw 0.16666 p* 200 at *preview named preview { 
+                    0 0 at *pspr named pspr { } 
+                }
+                winw 0.6 p* 200 at *editor named editor {
+                    0 0 at *generic named anmc { }
+                    64 -64 at *status { } 
+                }
+                0 winh 2 / at *tbank named tselector { _bolted aon }
+            }
         }
-        winw 0.6 p* 200 at *editor named editor {
-            0 0 at *generic named anmc { }
-            64 -64 at *status { } 
-        }
-        0 winh 2 / at *tbank named tselector { _bolted aon }
     }
 }
 
