@@ -43,7 +43,7 @@
     dup -> parent @ 0= if 2drop exit then
     over dlremove 
     dup -> next @ 0= if  -> parent @ dlpush exit  then
-    dup -> next @ .s locals| neighbor dest src |
+    dup -> next @ locals| neighbor dest src |
     src dest -> next !
     dest src -> prev !
     neighbor src -> next !

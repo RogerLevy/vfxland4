@@ -1,8 +1,3 @@
-require alpha.vfx 
-require obj.vfx
-require core.vfx
-require lib/gradient.vfx
-require ui.vfx
 require lib/filetypes.vfx
 
 0 value dragee
@@ -44,6 +39,15 @@ motif var ser var attr var post /obj to /basis
 : replace dup >r insert r> kill ;
 : from -> x v@ p>s at ;
 : toggle { hide not! halt not! } ;
+: a+t
+    +m identity
+    parent @ begin ?dup while
+        dup { x v@ 2p>f  sx v@ 2p>f } 0e
+            m2 al_build_transform  m m2 al_compose_transform
+        -> parent @
+    repeat
+    m al_use_transform
+;
 
 \ - Stage
 game {
@@ -57,8 +61,8 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
+: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
-: ascale/ 1. 1. ascale* 2p/ ;
 : +drag _bolted a? ?; walt 2s>p ascale/ x v+! ;
 : dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
@@ -70,7 +74,6 @@ s" shed.vfx" reload$ place
 : hovering { +t 0 to hoveree (hovering) -t } ;
 : pick to this ;
 : drag to dragee ;
-
 
 \ - Serialize
 variable indent
@@ -104,15 +107,6 @@ variable indent
 
 \ - Info
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
-: a+t
-    +m identity
-    parent @ begin ?dup while
-        dup { x v@ 2p>f  sx v@ 2p>f } 0e
-            m2 al_build_transform  m m2 al_compose_transform
-        -> parent @
-    repeat
-    m al_use_transform
-;
 : tiny a+t x v@ v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
@@ -123,6 +117,8 @@ variable indent
     hoveree ?dup if { yellow outline } then
     this ?dup if { red outline (info) } then
 ;
+
+: +zoom 0.25 * workspace { sx @ + 0.25 max 2. min dup sx v! } ;
 
 : ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;
 : ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
@@ -142,6 +138,9 @@ variable indent
     ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
     ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
         plop
+    then
+    ALLEGRO_EVENT_MOUSE_AXES happened? if
+        e MOUSE_EVENT.dz @ ?dup if +zoom then
     then
 ; 
 

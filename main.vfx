@@ -8,14 +8,12 @@ display 1920 2 / 0 al_set_window_position
 
 vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
-include shed.vfx
-
-fget tool/widgets
-
-\ require obj/tilemap.vfx
-\ z" data/tbank_test.png" loadbmp constant b
-\ 0 0 at b tbank bmpwrite
-\ include obj/animate.vfx
+require alpha.vfx 
+require obj.vfx
+require core.vfx
+require tool/ui.vfx
+require gradient.vfx
+require tool/shed.vfx
 
 \ - Debugging info
 object: *dbg draw>
@@ -28,11 +26,7 @@ static {
     *dbg named dbg { }
 }
 
-\ 
-\ dbg -> hide on
-\ snapping on
-
-\ fget tool/tween
+\ fget obj/tween
 \ pspr as
 \ :noname
 \     overshoot ease-in-out x dup @ 50. + 2. tween
@@ -44,11 +38,25 @@ static {
 \ s" aed" figpath oload dup . o.
 
 \ - Test
+require animate.vfx
 fget tool/aed
 require obj/tilemap.vfx
 z" data/tbank_test.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 \ include fig/tl/test.tl.vfx
 \ test.tl edit 
+
+0.75e fdup fdup 1e backdrop 4f!
+tools {
+    0 0 at *generic named widgets { \ 2. 2. sx v!
+        0 0 at *toolbox { ` This is a test` data!
+            0 32 at *panel { 
+                8 8 at *label { ` aosdfjaosdifj` data! nr }
+                0 0 at *button { ` editmode not!` data! }
+                0 0 at *button { ` dbg toggle` data! }
+            }
+        }
+    }
+}
 
 go 

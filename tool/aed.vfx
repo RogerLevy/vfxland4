@@ -1,8 +1,7 @@
-require shed.vfx
-require lib/animate.vfx
 require obj/tilemap.vfx
 require obj/tile.vfx
 require lib/filetypes.vfx
+require tool/widgets.vfx
 
 obj animations
 

@@ -50,15 +50,3 @@ object: *panel _bolted aon panel-draw act> 0 0 w v! ;
 
 : nr _nr aon ;
 
-0.75e fdup fdup 1e backdrop 4f!
-tools {
-    0 0 at *generic named widgets { \ 2. 2. sx v!
-        0 0 at *toolbox { ` This is a test` data!
-            0 32 at *panel { 
-                8 8 at *label { ` aosdfjaosdifj` data! nr }
-                0 0 at *button { ` editmode not!` data! }
-                0 0 at *button { ` dbg toggle` data! }
-            }
-        }
-    }
-}

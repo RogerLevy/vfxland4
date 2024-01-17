@@ -1,5 +1,3 @@
-require obj.vfx
-
 motif var tl var spd var ac var af /obj to /basis \ add animation capability to everything
 
 \ - Runtime rendering

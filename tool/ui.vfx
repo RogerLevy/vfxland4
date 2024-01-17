@@ -51,9 +51,6 @@ create e /ALLEGRO_EVENT allot&erase
         ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? if
             reset-keyboard reset-mouse
         then
-\         ALLEGRO_EVENT_MOUSE_AXES happened? if
-\            e MOUSE_EVENT.dz @ ?dup if ?wheel then
-\         then
         ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
             display al_acknowledge_resize
         then

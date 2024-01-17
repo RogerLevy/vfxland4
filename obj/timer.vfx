@@ -1,4 +1,3 @@
-require shed.vfx
 require lib/counter.vfx
 
 motif var et var xt var tc
