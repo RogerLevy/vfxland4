@@ -4,7 +4,6 @@ _attributes bit _click bit _nr drop \ to _attributes
 z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
    constant ascii8x8.fnt 
 
-: abox a+t x v@ v*m w v@ ascale* area -t ;
 : click  { _click aon } ;
 : ?click hoveree ?dup 0; click ;
 : unclick each> _click aoff me recurse ;

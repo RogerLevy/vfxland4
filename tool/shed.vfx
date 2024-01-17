@@ -48,6 +48,10 @@ motif var ser var attr var post /obj to /basis
     repeat
     m al_use_transform
 ;
+: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
+: ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
+: abox a+t x v@ v*m w v@ ascale* area -t ;
+: >local abox 2drop 2- ascale/ ;
 
 \ - Stage
 game {
@@ -61,8 +65,6 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
-: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
-: ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : +drag _bolted a? ?; walt 2s>p ascale/ x v+! ;
 : dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;

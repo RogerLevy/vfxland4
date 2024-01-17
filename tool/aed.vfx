@@ -19,8 +19,7 @@ variable cti
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
-: spos x v@ 2p>s ;
-: lay ckf { mouse editor { spos } 2- 3. 3. 2p/ 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: lay ckf { anm { mouse 2s>p >local } 2p>s 8 8 2- at *tile { cti @ ti ! ?snap } } ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
 
@@ -30,7 +29,7 @@ variable cti
 \    z[ tool .name ]z white stext nr
 ;
 : tbank-act act> mouse 2s>p x v@ w v@ area inside? if
-    1 mpressed? if mouse spos 2- 16. 16. 2p/ 128 * + cti ! then then ;
+    1 mpressed? if mouse 2s>p >local 2p>s 16. 16. 2p/ 128 * + cti ! then then ;
 : .anm anm ?dup if .name then ;
 : aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me tools push " ;
 defer editor-respond
@@ -52,7 +51,7 @@ object: *tbank 2048. 2048. w v! tbank-act draw> tbank blit ;
 : ?ext ?dup if -ext pad place s" .vfx" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
 : anm-load chooser ?dup if oload edit then ;
-: new *timeline { *keyframe { } me } edit ;
+: new 0 0 at *timeline { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
 : anm-saveas chooser ?dup if -path -ext ?clone rename (save) then ;
@@ -80,11 +79,12 @@ tools {
 :noname [ is editor-respond ]
     respond>
     editmode @ ?;
+    repl -> hide @ 0;
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char case
             [char] z of -1 +kf endof
             [char] x of 1 +kf endof
-            [char] a of *keyframe ckf insert-after endof
+            [char] a of *keyframe ckf insert-after 1 +kf endof
             ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
         the-key case
