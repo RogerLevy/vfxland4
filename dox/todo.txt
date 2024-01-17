@@ -1,0 +1,7 @@
+1/17
+
+[ ] multiple selection
+[ ] edit static layer
+[ ] event filtering / keyboard focus / mouse events based on editmode
+[x] hide -> vis, hide reveal
+
