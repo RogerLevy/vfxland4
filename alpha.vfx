@@ -34,11 +34,14 @@ synonym dup-endcase end-case
 : defer defer ['] noop latest-xt defer! ;
 : [] swap cells + ; \ "indexed"
 : toggle dup @ not swap ! ;
-: count+ 1 + ;
 : z[ zstr[ ;
 : ]z ]zstr ;
 : $[ z[ ;
 : ]$ ]z zcount ;
+: iplace 2dup ! cell+ swap move ;
+: icount @+ ;
+: icount+ cell+ ;
+
 
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;
@@ -137,6 +140,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : transparent ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender ;
 : bmpwrite onto opaque blit backbuf onto transparent ;
 : rblit swap >r  dup bmpwh 2 2 2/ 2s>f  at@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
+: tblit swap >r  fore 4f@  at@f  r> al_draw_tinted_bitmap ;
 
 \ - Colors
 : red 1e 0e 0e 1e fcolor ;

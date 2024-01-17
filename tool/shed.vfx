@@ -46,10 +46,11 @@ motif var ser var attr var post /obj to /basis
     repeat
     m al_use_transform
 ;
-: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
+: ascale/ parent @ ?dup if { recurse } then sx v@ 2p/ ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : abox a+t 0 0 v*m w v@ ascale* area -t ;
 : >local abox 2drop 2- ascale/ ;
+: s>local 2s>p >local 2p>s ;
 : hide -> vis off ;
 : reveal -> vis on ;
 
@@ -65,7 +66,7 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
-: +drag _bolted a? ?; walt 2s>p ascale/ x v+! ;
+: +drag _bolted a? ?; walt 2s>p ascale/ sx v@ 2p* x v+! ;
 : dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
@@ -123,7 +124,7 @@ variable indent
 : +zoom
     workspace { 
     0.25 * sx @ dup >r + 0.25 2. clamp dup sx v!
-    mouse 2s>p >local  1. sx @ r> p/ - dup  2p*  x v+!
+    mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
     } ;
 
 : ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;

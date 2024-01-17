@@ -20,8 +20,8 @@ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 ;
 
 : sdims w v@ 2p>s ;
-: boxshadow  5 5 +at  sdims 0e 0e 0e 0.25e fcolor rectf  -5 -5 +at ;
-: data@ data @ dup 0; !font z[ count type ]z ;
+: boxshadow  5 5 +at  sdims $00000040 color rectf  -5 -5 +at ;
+: data@ data @ dup 0; !font z[ icount type ]z ;
 : 2max rot max >r max r> ;
 : ?expand x v@ w v@ 2+ 8. 8. 2+ parent @ { w v@ 2max w v! } ;
 : ?nr _nr a? 0; next 0; 8. y @ h @ + 8. + next @ -> x v! ;
@@ -33,7 +33,7 @@ z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     bgc @ h. ." bgc ! " ;
 : 1w h @ 32. >= ?; data @ ?dup 0; count 8. * 32. + w ! drop ;
 : ?freedata data @ ?dup if free drop then ;
-: data! ?freedata dup count+ allocate drop >r r@ place r> data ! 1w ;
+: data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! 1w ;
 
 : label-draw draw> white data@ stext ?layout ;
 : (down) 2 2 +at sdims 2dup grey <d rectf grey rect -2 -2 +at ;
@@ -53,7 +53,7 @@ create ox 0 , 0 ,
     then
 ;
 
-: panel-draw draw> -5 -5 +at boxshadow ;
+: panel-draw draw> sdims bgc @ color rectf ;
 
 : textbox-draw draw>
     data @ 0;
@@ -67,7 +67,7 @@ object: *label 16. h ! _bolted aon label-draw ser-widget act> ?layout ;
 object: *textbox 160. 160. w v! $fff8a0e0 bgc ! textbox-draw ser-widget $[ ." The rain " cr ." in Spain falls mainly on the plain." ]$ data! ;
 object: *button 28. h !  _bolted aon button-draw ser-widget button-respond act> ?layout ;
 object: *toolbox 128. 28. w v! toolbox-draw ser-widget toolbox-respond ;
-object: *panel _bolted aon panel-draw act> 0 0 w v! ;
+object: *panel _bolted aon $00000040 bgc ! panel-draw act> 0 0 w v! ;
 
 \ : [toolbox] *toolbox 0 32 at ;
 \ : [panel] *panel 8 8 at ;

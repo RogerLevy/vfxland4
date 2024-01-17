@@ -19,7 +19,8 @@ variable cti
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
-: lay ckf { anm { mouse 2s>p >local } 2p>s 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: lay ckf { anm { mouse s>local } 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
 
@@ -28,16 +29,19 @@ variable cti
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
 \    z[ tool .name ]z white stext nr
 ;
-: tbank-act act> mouse 2s>p x v@ w v@ area inside? if
-    1 mpressed? if mouse 2s>p >local 2p>s 16. 16. 2p/ 128 * + cti ! then then ;
+: tbank-act act> over? 0;
+    1 mpressed? if mouse s>local 16. 16. 2p/ 128 * + cti ! then ;
 : .anm anm ?dup if .name then ;
 : aed-ser ser> ." post: " anm .name ." edit " kf# . ." kf! " ." me tools push " ;
 defer editor-respond
 
+: ghost mouse s>local 8 8 2- at $ffffff80 color cti @ tile tblit ;
+: ?ghost over? 0; ghost ;
+
 \ - Editor components 2/2
-: crosshairs 0 -64 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
+: crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 object: *preview 3. 3. sx 2! draw> crosshairs ;
-object: *editor 3. 3. sx 2! editor-respond draw> crosshairs ;
+object: *editor 3. 3. sx 2! editor-respond draw> crosshairs ?ghost ;
 object: *status draw> small (status) ;
 object: *aed aed-ser draw> -matte big z[ .anm ]z white stext ;
 object: *timeline ;
@@ -62,14 +66,16 @@ tools {
     0 0 at *aed named aed {
         0 0 at *toolbox { ` AED` data!
             0 32 at *generic {
-                winw 0.16666 p* 200 at *preview named preview { 
-                    0 0 at *pspr named pspr { } 
+                0 0 at *preview named preview { 
+                    64 64 at *pspr named pspr { } 
                 }
-                winw 0.6 p* 200 at *editor named editor {
-                    0 0 at *generic named anmc { }
-                    64 -64 at *status { } 
+                512 0 at *editor named editor { 128. 128. w v! _bolted aon
+                    0 0 at *status { } 
+                    64 64 at *generic named anmc { }
                 }
-                0 winh 2 / at *tbank named tselector { _bolted aon }
+                0 winh 2 / at *toolbox { ` tiles                                                                                                                                                                                                                                                       ` data!
+                    0 32 at *tbank named tselector { _bolted aon }
+                }
             }
         }
     }
@@ -97,7 +103,7 @@ tools {
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key case
-            <space> of lay endof
+            <space> of ?lay endof
             <s> of ctrl? if shift? if anm-saveas else anm-save then then endof
             <l> of ctrl? if anm-load then endof
             <o> of ctrl? if anm-load then endof

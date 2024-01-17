@@ -2709,7 +2709,7 @@ extern "C" void al_draw_scaled_rotated_bitmap ( void *bitmap,
 \ extern "C" al_draw_spline( );
 extern "C" void al_draw_text( void *font, float r, float g, float b, float a, float x, float y, int flags, void *text );
 \ extern "C" al_draw_textf( );
-\ extern "C" al_draw_tinted_bitmap( );
+extern "C" void al_draw_tinted_bitmap( void *ALLEGRO_BITMAP-*bitmap, float r, float g, float b, float a, float dx, float dy, int flags );
 \ extern "C" al_draw_tinted_bitmap_region( );
 \ extern "C" al_draw_tinted_rotated_bitmap( );
 \ extern "C" al_draw_tinted_scaled_bitmap( );

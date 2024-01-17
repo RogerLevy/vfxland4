@@ -14,7 +14,8 @@ motif var ba var stride var scrollx var scrolly
 /obj value /tilemap
 : tile@ { stride @ * + ba @ [] @ } ;
 : tile! { stride @ * + ba @ [] ! } ;
-: tile+ dup 28 rshift swap $0fff and tarr [] @ fblit tw 0 +at ;
+: tile dup 28 rshift swap $0fff and tarr [] @ ;
+: tile+ tile fblit tw 0 +at ;
 : row pen v@ 2>r 0 ?do @+ tile+ loop drop 2r> tw + at ;
 : scrolled ( x y - ofs )
     2dup  tw dup 2mod 2negate +at  tw / stride @ *  swap tw / + cells ;
