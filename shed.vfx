@@ -60,14 +60,14 @@ s" shed.vfx" reload$ place
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : ascale/ 1. 1. ascale* 2p/ ;
 : +drag _bolted a? ?; walt 2s>p ascale/ x v+! ;
-: dragging alt? if stage else dragee then { +drag } ;
+: dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
-: plop alt? if stage else dragee then ?dup 0; { ?snap } 0 to dragee ;
+: plop alt? if workspace else dragee then ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ area v*m 2swap v*m 2swap ;
 : (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; 
     mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
-: hovering { 0 to hoveree (hovering) } ;
+: hovering { +t 0 to hoveree (hovering) -t } ;
 : pick to this ;
 : drag to dragee ;
 
@@ -118,15 +118,14 @@ variable indent
 : outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
 
 \ - UI extension
-: drag? alt? 1 mheld? or dragee 0<> and ;
-: ?drag ( obj - ) drag? if drop dragging else hovering then ;
+: ?drag ( obj - ) 1 mheld? if drop dragging else hovering then ;
 : outlines
     hoveree ?dup if { yellow outline } then
     this ?dup if { red outline (info) } then
 ;
 
 : ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;
-: ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree root { reckon } ;
+: ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
 : shed-respond
     respond>
     ALLEGRO_EVENT_KEY_DOWN happened? if
@@ -146,14 +145,12 @@ variable indent
     then
 ; 
 
-object: *shed shed-respond act> root ?drag ;
+object: *shed shed-respond act> workspace ?drag ;
 object: *info draw> editmode @ 0; outlines ;
 
-ui {
+workspace {
     *shed named shed {
         *generic named tools { }
         *info named info { }
     }
 }
-
-shed ui unshift

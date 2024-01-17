@@ -1,20 +1,10 @@
-require scripts/tilemap.vfx
+require shed.vfx
+require lib/animate.vfx
+require obj/tilemap.vfx
+require obj/tile.vfx
 require lib/filetypes.vfx
 
 obj animations
-
-motif var tl var tlt var spd var ac var af /obj to /basis \ add animation capability to everything
-
-\ - Runtime rendering
-: ?+ac delta spd @ p/ ac +! ;
-: keyframe { 0 me #children wrap me nth-child as children } ;
-: animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
-
-\ - Tile keyframes
-motif var ti
-: draw-tile draw> ti @ tile+ ;
-: ser-tile ser> ti ? ." ti ! " ;
-object: *tile 16. 16. w v! draw-tile ser-tile ; 
 
 \ - Editor variables
 0 value kf#
@@ -119,9 +109,4 @@ editor as editor-respond
 
 0.75e fdup fdup 1e backdrop 4f!
 
-\ - Test
-require scripts/tilemap.vfx
-z" data/tbank_test.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-include fig/tl/test.tl.vfx
-test.tl edit 
+new

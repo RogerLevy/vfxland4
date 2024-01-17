@@ -1,0 +1,9 @@
+require obj.vfx
+
+motif var tl var spd var ac var af /obj to /basis \ add animation capability to everything
+
+\ - Runtime rendering
+: ?+ac delta spd @ p/ ac +! ;
+: keyframe { 0 me #children wrap me nth-child as children } ;
+: animate spd ! tl ! draw> ac @ p>s tl @ keyframe ?+ac ;
+

@@ -4,8 +4,10 @@ require obj.vfx
 0 0 at
 obj root
 root {
-    *generic named game {
+    *generic named workspace {
+        *generic named game { }
     }
+    *generic named static { } 
 }
 
 \ - Main loop

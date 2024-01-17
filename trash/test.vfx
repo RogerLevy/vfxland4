@@ -1,4 +1,4 @@
-include scripts/tilemap.vfx
+include obj/tilemap.vfx
 
 create buf 20 16 * cells allot 
 : *map

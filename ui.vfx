@@ -100,7 +100,7 @@ object: *repl
 ' noop is EditOnError
 \ ?halt 
 
-root {
+static {
     *ui named ui {
         *repl named repl { }
     }

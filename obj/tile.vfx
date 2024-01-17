@@ -1,0 +1,5 @@
+\ - Tile sprite
+motif var ti
+: draw-tile draw> ti @ tile+ ;
+: ser-tile ser> ti ? ." ti ! " ;
+object: *tile 16. 16. w v! draw-tile ser-tile ; 

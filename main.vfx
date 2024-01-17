@@ -10,12 +10,12 @@ vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
 include shed.vfx
 
-fget scripts/widgets
+fget tool/widgets
 
-\ require scripts/tilemap.vfx
+\ require obj/tilemap.vfx
 \ z" data/tbank_test.png" loadbmp constant b
 \ 0 0 at b tbank bmpwrite
-\ include scripts/animation.vfx
+\ include obj/animate.vfx
 
 \ - Debugging info
 object: *dbg draw>
@@ -24,7 +24,7 @@ object: *dbg draw>
     hoveree 0; z[ hoveree o. ]z yellow stext
 ;
 
-root {
+static {
     *dbg named dbg { }
 }
 
@@ -32,7 +32,7 @@ root {
 \ dbg -> hide on
 \ snapping on
 
-\ fget scripts/tween
+\ fget tool/tween
 \ pspr as
 \ :noname
 \     overshoot ease-in-out x dup @ 50. + 2. tween
@@ -42,5 +42,13 @@ root {
 
 \ aed constant oldaed
 \ s" aed" figpath oload dup . o.
+
+\ - Test
+fget tool/aed
+require obj/tilemap.vfx
+z" data/tbank_test.png" loadbmp constant b
+0 0 at b tbank bmpwrite
+\ include fig/tl/test.tl.vfx
+\ test.tl edit 
 
 go 
