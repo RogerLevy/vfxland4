@@ -50,6 +50,8 @@ motif var ser var attr var post /obj to /basis
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : abox a+t x v@ v*m w v@ ascale* area -t ;
 : >local abox 2drop 2- ascale/ ;
+: hide -> vis off ;
+: reveal -> vis on ;
 
 \ - Stage
 game {
@@ -69,7 +71,7 @@ s" shed.vfx" reload$ place
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop alt? if workspace else dragee then ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ area v*m 2swap v*m 2swap ;
-: (hovering) me each> hide @ ?; w v@ or 0<> first @ or 0; 
+: (hovering) me each> vis @ 0; w v@ or 0<> first @ or 0; 
     mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hovering { +t 0 to hoveree (hovering) -t } ;
 : pick to this ;
@@ -81,8 +83,8 @@ variable indent
 : -i  -4 indent +! ;
 : cri cr indent @ 0 ?do space loop ;
 : .xy x v@ 2p>s swap . . ;
-: ?.hide hide @ ?dup if ." hide on " then ;
-: ?.halt halt @ ?dup if ." halt on " then ;
+: ?.vis vis @ 0= if ." vis off " then ;
+: ?.halt halt @ if ." halt on " then ;
 : ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
 : ?.wh w v@ or if w vp? ." w v! " then ;
 : ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
@@ -91,7 +93,7 @@ variable indent
 : .} ." } " } ;
 : .}r first @ if cri then .} ;
 : ?.named nam @ if ." named " me .name then ;
-: (o.) .xy ." at " .con ?.named .{ ?.hide ?.halt ?.a ?.wh ?.s ;
+: (o.) .xy ." at " .con ?.named .{ ?.vis ?.halt ?.a ?.wh ?.s ;
 : o. { (o.) .} ;
 : o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;

@@ -23,8 +23,8 @@ z" data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
 : obey >vfx >display cr tib #tib @ ['] evaluate try 0 #tib ! ;
-: ?halt repl -> hide @ 0= ui-halt? and game -> halt ! ;
-: toggle-repl repl { hide toggle } ?halt ;
+: ?halt repl -> vis @ ui-halt? and game -> halt ! ;
+: toggle-repl repl -> vis toggle ?halt ;
 : ?charkey  
     case
         ( bksp ) 8 of #tib @ 0; -1 #tib +! exit endof
@@ -91,7 +91,7 @@ object: *repl
         <tab> pressed? if toggle-repl then
         0 winh 64 - s>p x v! 
     draw> bar bar-text
-    respond> hide @ ?; repl-events ;
+    respond> vis @ 0; repl-events ;
 : rs reset-stacks ;
 
 ' noop is EditOnError

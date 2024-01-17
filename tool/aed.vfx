@@ -14,8 +14,8 @@ variable cti
 \ - Editor actions
 : anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
-: hide-each each> hide on ;
-: sel anm hide-each  anm nth-child -> hide off ;
+: hide-each each> me hide ;
+: sel anm hide-each  anm nth-child reveal ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
@@ -79,7 +79,7 @@ tools {
 :noname [ is editor-respond ]
     respond>
     editmode @ ?;
-    repl -> hide @ 0;
+    repl -> vis @ ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char case
             [char] z of -1 +kf endof

@@ -41,7 +41,7 @@ include lib/dltree.vfx
 \ - Basis
 var nam
 /obj constant /linkage
-var dead var hide var halt var con 
+var dead var vis var halt var con 
 var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy
 /obj to /basis
@@ -64,7 +64,7 @@ defer children
 \ - Instancing
 defer 1object
 :noname [ is 1object ] con ! pen v@ 2s>p x v! ;
-: init en on 1. dup sx v! ;
+: init en on vis on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
 : object:
@@ -87,7 +87,7 @@ object: *generic ;
 : +t +m x v@ 2i 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
 : ?children first @ if +t children -t then ;
-: draw en @ 0; hide @ ?; drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ; 
+: draw en @ 0; vis @ 0; drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ; 
 :noname [ is children ] first @ 0; ['] draw me each ;
 : act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
 : physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
