@@ -3,5 +3,6 @@
 [ ] multiple selection
 [ ] edit static layer
 [ ] event filtering / keyboard focus / mouse events based on editmode
+[ ] event system w/ subscription
 [x] hide -> vis, hide reveal
 

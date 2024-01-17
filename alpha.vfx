@@ -35,6 +35,10 @@ synonym dup-endcase end-case
 : [] swap cells + ; \ "indexed"
 : toggle dup @ not swap ! ;
 : count+ 1 + ;
+: z[ zstr[ ;
+: ]z ]zstr ;
+: $[ z[ ;
+: ]$ ]z zcount ;
 
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;
@@ -156,12 +160,14 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 
 \ - Text
 variable font  builtin-font font !
-: z[ zstr[ ;
-: ]z ]zstr ;
 : ?type ?dup if type else drop then ;
 : >z z[ ?type ]z ;
-: text >r font @ fore 4f@ at@f 0 r> al_draw_text ;
 : fonth font @ al_get_font_line_height ;
+: mltext ( z w - )
+    s>f f>ds   
+    fonth s>f f>ds | lh w z | 
+    font @ fore 4f@ at@f w lh 0 z al_draw_multiline_text ;
+: text 9999999 mltext ;
 
 \ - Delta
 1e fvalue fdelta

@@ -1,0 +1,8 @@
+the (tool)shed is an interactive development extension
+
+[-] repl+shed can be toggled and given kb focus with <tab>
+    (both always as a pair)
+
+[ ] the mouse interactions can be turned on and off regardless of the kb focus with <f2>
+
+[x] <f3> enables/disables halting of the game when the repl is onscreen

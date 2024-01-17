@@ -3,7 +3,7 @@ create str 1000 allot
 
 : Emit-string  drop  str >str + c!  1 +to >str ;
 : Type-string  drop  bounds do i c@ emit loop ;
-: CR-string drop ;
+: CR-string drop  10 0 emit-string ;
 
 create string-vectors
   ' drop ,

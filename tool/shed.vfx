@@ -39,7 +39,7 @@ motif var ser var attr var post /obj to /basis
 : from -> x v@ p>s at ;
 : a+t
     +m identity
-    parent @ begin ?dup while
+    me begin ?dup while
         dup { x v@ 2p>f  sx v@ 2p>f } 0e
             m2 al_build_transform  m m2 al_compose_transform
         -> parent @
@@ -48,7 +48,7 @@ motif var ser var attr var post /obj to /basis
 ;
 : ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
-: abox a+t x v@ v*m w v@ ascale* area -t ;
+: abox a+t 0 0 v*m w v@ ascale* area -t ;
 : >local abox 2drop 2- ascale/ ;
 : hide -> vis off ;
 : reveal -> vis on ;
@@ -70,10 +70,10 @@ s" shed.vfx" reload$ place
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop alt? if workspace else dragee then ?dup 0; { ?snap } 0 to dragee ;
-: m*box x v@ w v@ area v*m 2swap v*m 2swap ;
+: m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
 : (hovering) me each> vis @ 0; w v@ or 0<> first @ or 0; 
     mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
-: hovering { +t 0 to hoveree (hovering) -t } ;
+: hovering { 0 to hoveree +t (hovering) -t } ;
 : pick to this ;
 : drag to dragee ;
 
@@ -109,9 +109,9 @@ variable indent
 
 \ - Info
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
-: tiny a+t x v@ v*m 2p>s at -t identity ;
+: tiny a+t 0 0 v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
-: outline a+t x v@ 2p>s at w v@ 2p>s rect -t ;
+: outline a+t 0 0 at w v@ 2p>s rect -t ;
 
 \ - UI extension
 : ?drag ( obj - ) 1 mheld? if drop dragging else hovering then ;

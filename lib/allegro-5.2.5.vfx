@@ -2687,7 +2687,7 @@ extern "C" void al_draw_indexed_prim( void * vtxs, void * decl, void * texture, 
 \ extern "C" al_draw_justified_ustr( );
 extern "C" void al_draw_line( float x1, float y1, float x2, float y2, float r, float g, float b, float a, int float-thickness );
 extern "C" void al_draw_multiline_text( void *font,
-     float r, float g, float b, float a, float x, float y, float max_width, float line_height,
+     float r, float g, float b, float a, float x, float y, int float-max_width, int float-line_height,
      int flags, void *text );
 \ extern "C" al_draw_multiline_textf( );
 \ extern "C" al_draw_multiline_ustr( );
@@ -3988,7 +3988,7 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
 \    doublebuf? not if
 \        \ gets us one less frame of input lag
 \        \ and in development keeps the framebuffer always presented
-\        ALLEGRO_SINGLE_BUFFER 1 1 al_set_new_display_option
+        ALLEGRO_SINGLE_BUFFER 1 1 al_set_new_display_option
 \    then
     
     0 al_set_new_display_adapter
