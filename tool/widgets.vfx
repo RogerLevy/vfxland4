@@ -12,8 +12,7 @@ z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
 : !font ascii8x8.fnt font ! ;
 
 : exec data @ ?dup 0; count evaluate ;
-: button-respond
-    respond> 
+: button-respond respond> 
     over? 0; 
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if ?click then
     ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if root unclick ['] exec try then
@@ -32,7 +31,18 @@ z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
 : (up) boxshadow sdims 2dup grey rectf white rect ;
 : button-draw draw> _click a? if (down) else (up) then 16 10 +at (data) ;
 : toolbox-draw draw> white sdims rectf black sdims rect sdims drop 8 black rectf 16 15 +at (data) ;
-: toolbox-respond respond> over? 0; 1 mpressed? 0; first @ ?dup 0; toggle ;
+
+create ox 0 , 0 ,
+: toolbox-respond respond>
+    over? 0;
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if 
+        x v@ ox v!
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if 
+        x v@ ox v@ d= 0;
+        first @ ?dup 0; toggle
+    then
+;
 : panel-draw draw> -5 -5 +at boxshadow ;
 
 : ` [char] ` parse ;
