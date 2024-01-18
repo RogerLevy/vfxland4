@@ -2,9 +2,8 @@ require obj/tilemap.vfx
 require obj/tile.vfx
 require lib/filetypes.vfx
 
-obj animations
-
 \ - Editor variables
+obj animations
 0 value kf#
 reference editor
 reference anmc
@@ -29,7 +28,7 @@ create ctw 1 , 1 ,
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
     z[ ." Tile: " cti @ . ]z white stext nr
-    z[ ." XY: " mouse editor { s>local } swap . . ]z white stext nr
+    z[ ." XY: " mouse anmc { s>local } swap . . ]z white stext nr
     z[ ." CTW: " ctw v@ swap . . ]z stext nr
 ;
 : tbank-act act> over? 0;
