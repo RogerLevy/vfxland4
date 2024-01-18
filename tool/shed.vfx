@@ -159,7 +159,6 @@ variable indent
     ALLEGRO_EVENT_MOUSE_AXES happened? if
         e MOUSE_EVENT.dz @ ?dup if +zoom then
     then
-    
 ; 
 
 object: *shed shed-respond act> workspace ?drag draw> -matte ;
