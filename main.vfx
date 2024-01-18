@@ -1,60 +1,20 @@
 faster
-require lib/window.vfx
 
+\ - Window
+require lib/window.vfx
 3e fvalue zoom
 320 3 *  240 3 * 64 +  0 window
 display 1920 2 / 0 al_set_window_position
 \ 1920 1080  1 window
-
 vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
-require alpha.vfx 
-require obj.vfx
-require core.vfx
+\ - Game
+include notzelda.vfx
+
+\ - Development
 require tool/ui.vfx
-require gradient.vfx
 require tool/shed.vfx
 require tool/widgets.vfx
 
-\ - Debugging info
-object: *dbg draw>
-    sherry32.fnt font !
-\      z[ ." mouse: " mouse swap . . ]z red stext nr
-    hoveree 0; z[ hoveree o. ]z yellow stext
-;
-static {
-    *dbg named dbg { }
-}
-dbg off
-
-\ - Tweening test
-\ fget obj/tween
-\ pspr as
-\ :noname
-\     overshoot ease-in-out x dup @ 50. + 2. tween
-\     overshoot ease-in-out y 50. 2. tween> 
-\     overshoot ease-in-out y 0. 2. tween drop ;
-\ execute
-
-\ - AED test
-require animate.vfx
-fget tool/aed
-require obj/tilemap.vfx
-z" data/bmp/tbank_initial.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-
-\ - Toolbox test
-0.75e fdup fdup 1e backdrop 4f!
-tools {
-    0 0 at *generic named widgets { \ 2. 2. sx v!
-        600 600 at *toolbox { ` This is a test` data!
-            0 32 at *panel { 
-                8 8 at *label { ` aosdfjaosdifj` data! break }
-                0 0 at *button { ` editmode toggle` data! }
-                0 0 at *button { ` dbg toggle` data! }
-            }
-        }
-    }
-}
-
-go 
+\ - Enter main loop
+go
