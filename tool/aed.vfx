@@ -27,10 +27,11 @@ variable cti
 \ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
-\    z[ tool .name ]z white stext nr
+    z[ ." Tile: " cti @ . ]z white stext nr
+    z[ ." XY: " mouse editor { s>local } swap . . ]z white stext nr
 ;
 : tbank-act act> over? 0;
-    1 mpressed? if mouse s>local 16. 16. 2p/ 128 * + cti ! then ;
+    1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
 : .anm anm ?dup if .name then ;
 : tbank-draw draw>
     sdims 2dup $00000080 color rectf
@@ -40,7 +41,9 @@ variable cti
 : aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ." me tools push " ;
 defer editor-respond
 
-: ghost mouse s>local 8 8 2- at $ffffff80 color cti @ tile tblit ;
+: ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
+
+: ghost mouse s>local 8 8 2- ?2tsnap at $ffffff80 color cti @ tile tblit ;
 : ?ghost over? 0; ghost ;
 
 \ - Editor components 2/2
@@ -82,6 +85,11 @@ tools {
                     }
                     0 winh 2 / at *toolbox { ` tiles` data!
                         0 32 at *tbank named tselector { _bolted aon }
+                    }
+                    300 winh 2 / at *toolbox { ` tools` data!
+                        0 32 at *generic {
+                            0 0 at *button { ` snapping toggle` data! }
+                        }
                     }
                 }
             }

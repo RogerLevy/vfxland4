@@ -151,7 +151,7 @@ variable indent
     then
 ; 
 
-object: *shed shed-respond act> workspace ?drag ;
+object: *shed shed-respond act> workspace ?drag draw> -matte ;
 object: *info draw> editmode @ 0; outlines ;
 
 workspace {

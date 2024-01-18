@@ -5,8 +5,9 @@ require obj.vfx
 2048 dup al_create_bitmap value tbank
 
 : subbmp+  over >r subbmp r> 0 +at ;
-: row, tbank bmpw 0 do tbank tw dup subbmp+ , tw +loop ;
-: tiles, 0 0 at tbank bmph 0 do 0 i at row, tw +loop ;
+: row, at@ 256 0 do tbank tw dup subbmp+ , tw +loop at ;
+: subbank, 256 0 do row, 0 tw +at tw +loop ;
+: tiles, 0 0 at 2048 0 do 2048 0 do i j at subbank, 256 +loop 256 +loop ;
 create tarr tiles,
 
 \ - Drawing
