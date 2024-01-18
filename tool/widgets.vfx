@@ -1,9 +1,9 @@
 _attributes bit _click bit _nr drop \ to _attributes
 /basis var data var fgc var bgc drop
 
-z" data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
+z" sys/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
    constant ascii8x8.fnt
-z" data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
+z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     constant ibm8x16.fnt
 
 : sdims w v@ 2p>s ;
