@@ -42,7 +42,6 @@ synonym dup-endcase end-case
 : icount @+ ;
 : icount+ cell+ ;
 
-
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;
 : v! dup >r 4 + ! r> ! ;

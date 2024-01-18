@@ -1,8 +1,25 @@
 the (tool)shed is an interactive development extension
 
-[-] repl+shed can be toggled and given kb focus with <tab>
-    (both always as a pair)
+[x] <f3> enables/disables halting of the game when the REPL is onscreen
+[-] <tab> toggles the REPL; allows entering commands, and picking and moving of anything not bolted down
+[ ] <`> toggles the SHED and has some hotkeys when REPL is not on
+[ ] when neither the SHED nor the REPL are on, an application gets keyboard and mouse focus
+    therefore if any of the SHED's editing features are wanted in parts of an app they have to be implemented there
+[ ] keyboard focus can be stolen by an object
 
-[ ] the mouse interactions can be turned on and off regardless of the kb focus with <f2>
+When SHED is on...
+[ ] <f1...f12> can be assigned to switch between 12 workspaces
+[x] scroll the workspace with alt + lmb
+[x] zoom the workspace with the mousewheel (0.25x...2x)
+[-] the STATIC layer never scrolls and contains some locked common tools.
+[ ] shift + <`> toggles the STATIC layer
 
-[x] <f3> enables/disables halting of the game when the repl is onscreen
+--- Misc notes ---
+
+- you can load multiple instances of a program just by including it again.
+
+- when loading a figure,
+    named objects are matched to corresponding words if they exist, which are then reassigned.
+    (^this is a function of NAME / NAMED.)
+    if the root of a figure is named, any object with a matching name is replaced. (the old one is removed/deleted.)
+    LOAD picks the loaded figure, good in case of error, you can delete it immediately

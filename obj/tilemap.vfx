@@ -12,7 +12,6 @@ create tarr tiles,
 
 \ - Drawing
 motif var ba var stride var scrollx var scrolly
-/obj value /tilemap
 : tile@ { stride @ * + ba @ [] @ } ;
 : tile! { stride @ * + ba @ [] ! } ;
 : tile dup 28 rshift swap $0fff and tarr [] @ ;
@@ -26,7 +25,8 @@ motif var ba var stride var scrollx var scrolly
 : height h @ p>s t/ scrolly @ p>s tw mod if 1 + then ;
 : rows 0 ?do dup width row stride+ loop drop ;
 : tilemap scrollx v@ 2p>s scrolled ba @ + height rows ;
-: 1tilemap stride ! ba ! gamew gameh 2s>p w v! draw> tilemap ;
+: 1tilemap 2s>p w v! stride ! ba ! draw> tilemap ;
+object: *tilemap here gamew tw / gamew gameh 1tilemap ;
 
 \ - Collisions
 \ what sides the object collided

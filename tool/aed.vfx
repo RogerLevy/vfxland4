@@ -19,7 +19,8 @@ create ctw 1 , 1 ,
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
-: lay ckf { anm { mouse s>local } 8 8 2- at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
+: tcenter ctw v@ 8. 8. 2p* 2- ;
+: lay ckf { anm { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
@@ -44,7 +45,7 @@ defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
 
-: ghost mouse s>local 8 8 2- ?2tsnap at $ffffff80 color ctw v@ cti @ tiles ;
+: ghost mouse s>local tcenter ?2tsnap at $ffffff80 color ctw v@ cti @ tiles ;
 : ?ghost over? 0; ghost ;
 
 \ - Editor components 2/2
@@ -60,16 +61,17 @@ object: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
 : edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 0.25 animate } ;
-: (save) anm tlpath osave ;
+: (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl.vfx" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
 : anm-load chooser ?dup if oload edit then ;
-create "untitled.tl" ," untitled.tl"
-: new 0 0 at *timeline "untitled.tl" name { *keyframe { } me } edit ;
+create untitled$ ," UNTITLED.TL"
+: new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
-: anm-saveas chooser ?dup if -path -ext ?clone rename (save) then ;
-: anm-save anm -> nam @ if (save) else anm-saveas then ;
+: anm-saveas chooser ?dup if -path -ext ?clone rename (anm-save) then ;
+: untitled? anm -> nam @ count untitled$ count compare 0= ;
+: anm-save untitled? if anm-saveas else (anm-save) then ;
 
 \ - Editor layout
 tools {

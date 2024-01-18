@@ -20,3 +20,27 @@ data/
 
 tool/
     development components such as data editors
+
+allegro-xxx.vfx
+    Allegro bindings and convenience words
+
+window.vfx
+    Allegro window management
+
+alpha.vfx
+    base game library, depends on Allegro
+
+core.vfx
+    main loop
+
+main.vfx
+    entry point for development; not intended to be the entry point for games
+
+obj.vfx
+    object system
+    
+ui.vfx
+    REPL and dev environment framework
+    
+shed.vfx
+    toolshed dev environment

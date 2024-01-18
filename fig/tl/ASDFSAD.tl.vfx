@@ -1,9 +1,0 @@
-
-0 0 at *TIMELINE named ASDFSAD.TL {  
-    0 0 at *KEYFRAME {  
-        -16 0 at *TILE { 16. 16. w v! 1 ti ! } 
-        -16 -16 at *TILE { 16. 16. w v! 1 ti ! } 
-        0 -16 at *TILE { 16. 16. w v! 1 ti ! } 
-        0 0 at *TILE { 16. 16. w v! 1 ti ! } 
-    } 
-} 

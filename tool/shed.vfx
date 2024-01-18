@@ -109,7 +109,7 @@ variable indent
 : ?existing find if execute else drop 0 then ;
 : ?replace ?dup 0; dup -> parent @ 0= if ."  orphan " drop dup remove exit then udup replace ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
-: load bl word dup ?existing >r count figpath name>path oload r> ?replace { postload } ;
+: load bl word dup ?existing >r count figpath name>path oload r> ?replace as postload me pick ;
 : ser> r> ser ! ;
 : post: here aligned post ! 0 parse $, ;
 
