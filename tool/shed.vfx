@@ -100,11 +100,11 @@ variable indent
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
 : osave >r dup -> nam @ count r> name>path 2dup 2>r f[ o.r ]f cr ." Saved to " 2r> type ;
 : save ' execute figpath osave ;
-: oload 0 pick name>path me { included } me -> last @ ;
+: oload 0 pick 2dup type me { included } me -> last @ ;
 : ?existing find if execute else drop 0 then ;
 : ?replace ?dup 0; dup -> parent @ 0= if ."  orphan " drop dup remove exit then udup replace ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
-: load bl word dup ?existing >r count figpath oload r> ?replace { postload } ;
+: load bl word dup ?existing >r count figpath name>path oload r> ?replace { postload } ;
 : ser> r> ser ! ;
 : post: here aligned post ! 0 parse $, ;
 
