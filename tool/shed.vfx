@@ -54,6 +54,10 @@ motif var ser var attr var post /obj to /basis
 : hide -> vis off ;
 : reveal -> vis on ;
 
+\ - Definition
+: [locked] _locked aon ;
+: [bolted] _bolted aon ;
+
 \ - Stage
 game {
     *generic named stage { }
@@ -127,8 +131,8 @@ variable indent
     mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
     } ;
 
-: ?locked this { _locked a? } 0; cr ." Object is locked. Cannot delete!" r> drop ;
-: ?delete this 0; ?locked this kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
+: ?locked dup { _locked a? } 0; drop cr ." Object is locked. Cannot delete!" r> drop ;
+: delete ?dup 0; ?locked kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
 : shed-respond
     respond>
     ALLEGRO_EVENT_KEY_DOWN happened? if
@@ -136,9 +140,18 @@ variable indent
     then
     editmode @ if
         ALLEGRO_EVENT_KEY_DOWN happened? if
-            the-key <del> = if ?delete then
+            the-key <del> = if this delete then
         then
     then
+    ALLEGRO_EVENT_KEY_CHAR happened? if
+        this 0;
+        the-key case
+            <left> of -1. 0 this -> x v+! endof
+            <right> of 1. 0 this -> x v+! endof
+            <up> of 0 -1. this -> x v+! endof
+            <down> of 0 1. this -> x v+! endof
+        endcase
+    then            
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         hoveree ?dup if dup pick drag then
     then
@@ -149,6 +162,7 @@ variable indent
     ALLEGRO_EVENT_MOUSE_AXES happened? if
         e MOUSE_EVENT.dz @ ?dup if +zoom then
     then
+    
 ; 
 
 object: *shed shed-respond act> workspace ?drag draw> -matte ;

@@ -77,7 +77,7 @@ tools {
             0 32 at *generic {
                 0 0 at *status { } 
                 0 64 at *generic {
-                    0 0 at *editor named editor { 128. 128. w v! _bolted aon
+                    0 0 at *editor named editor { 128. 128. w v! [bolted]
                         64 64 at *generic named anmc { }
                     }
                     512 0 at *preview named preview { 
@@ -97,6 +97,8 @@ tools {
     }
 }
 
+aed -> first @ :noname each> [locked] me recurse ; execute
+
 \ - Editor controls (besides shed-provided actions)
 :noname [ is editor-respond ]
     respond>
@@ -110,11 +112,7 @@ tools {
             ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
         the-key case
-            <del> of ?delete endof
-            <left> of -1. 0 this -> x v+! endof
-            <right> of 1. 0 this -> x v+! endof
-            <up> of 0 -1. this -> x v+! endof
-            <down> of 0 1. this -> x v+! endof
+            <del> of this delete endof
         endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
