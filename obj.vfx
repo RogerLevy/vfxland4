@@ -37,10 +37,10 @@ include lib/dltree.vfx
 : each> postpone (each>) discard-sinline ; immediate
 : clear dlclear ;
 : insert 2dup 2>r insert-after 2r> swap insert-after ;
+: linkage next parent cell+ over - ;
 
 \ - Basis
 var nam
-/obj constant /linkage
 var dead var vis var halt var con 
 var x var y var w var h var vx var vy var sx var sy
 var beh var drw var phy

@@ -10,6 +10,7 @@ reference editor
 reference anmc
 reference pspr
 variable cti
+create ctw 1 , 1 ,
 
 \ - Editor actions
 : anm anmc -> first @ ;
@@ -19,7 +20,7 @@ variable cti
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
-: lay ckf { anm { mouse s>local } 8 8 2- at *tile { cti @ ti ! ?snap } } ;
+: lay ckf { anm { mouse s>local } 8 8 2- at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
@@ -29,6 +30,7 @@ variable cti
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
     z[ ." Tile: " cti @ . ]z white stext nr
     z[ ." XY: " mouse editor { s>local } swap . . ]z white stext nr
+    z[ ." CTW: " ctw v@ swap . . ]z stext nr
 ;
 : tbank-act act> over? 0;
     1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
@@ -43,7 +45,7 @@ defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
 
-: ghost mouse s>local 8 8 2- ?2tsnap at $ffffff80 color cti @ tile tblit ;
+: ghost mouse s>local 8 8 2- ?2tsnap at $ffffff80 color ctw v@ cti @ tiles ;
 : ?ghost over? 0; ghost ;
 
 \ - Editor components 2/2
@@ -83,10 +85,10 @@ tools {
                     512 0 at *preview named preview { 
                         64 64 at *pspr named pspr { } 
                     }
-                    0 winh 2 / at *toolbox { ` tiles` data!
+                    0 winh 2 / at *toolbox { ` Tiles` data!
                         0 32 at *tbank named tselector { _bolted aon }
                     }
-                    300 winh 2 / at *toolbox { ` tools` data!
+                    300 winh 2 / at *toolbox { ` Tools` data!
                         0 32 at *generic {
                             0 0 at *button { ` snapping toggle` data! }
                         }
@@ -113,6 +115,10 @@ aed -> first @ :noname each> [locked] me recurse ; execute
         endcase
         the-key case
             <del> of this delete endof
+            <left> of -1. 0 this -> x v+! endof
+            <right> of 1. 0 this -> x v+! endof
+            <up> of 0 -1. this -> x v+! endof
+            <down> of 0 1. this -> x v+! endof
         endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if

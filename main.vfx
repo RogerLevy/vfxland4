@@ -22,11 +22,12 @@ object: *dbg draw>
 \      z[ ." mouse: " mouse swap . . ]z red stext nr
     hoveree 0; z[ hoveree o. ]z yellow stext
 ;
-
 static {
     *dbg named dbg { }
 }
+dbg off
 
+\ - Tweening test
 \ fget obj/tween
 \ pspr as
 \ :noname
@@ -35,15 +36,14 @@ static {
 \     overshoot ease-in-out y 0. 2. tween drop ;
 \ execute
 
-\ - Test
+\ - AED test
 require animate.vfx
 fget tool/aed
 require obj/tilemap.vfx
 z" data/tbank_test.png" loadbmp constant b
 0 0 at b tbank bmpwrite
-\ include fig/tl/test.tl.vfx
-\ test.tl edit 
 
+\ - Toolbox test
 0.75e fdup fdup 1e backdrop 4f!
 tools {
     0 0 at *generic named widgets { \ 2. 2. sx v!

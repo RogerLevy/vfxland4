@@ -1,5 +1,9 @@
 \ - Tile sprite
 motif var ti
-: draw-tile draw> ti @ tile+ ;
+: ttile+ tile tblit tw 0 +at ;
+: tiles | t | 0 do dup 0 do t ttile+ 1 +to t loop dup negate dup 16 + +to t tw * tw +at loop drop ;
+: tdims w v@ 2p>s tw / swap 1 max tw / swap 1 max ;
+: draw-tile draw> fgc @ color tdims ti @ tiles ;
 : ser-tile ser> ti ? ." ti ! " ;
-object: *tile 16. 16. w v! draw-tile ser-tile ; 
+: tile:dims! tw * swap tw * swap 2s>p w v! ;
+object: *tile 16. 16. w v! -1 fgc ! draw-tile ser-tile ; 
