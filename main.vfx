@@ -40,7 +40,7 @@ dbg off
 require animate.vfx
 fget tool/aed
 require obj/tilemap.vfx
-z" data/tbank_test.png" loadbmp constant b
+z" data/bmp/tbank_initial.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 
 \ - Toolbox test
