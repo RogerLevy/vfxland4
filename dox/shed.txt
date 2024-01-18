@@ -1,5 +1,8 @@
 the (tool)shed is an interactive development extension
 
+1/18 idea:
+all SHED hotkeys available in REPL mode with ctrl modifier
+
 [x] <f3> enables/disables halting of the game when the REPL is onscreen
 [-] <tab> toggles the REPL; allows entering commands, and picking and moving of anything not bolted down
 [ ] <`> toggles the SHED and has some hotkeys when REPL is not on
