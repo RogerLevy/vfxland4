@@ -1,5 +1,4 @@
 1/17
-
 [ ] multiple selection
 [ ] edit static layer
 [ ] input focusing / common hotkeys
@@ -8,3 +7,8 @@
 
 1/18
 [ ] scale or resize anything with the mouse, smooth or snapped
+
+SHED context menu:
+[ ] grouping/ungrouping
+[ ] push selected to object
+[ ] bring-to-front, send-to-back
