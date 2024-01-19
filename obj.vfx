@@ -74,7 +74,7 @@ object: *generic ;
 : obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 
 \ - Basic actions
-: kill { en off dead on } ;
+: kill dup -> en off -> dead on ;
 : reckon
     first @ {  begin  me while
         next @ >r
