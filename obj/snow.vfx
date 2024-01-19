@@ -36,10 +36,10 @@ variable vc
 : wiggle 0.1 rnd  0.05 - vx +!  vx @ -0.5 0.5 clamp vx ! ;
 : fall act> wiggle ?wrap ;
 \ : pixel 1 1 rectf ;
-object: *flake rspd vx v! fall ( draw> white pixel ) ;
+c: *flake rspd vx v! fall ( draw> white pixel ) ;
 : flakes 0 do somewhere at *flake drop loop ;
 
-object: *snow draw> white points ;
+c: *snow draw> white points ;
 
 stage {
     *snow named snow {

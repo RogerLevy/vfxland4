@@ -67,10 +67,10 @@ defer 1object
 : init en on vis on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
-: object:
+: c:
     create here 0 , :noname swap !
     does> me *child { dup body> 1object @ execute me } ;    
-object: *generic ;
+c: *generic ;
 : obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 
 \ - Basic actions

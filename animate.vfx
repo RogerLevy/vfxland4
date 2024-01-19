@@ -7,5 +7,5 @@ motif var tl var spd var ac var af /obj to /basis \ add animation capability to 
 : animate spd ! tl ! draw> animation ;
 
 \ - Timeline definition
-object: *timeline ;
-object: *keyframe ; 
+c: *timeline ;
+c: *keyframe ; 

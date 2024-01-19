@@ -64,11 +64,11 @@ create ox 0 , 0 ,
     data@  w @ p>s 8 -  black mltext
 ;
 
-object: *label 16. h ! _bolted aon label-draw ser-widget act> ?layout ;
-object: *textbox 160. 160. w v! $fff8a0e0 bgc ! textbox-draw ser-widget $[ ." The rain " cr ." in Spain falls mainly on the plain." ]$ data! ;
-object: *button 28. h !  _bolted aon button-draw ser-widget button-respond act> ?layout ;
-object: *toolbox 128. 28. w v! toolbox-draw ser-widget toolbox-respond ;
-object: *panel _bolted aon $00000040 bgc ! panel-draw act> 0 0 w v! ;
+c: *label 16. h ! _bolted aon label-draw ser-widget act> ?layout ;
+c: *textbox 160. 160. w v! $fff8a0e0 bgc ! textbox-draw ser-widget $[ ." The rain " cr ." in Spain falls mainly on the plain." ]$ data! ;
+c: *button 28. h !  _bolted aon button-draw ser-widget button-respond act> ?layout ;
+c: *toolbox 128. 28. w v! toolbox-draw ser-widget toolbox-respond ;
+c: *panel _bolted aon $00000040 bgc ! panel-draw act> 0 0 w v! ;
 
 \ : [toolbox] *toolbox 0 32 at ;
 \ : [panel] *panel 8 8 at ;

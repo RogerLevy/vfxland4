@@ -79,10 +79,10 @@ bpage uios uios uiosp !
     osp @ uiosp ! r> osp !
 ; 
 
-object: *ui
+c: *ui
     act> (events) \ pause
     draw> -matte ;
-object: *repl
+c: *repl
     act>
         <tab> pressed? if toggle-repl then
         0 winh 64 - s>p x v! 

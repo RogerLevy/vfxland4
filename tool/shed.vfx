@@ -16,7 +16,7 @@ variable snapping
     zoom f>p dup game -> sx v!
 ;
 : game-act act> center zoom f>p dup sx v! draw> matte ;
-object: *game game-act ;
+c: *game game-act ;
 game as game-act ' *game con !
 
 \ - Scripting
@@ -161,8 +161,8 @@ variable indent
     then
 ; 
 
-object: *shed shed-respond act> workspace ?drag draw> -matte ;
-object: *info draw> editmode @ 0; outlines ;
+c: *shed shed-respond act> workspace ?drag draw> -matte ;
+c: *info draw> editmode @ 0; outlines ;
 
 workspace {
     *shed named shed {

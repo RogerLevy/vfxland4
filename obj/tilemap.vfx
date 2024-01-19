@@ -26,7 +26,7 @@ motif var ba var stride var scrollx var scrolly
 : rows 0 ?do dup width row stride+ loop drop ;
 : tilemap scrollx v@ 2p>s scrolled ba @ + height rows ;
 : 1tilemap 2s>p w v! stride ! ba ! draw> tilemap ;
-object: *tilemap here gamew tw / gamew gameh 1tilemap ;
+c: *tilemap here gamew tw / gamew gameh 1tilemap ;
 
 \ - Collisions
 \ what sides the object collided

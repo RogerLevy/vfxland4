@@ -10,15 +10,15 @@ create buf 20 16 * cells allot
 
 z" data/tbank_test.png" loadbmp constant b
 0 0 at b tbank bmpwrite
-object: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
+c: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
 
 : !textbounds 2dup nip 9 * fonth 2s>p w v! ;
-object: *hello draw> white s" Hello" !textbounds >z stext ; 
+c: *hello draw> white s" Hello" !textbounds >z stext ; 
 
 \ ' shed shed -> con !
 
 0 value bg
-object: *bg me to bg 0 0 x v! ;
+c: *bg me to bg 0 0 x v! ;
 
 fget starfield
 

@@ -17,7 +17,7 @@ require tool/shed.vfx
 require tool/widgets.vfx
 
 \ - Debugging info
-object: *dbg draw>
+c: *dbg draw>
     sherry32.fnt font !
 \      z[ ." mouse: " mouse swap . . ]z red stext nr
     hoveree 0; z[ hoveree o. ]z yellow stext

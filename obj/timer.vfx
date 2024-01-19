@@ -10,7 +10,7 @@ motif var et var xt var tc
         then
         delta tc +!
 ;
-object: *timer act> me kill ; \ suicide after deserializing
+c: *timer act> me kill ; \ suicide after deserializing
 : (timer>)  ( f: sec -- <code> )
     *timer { r> 1timer } ;
 : timer> postpone (timer>) discard-sinline ; immediate
