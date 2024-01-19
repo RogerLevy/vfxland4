@@ -6,7 +6,7 @@ require lib/filetypes.vfx
 variable snapping
 \ 0 value always-drag?
 
-1 bit _bolted bit _locked value _attributes
+1 bit bolted_ bit locked_ value _attributes
 
 \ - Game config
 : matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
@@ -55,8 +55,8 @@ motif var ser var attr var post /obj to /basis
 : reveal -> vis on ;
 
 \ - Definition
-: [locked] _locked aon ;
-: [bolted] _bolted aon ;
+: [locked] locked_ aon ;
+: [bolted] bolted_ aon ;
 
 \ - Stage
 game {
@@ -70,7 +70,7 @@ s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
 \ - Dragging
-: +drag _bolted a? ?; walt 2s>p ascale/ sx v@ 2p* x v+! ;
+: +drag bolted_ a? ?; walt 2s>p ascale/ sx v@ 2p* x v+! ;
 : dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
@@ -105,7 +105,7 @@ variable indent
 : o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
 : osave >r dup -> nam @ count r> name>path 2dup 2>r f[ o.r ]f cr ." Saved to " 2r> type ;
 : save ' execute figpath osave ;
-: oload 0 pick 2dup type me { included } me -> last @ ;
+: oload 2dup type me { included } me -> last @ ;
 : ?existing find if execute else drop 0 then ;
 : ?replace ?dup 0; dup -> parent @ 0= if ."  orphan " drop dup remove exit then udup replace ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
@@ -132,8 +132,9 @@ variable indent
     mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
     } ;
 
-: ?locked dup { _locked a? } 0; drop cr ." Object is locked. Cannot delete!" r> drop ;
-: delete ?dup 0; ?locked kill 0 pick 0 drag 0 to hoveree workspace { reckon } ;
+: ?locked dup { locked_ a? } 0; drop cr ." Object is locked. Cannot delete!" r> drop ;
+: unpick 0 pick 0 drag 0 to hoveree ;
+: delete ?dup 0; ?locked kill unpick workspace { reckon } ;
 : shed-respond
     respond>
     ALLEGRO_EVENT_KEY_DOWN happened? if

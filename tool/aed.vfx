@@ -85,7 +85,7 @@ tools {
                         64 64 at *pspr named pspr { } 
                     }
                     0 winh 2 / at *toolbox { ` Tiles` data!
-                        0 32 at *tbank named tselector { _bolted aon }
+                        0 32 at *tbank named tselector { bolted_ aon }
                     }
                     300 winh 2 / at *toolbox { ` Tools` data!
                         0 32 at *generic {
