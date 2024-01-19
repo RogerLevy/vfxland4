@@ -12,3 +12,7 @@ SHED context menu:
 [ ] grouping/ungrouping
 [ ] push selected to object
 [ ] bring-to-front, send-to-back
+
+1/19
+[ ] if needed, add tasks
+[ ] rename: s>p -> 1p, p>s -> 1s, p>f -> 1f, 2s>p -> 2p, 2p>s -> 2s, 2p>f -> 2f 
