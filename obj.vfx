@@ -43,7 +43,7 @@ include lib/dltree.vfx
 var nam
 var dead var vis var halt var con 
 var x var y var w var h var vx var vy var sx var sy
-var beh var drw var phy
+var beh var drw var phy var fgc var bgc 
 /obj to /basis
 defer children
 

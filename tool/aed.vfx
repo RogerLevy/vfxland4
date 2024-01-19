@@ -54,8 +54,6 @@ object: *preview 3. 3. sx 2! draw> crosshairs ;
 object: *editor 3. 3. sx 2! editor-respond draw> crosshairs ?ghost ;
 object: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
 object: *aed aed-ser ;
-object: *timeline ;
-object: *keyframe ; 
 object: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 object: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
