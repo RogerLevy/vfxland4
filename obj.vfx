@@ -87,8 +87,9 @@ c: *generic ;
 : +t +m x v@ 2i 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
 : ?children first @ if +t children -t then ;
-: draw en @ 0; vis @ 0; drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ; 
-:noname [ is children ] first @ 0; ['] draw me each ;
+: draw drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ;
+: ?draw en @ 0; vis @ 0; draw ; 
+:noname [ is children ] first @ 0; ['] ?draw me each ;
 : act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
 : physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
 : (draw>) r> drw ! ; : draw> postpone (draw>) discard-sinline ; immediate

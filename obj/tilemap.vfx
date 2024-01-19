@@ -3,6 +3,7 @@ require obj.vfx
 
 16 constant tw \ tile width
 2048 dup al_create_bitmap value tbank
+variable tileofs
 
 : subbmp+  over >r subbmp r> 0 +at ;
 : row, at@ 256 0 do tbank tw dup subbmp+ , tw +loop at ;
@@ -10,11 +11,13 @@ require obj.vfx
 : tiles, 0 0 at 2048 0 do 2048 0 do i j at subbank, 256 +loop 256 +loop ;
 create tarr tiles,
 
+: subbank-xy 8 /mod 256 * swap 256 * swap ;
+
 \ - Drawing
 motif var ba var stride var scrollx var scrolly
 : tile@ { stride @ * + ba @ [] @ } ;
 : tile! { stride @ * + ba @ [] ! } ;
-: tile dup 28 rshift swap $0fff and tarr [] @ ;
+: tile dup 28 rshift swap tileofs @ + $0fff and tarr [] @ ;
 : tile+ tile fblit tw 0 +at ;
 : row pen v@ 2>r 0 ?do @+ tile+ loop drop 2r> tw + at ;
 : scrolled ( x y - ofs )

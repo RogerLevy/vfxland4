@@ -24,13 +24,18 @@ create ctw 1 , 1 ,
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
+: subbank 256 * ckf -> tio ! ;
+: subbank@ ckf -> tio @ 256 / ;
+: size ctw v! ;
+: add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
 
 \ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
+    z[ ." Mouse XY: " mouse anmc { s>local } swap . . ]z white stext nr
     z[ ." Tile: " cti @ . ]z white stext nr
-    z[ ." XY: " mouse anmc { s>local } swap . . ]z white stext nr
-    z[ ." CTW: " ctw v@ swap . . ]z stext nr
+    z[ ." Subbank: " subbank@ . ]z white stext nr
+    z[ ." Size: " ctw v@ swap . . ]z stext nr
 ;
 : tbank-act act> over? 0;
     1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
@@ -38,14 +43,15 @@ create ctw 1 , 1 ,
 : tbank-draw draw>
     sdims 2dup $00000080 color rectf
     -1 -1 +at 2 2 2+ white rect 1 1 +at
-    tbank 256 256 subbmp dup blit -bmp ;
+    subbank@ subbank-xy at
+    tbank w v@ 2p>s subbmp dup  0 0 at blit  -bmp ;
 
 : aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ." me tools push " ;
 defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
 
-: ghost mouse s>local tcenter ?2tsnap at $ffffff80 color ctw v@ cti @ tiles ;
+: ghost mouse s>local tcenter ?2tsnap at $ffffff80 color ckf -> tio @ tileofs ! ctw v@ cti @ tiles ;
 : ?ghost over? 0; ghost ;
 
 \ - Editor components 2/2
@@ -58,7 +64,7 @@ c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 0.25 animate } ;
+: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl.vfx" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
@@ -109,7 +115,7 @@ aed -> first @ :noname each> [locked] me recurse ; execute
         the-char case
             [char] z of -1 +kf endof
             [char] x of 1 +kf endof
-            [char] a of *keyframe ckf insert-after 1 +kf endof
+            [char] a of add-frame endof
             ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
         the-key case

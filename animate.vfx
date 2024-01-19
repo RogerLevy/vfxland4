@@ -2,10 +2,14 @@ motif var tl var spd var ac var af /obj to /basis \ add animation capability to 
 
 \ - Runtime rendering
 : ?+ac delta spd @ p* ac +! ;
-: keyframe { 0 me #children wrap me nth-child as +t children -t } ;
+: keyframe { 0 me #children wrap me nth-child { draw } } ;
 : animation ac @ p>s tl @ keyframe halt @ ?; ?+ac ;
 : animate spd ! tl ! draw> animation ;
 
 \ - Timeline definition
 c: *timeline ;
-c: *keyframe ; 
+
+\ - Keyframe definition w/ tile offset support
+motif var tio /obj to /basis
+: keyframe-ser ser> tio ? ." tio ! " ;
+c: *keyframe keyframe-ser draw> tio @ tileofs ! ; 
