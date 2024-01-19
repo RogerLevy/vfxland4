@@ -1,7 +1,15 @@
-editmode on
+require task.vfx
+
 game as
-gamew gameh 2. 2. 2p/ at *bouncer {
+gamew gameh 2. 2. 2p/ at *bouncer named ball {
     *generic {
-        :noname act> 3.0 after> parent @ { 0.1 0.1 sx v+! } 2.0 after> parent @ kill ; execute
+        \ :noname act> 3.0 after> parent @ { 0.1 0.1 sx v+! } 2.0 after> parent @ kill ; execute
+        :noname 1 perform> parent @ as 5 0 do cr ." BIG" 1. 1. sx v! 0.5 wait cr ." SMALL" 2. 2. sx v! 0.5 wait loop ; execute
     }
 }
+
+\ fget tool/aed
+
+\ editmode on
+
+repl hide
