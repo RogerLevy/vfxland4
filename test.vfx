@@ -1,3 +1,3 @@
 editmode on
 game as
-gamew gameh 2. 2. 2p/ at *bouncer
+gamew gameh 2. 2. 2p/ at *bouncer { bouncer-act2 }

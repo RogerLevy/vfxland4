@@ -1,7 +1,29 @@
+require alpha.vfx 
+require obj.vfx
+require core.vfx
+require tool/ui.vfx \ <-- do not remove
+require tool/shed.vfx \ <-- do not remove
+require tool/widgets.vfx \ <-- do not remove
+require obj/tilemap.vfx
+require animate.vfx
+require obj/tile.vfx
+obj misc \ temporary...
+
 z" data/bmp/tbank_initial.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 
+\ - Misc
 : bounce+ ( n height speed - n z ) delta* rot + dup -rot psin abs p* ;
 
-motif var n var z
+\ - Z offset
+motif var z /obj to /basis
 : zanimate animate draw> 0 z @ negate 2i 2p>f 1e 1e 0e transform animation ;
+
+\ - After
+motif var ctr /obj to /basis
+: (after) delta ctr +! ctr @ >= if r> drop else 0 ctr ! then ;
+: after> postpone (after) postpone (act>) discard-sinline ; immediate
+
+\ - Collisions
+
+\ - Items
