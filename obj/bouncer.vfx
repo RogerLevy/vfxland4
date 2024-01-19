@@ -2,5 +2,4 @@
 include fig/tl/bouncer.tl.vfx
 motif var n
 : bouncer-act act> n @ 24. 3. bounce+ z ! n ! ;
-: bouncer-act2 act> n @ 24. 3. bounce+ z ! n ! 3.0 after> 0.1 0.1 sx v+! 1.0 after> me kill ;
-object: *bouncer 16. 16. w v! bouncer.tl 0 zanimate 180. rnd n ! bouncer-act ;
+object: *bouncer 16. 16. w v! bouncer.tl 0 zanimate bouncer-act ;

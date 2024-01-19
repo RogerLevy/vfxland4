@@ -1,3 +1,7 @@
 editmode on
 game as
-gamew gameh 2. 2. 2p/ at *bouncer { bouncer-act2 }
+gamew gameh 2. 2. 2p/ at *bouncer {
+    *generic {
+        :noname act> 3.0 after> parent @ { 0.1 0.1 sx v+! } 2.0 after> parent @ kill ; execute
+    }
+}
