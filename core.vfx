@@ -13,9 +13,9 @@ root {
 \ - Main loop
 : present display al_flip_display ;
 : think me >r root as physics act reckon r> as ;
-: paint identity cls me >r root as draw r> as ;
+: paint identity cls me >r root as ?draw r> as ;
 : frame !delta poll think paint ;
 : ?quit <esc> pressed? if >vfx quit then ;
 : 0interp 0 #tib ! reset-stacks postpone \\ ;
 : pre !delta !delta 0interp ;
-: go >display pre begin frame present pause ?quit again ;
+: go >display pre begin frame present yield 1 sleep ?quit again ;
