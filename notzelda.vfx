@@ -1,3 +1,12 @@
 require alpha.vfx 
 require obj.vfx
 require core.vfx
+require tool/ui.vfx \ <-- do not remove
+require tool/shed.vfx \ <-- do not remove
+require tool/widgets.vfx \ <-- do not remove
+require obj/tilemap.vfx
+require animate.vfx
+require obj/tile.vfx
+obj misc \ temporary...
+require engine.vfx
+require obj/bouncer.vfx

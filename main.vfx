@@ -11,10 +11,6 @@ vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 \ - Game
 include notzelda.vfx
 
-\ - Development
-require tool/ui.vfx
-require tool/shed.vfx
-require tool/widgets.vfx
-
 \ - Enter main loop
+include test.vfx
 go

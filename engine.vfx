@@ -1,0 +1,7 @@
+z" data/bmp/tbank_initial.png" loadbmp constant b
+0 0 at b tbank bmpwrite
+
+: bounce+ ( n height speed - n z ) delta* rot + dup -rot psin abs p* ;
+
+motif var n var z
+: zanimate animate draw> 0 z @ negate 2i 2p>f 1e 1e 0e transform animation ;
