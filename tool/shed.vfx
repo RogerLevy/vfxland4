@@ -53,6 +53,7 @@ motif var ser var attr var post /obj to /basis
 : s>local 2s>p >local 2p>s ;
 : hide -> vis off ;
 : reveal -> vis on ;
+: visible? en @ vis @ and ;
 
 \ - Definition
 : [locked] locked_ aon ;
@@ -65,7 +66,7 @@ game {
 
 \ - Quickly reload a set file
 create reload$ 64 allot
-: reload cr ." ==================== RELOAD ====================" reload$ count included ;
+: rld cr ." ==================== RELOAD ====================" reload$ count included ;
 s" shed.vfx" reload$ place
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
 
@@ -76,7 +77,7 @@ s" shed.vfx" reload$ place
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop alt? if workspace else dragee then ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
-: (hovering) me each> vis @ 0; w v@ or 0<> first @ or 0; 
+: (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
     mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hovering { 0 to hoveree +t (hovering) -t } ;
 : pick to this ;
