@@ -9,21 +9,42 @@ require animate.vfx
 require obj/tile.vfx
 obj misc \ temporary...
 
+0 constant right_
+1 constant up_
+2 constant left_
+3 constant down_
+
+create walkv 1. , 0 ,   0 , -1. ,   -1. , 0 ,   0 , 1. , 
+
 z" data/bmp/tbank_initial.png" loadbmp constant b
 0 0 at b tbank bmpwrite
 
 \ - Z offset
 motif var z /obj to /basis
-: zanimate animate draw> 0 z @ negate 2i 2p>f 1e 1e 0e transform animation ;
+: zanimate animate draw> 0 z @ negate 2i sx v@ 2p/ 2p>f 1e 1e 0e transform animation ;
 
 \ - After
 motif var ctr /obj to /basis
 : (after) delta ctr +! ctr @ >= if r> drop else 0 ctr ! then ;
 : after> postpone (after) postpone (act>) discard-sinline ; immediate
 
+\ - Input tools
+motif var dir /obj to /basis
+: dirkeys? <left> held? <right> held? or <up> held? or <down> held? or ;
+: dirkeysup? <left> letgo? <right> letgo? or <up> letgo? or <down> letgo? or ;
+: pudlr4 ( -- )  \ detects presses, no diagonals, no velocity stuff
+        <left> pressed? if left_ dir ! exit then
+        <right> pressed? if right_ dir ! exit then
+        <up> pressed? if up_ dir ! exit then
+        <down> pressed? if down_ dir ! exit then ;
+: sudlr4 ( -- )  \ detects state, no diagonals, no velocity stuff
+        <left> held? if left_ dir ! exit then
+        <right> held? if right_ dir ! exit then
+        <up> held? if up_ dir ! exit then
+        <down> held? if down_ dir ! exit then ;
+
 \ - Misc
 : bounce+ ( n height speed - n z ) delta* rot + dup -rot psin abs p* ;
-
 
 \ - Collisions
 
