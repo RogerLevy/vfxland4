@@ -6,7 +6,7 @@ variable osp  os osp !
 : o> -4 osp c+! osp @ @ ;
 
 \ - Structs
-: field create over , + does> @ + ;
+: field create over , + $C0FFEE , does> @ + ;
 
 \ - Addressing
 0 value me
@@ -22,7 +22,8 @@ variable osp  os osp !
 0 value /obj
 0 value /basis
 : ofield /obj swap field to /obj does> @ me + ;
-: var cell ofield ;
+: ?already >in @ bl word find if dup >body cell+ @ $C0FFEE = if r> drop drop drop exit then then drop >in ! ; DoNotSin
+: var ?already cell ofield ; DoNotSin 
 : motif /basis to /obj ;
 
 \ - Double-linked tree
