@@ -1,3 +1,5 @@
+256 constant /slot
+
 \ - Object stack
 : bpage here $ff and 256 swap - allot here $100 allot constant ;
 bpage os
@@ -73,6 +75,7 @@ defer 1object
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
 : obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
+: delete remove ;
 
 \ - Basic actions
 : kill dup -> en off -> dead on ;
@@ -80,7 +83,7 @@ c: *generic ;
     first @ {  begin  me while
         next @ >r
             recurse
-            dead @ if me remove then
+            dead @ if me delete then
         r> as
     repeat }
 ;

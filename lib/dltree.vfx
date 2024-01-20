@@ -62,7 +62,7 @@
 
 : dleach  ( xt node -- )
     -> first @ {  begin  me while
-        dup >r execute r>  next @ as
+        next @ >r  dup >r execute r>  r> as
     repeat
     drop  } ;
 
