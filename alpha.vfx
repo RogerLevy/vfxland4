@@ -41,6 +41,8 @@ synonym dup-endcase end-case
 : iplace 2dup ! cell+ swap move ;
 : icount @+ ;
 : icount+ cell+ ;
+: kb 1024 * ;
+: mb 1048576 * ;
 
 \ - 2D Vectors p1
 : v@ dup @ swap 4 + @ ;
