@@ -28,6 +28,7 @@ create ctw 1 , 1 ,
 : subbank@ ckf -> tio @ 256 / ;
 : size ctw v! ;
 : add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
+: nudge this ?dup if -> x v+! else 2drop then ;
 
 \ - Editor components 1/2
 : (status)
@@ -120,10 +121,10 @@ aed -> first @ :noname each> [locked] me recurse ; execute
         endcase
         the-key case
             <del> of this delete endof
-            <left> of -1. 0 this -> x v+! endof
-            <right> of 1. 0 this -> x v+! endof
-            <up> of 0 -1. this -> x v+! endof
-            <down> of 0 1. this -> x v+! endof
+            <left> of -1. 0 nudge endof
+            <right> of 1. 0 nudge endof
+            <up> of 0 -1. nudge endof
+            <down> of 0 1. nudge endof
         endcase
     then
     ALLEGRO_EVENT_KEY_DOWN happened? if
