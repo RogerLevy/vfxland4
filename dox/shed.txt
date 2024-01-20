@@ -12,6 +12,7 @@ all SHED hotkeys available in REPL mode with ctrl modifier
 
 When SHED is on...
 [ ] <f1...f12> can be assigned to switch between 12 workspaces
+        [ ] workspace 12 is the static layer
 [x] scroll the workspace with alt + lmb
 [x] zoom the workspace with the mousewheel (0.25x...2x)
 [-] the STATIC layer never scrolls and contains some locked common tools.
