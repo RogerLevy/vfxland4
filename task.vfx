@@ -21,7 +21,7 @@ host value task
 : ?*stacks ds @ ?; 1 kb allocate drop ds ! 16 kb allocate drop rs ! ;
 : perform ( n xt - )
     ?*stacks
-    swap ( n ) ds @ 1 kb + cell- cell- !  ds @ 1 kb + cell- cell- sp !  me ds @ 1 kb + cell- !
+    swap ( n ) ds @ 1 kb + !  ds @ 1 kb + sp !  me ds @ 1 kb + cell+ !
     ( xt ) rs @ 16 kb + cell- cell- !  rs @ 16 kb + cell- cell- rp !  ['] (spin) rs @ 16 kb + cell- !
     act>
         \ save state
