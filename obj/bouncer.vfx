@@ -1,5 +1,5 @@
 \ - Bouncy pink thing
-include fig/tl/bouncer.tl.vfx
+include fig/tl/bouncer.tl
 motif var n
 : bouncer-act act> n @ 24. 3. bounce+ z ! n ! ;
 c: *bouncer 16. 16. w v! bouncer.tl 0 zanimate bouncer-act ;

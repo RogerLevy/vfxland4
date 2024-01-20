@@ -1,12 +1,15 @@
 \ - Sam data
 misc {
-    include fig/tl/sam-walk-d.tl.vfx
-    include fig/tl/sam-walk-l.tl.vfx
-    include fig/tl/sam-walk-r.tl.vfx
-    include fig/tl/sam-walk-u.tl.vfx
+    container sam-anims {
+        include fig/tl/sam-walk-r.tl
+        include fig/tl/sam-walk-u.tl
+        include fig/tl/sam-walk-l.tl
+        include fig/tl/sam-walk-d.tl
+    }
 }
 
-create walk-timelines sam-walk-r.tl , sam-walk-u.tl , sam-walk-l.tl , sam-walk-d.tl ,
+\ for now, we have to have a separate table because of how AED moves timelines around...
+create sam-walk-tbl sam-walk-r.tl , sam-walk-u.tl , sam-walk-l.tl , sam-walk-d.tl ,
 
 \ - Sam
 defer walk defer idle
@@ -14,7 +17,7 @@ motif var dir var olddir
 : spd! first @ -> spd ! ;
 : ?face
     dir @ olddir @ = ?;
-    dir @ olddir !  dir @  walk-timelines [] @ 8. first @ { zanimate } ;
+    dir @ olddir !  dir @ sam-walk-tbl [] @ 8. first @ { zanimate } ;
 : !walkv dir @ 2 * walkv [] v@  1.5 dup 2p*  vx v! ;
 : ?walk dirkeys? 0; walk ;
 : ?turnstop dirkeys? 0= if idle exit then  ?face !walkv ;

@@ -65,11 +65,11 @@ c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
+: edit dup o.r anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
 : (anm-save) anm tlpath osave ;
-: ?ext ?dup if -ext pad place s" .tl.vfx" pad append pad count then ;
-: chooser z" fig/tl" z" Load Timeline" z" *.vfx" 0 file-dialog ?ext ;
-: anm-load chooser ?dup if oload edit then ;
+: ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
+: chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
+: anm-load chooser ?dup if aload edit then ;
 create untitled$ ," UNTITLED.TL"
 : new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
