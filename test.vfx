@@ -12,10 +12,11 @@ stage as
 \ }
 
 fget tool/aed
+aed ws2 push
 
 \ editmode on
 
-repl hide
+repl off
 
 c: *box draw> 50 50 blue rectf ;
 

@@ -186,7 +186,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         the-key <f12> <= and if
             the-key <f1> - workspace-table [] @ switch
         then
-        the-key <tab> = ctrl? not and shift? not and if toggle-repl then
+        the-key <tab> = ctrl? not and shift? not and if repl toggle then
         the-key <tab> = shift? and if toggle-static then
         the-key <tab> = ctrl? and if editmode toggle then
     then
@@ -213,7 +213,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
     ecat 0 = if \ joystick
         workspace { respond }
     then
-    ecat 1 = if \ keyboard    
+    ecat 1 = if \ keyboard
         repl @ if repl else workspace then { respond }
     then
     ecat 2 = if \ mouse

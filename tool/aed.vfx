@@ -14,7 +14,7 @@ create ctw 1 , 1 ,
 \ - Editor actions
 : anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
-: sel anm disable-each  anm nth-child reveal ;
+: sel anm disable-each  anm nth-child on ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
@@ -46,7 +46,7 @@ create ctw 1 , 1 ,
     subbank@ subbank-xy at
     tbank w v@ 2p>s subbmp dup  0 0 at blit  -bmp ;
 
-: aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ." me static push " ;
+: aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ;
 defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
@@ -78,7 +78,7 @@ create untitled$ ," UNTITLED.TL"
 : anm-save untitled? if anm-saveas else (anm-save) then ;
 
 \ - Editor layout
-static {
+workspace {
     0 0 at *aed named aed {
         0 0 at *toolbox { ` AED` data!
             0 32 at *generic {
