@@ -47,12 +47,9 @@ motif var ser var attr var post /obj to /basis
 : [bolted] bolted_ aon ;
 : over? mouse 2s>p abox inside? ;
 : static? begin -> parent @ ?dup while dup static = ?dup ?; repeat 0 ; 
-: editable? dup 0; static? workspace static = or ;
-
-\ - Quickly reload a set file
-create reload$ 64 allot
-: rld cr ." ==================== RELOAD ====================" reload$ count included ;
-: fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
+: editable? dup 0; static? not workspace static = or ;
+: tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
+: ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 
 \ - Serialize
 variable indent
@@ -99,8 +96,6 @@ variable indent
 \ - Dragging
 : +drag bolted_ a? ?; the-walt 2s>p ascale/ x v+! ;
 : ?dragging dragee ?dup 0; { +drag } ;
-: tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
-: ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 : plop dragee ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
 : (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
@@ -168,7 +163,7 @@ root {
 
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then  ?static ;
-: switch workspaces disable-each  dup to workspace on  ?static  shed workspace insert-after  shed on ;
+: switch workspaces disable-each  dup to workspace on  ?static  shed workspace insert-after  shed on  unpick ;
 ws1 switch
 
 : ?pickdrag hoveree ?dup 0; dup pick drag ;

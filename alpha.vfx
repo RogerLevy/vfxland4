@@ -188,3 +188,8 @@ dcounter 2value dLastTime
 : delta* fdelta f>p p* ;
 : 2delta* fdelta f>p p* swap fdelta f>p p* swap ;
 : delta tdelta f>p ;
+
+\ - Quickly reload a set file
+create reload$ 256 allot
+: rld cr ." ==================== RELOAD ====================" reload$ count included ;
+: fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
