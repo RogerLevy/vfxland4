@@ -91,7 +91,7 @@ workspace {
                         64 64 at *pspr named pspr { } 
                     }
                     0 winh 2 / at *toolbox { ` Tiles` data!
-                        0 32 at *tbank named tselector { bolted_ aon }
+                        0 32 at *tbank named tselector { _bolted aon }
                     }
                     300 winh 2 / at *toolbox { ` Tools` data!
                         0 32 at *generic {
@@ -117,7 +117,7 @@ aed -> first @ :noname each> [locked] me recurse ; execute
             ( bksp ) 8 of anm #children 1 > if ckf remove then endof
         endcase
         the-key case
-            <del> of this delete endof
+            <del> of delete-this endof
             <left> of -1. 0 nudge endof
             <right> of 1. 0 nudge endof
             <up> of 0 -1. nudge endof

@@ -18,7 +18,7 @@ host value task
 ;
 : wait (wait) begin delta - dup 0 > while (wait) repeat drop ;
 : (spin) begin wait again ;
-: ?*stacks ds @ ?; 1 kb allocate drop ds ! 16 kb allocate drop rs ! ;
+: ?*stacks ds @ ?; 2 kb allocate drop ds ! 16 kb allocate drop rs ! ;
 : perform ( n xt - )
     ?*stacks
     swap ( n ) ds @ 1 kb + !  ds @ 1 kb + sp !  me ds @ 1 kb + cell+ !

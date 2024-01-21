@@ -6,7 +6,7 @@ variable snapping
 variable editmode
 reference static
 
-1 bit bolted_ bit locked_ value _attributes
+1 bit _bolted bit _locked value _attributes
 
 \ - Scripting
 motif var ser var attr var post /obj to /basis
@@ -43,11 +43,11 @@ motif var ser var attr var post /obj to /basis
 : hide -> vis off ;
 : reveal -> vis on ;
 : container: 0 0 at *generic named ;
-: [locked] locked_ aon ;
-: [bolted] bolted_ aon ;
+: [locked] _locked aon ;
+: [bolted] _bolted aon ;
 : over? mouse 2s>p abox inside? ;
-: static? begin -> parent @ ?dup while dup static = ?dup ?; repeat 0 ; 
-: editable? dup 0; static? not workspace static = or ;
+: is-static? begin -> parent @ ?dup while dup static = ?dup ?; repeat 0 ; 
+: editable? dup 0; is-static? not workspace static = or ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
 : ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 
@@ -89,20 +89,18 @@ variable indent
 : ?replace ?dup 0; overwrite ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
 : aload 2dup -path ?existing >r oload r> ?replace { postload me } ;
-: load bl parse figpath name>path aload pick ;
+: load bl parse figpath name>path aload to this ;
 : ser> r> ser ! ;
 : post: here aligned post ! 0 parse $, ;
 
 \ - Dragging
-: +drag bolted_ a? ?; the-walt 2s>p ascale/ x v+! ;
+: +drag _bolted a? ?; the-walt 2s>p ascale/ x v+! ;
 : ?dragging dragee ?dup 0; { +drag } ;
 : plop dragee ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
 : (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
     the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hover +t (hovering) -t ;
-: pick to this ;
-: drag to dragee ;
 
 \ - Figure Editor 1/3
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
@@ -120,9 +118,13 @@ variable indent
     0.25 * sx @ dup >r + 0.25 2. clamp dup sx v!
     mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
     } ;
-: ?locked dup { locked_ a? } 0; drop cr ." Object is locked. Cannot delete!" r> drop ;
-: unpick 0 pick 0 drag 0 to hoveree ;
-: delete-this dup editable? if ?locked unpick delete else drop then ;
+: can-delete? | it |
+    it 0= if 0 exit then 
+    it editable? not if cr ." Cannot edit static objects when not editing the static layer." 0 exit then 
+    it { _locked a? } if cr ." Object is locked. Cannot delete!" 0 exit then
+    -1 ;
+: unpick 0 to this 0 to dragee 0 to hoveree ;
+: delete-this this can-delete? if this delete unpick then ;
 
 \ - Figure Editor 3/3
 : shed-events
@@ -166,7 +168,7 @@ root {
 : switch workspaces disable-each  dup to workspace on  ?static  shed workspace insert-after  shed on  unpick ;
 ws1 switch
 
-: ?pickdrag hoveree ?dup 0; dup pick drag ;
+: ?pickdrag hoveree ?dup 0; dup to this to dragee ;
 
 \ - Global events
 : ecat e ALLEGRO_EVENT.type @ 10 / ;
@@ -187,7 +189,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         alt? if
-            workspace drag
+            workspace to dragee
         else
             ?pickdrag 
         then
