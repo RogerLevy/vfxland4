@@ -1,22 +1,26 @@
 the (tool)shed is an interactive development extension
 
+Control Scheme
+
+	F1...F12	Select Workspace
+	Shift-Tab   Toggle the Static Layer (always off when viewing Workspace 12)
+    Ctrl-Tab    Toggle Edit Mode
+    Delete      Delete selection
+    
+
 1/18 idea:
 all SHED hotkeys available in REPL mode with ctrl modifier
 
 [x] <f3> enables/disables halting of the game when the REPL is onscreen
 [-] <tab> toggles the REPL; allows entering commands, and picking and moving of anything not bolted down
-[ ] <`> toggles the SHED and has some hotkeys when REPL is not on
-[ ] when neither the SHED nor the REPL are on, an application gets keyboard and mouse focus
+[x] when neither the SHED nor the REPL are on, an application gets keyboard and mouse focus
     therefore if any of the SHED's editing features are wanted in parts of an app they have to be implemented there
 [ ] keyboard focus can be stolen by an object
 
 When SHED is on...
-[ ] <f1...f12> can be assigned to switch between 12 workspaces
-        [ ] workspace 12 is the static layer
 [x] scroll the workspace with alt + lmb
 [x] zoom the workspace with the mousewheel (0.25x...2x)
-[-] the STATIC layer never scrolls and contains some locked common tools.
-[ ] shift + <`> toggles the STATIC layer
+[x] the STATIC layer never scrolls and can contain some locked common tools.
 
 --- Misc notes ---
 

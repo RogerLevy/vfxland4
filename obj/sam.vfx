@@ -29,5 +29,5 @@ motif var dir var olddir
 : pace begin ?udlr4 reached? not while 0 wait repeat snap ( ?edge ) ;
 :noname [ is walk ] 8. spd! !walkv ?face 0 perform> begin pace ?turnstop again ;
 :noname [ is idle ] 0 0 vx v! ?face 0 spd! act> sudlr4 ?walk ;
-: setup act> me clear 8 0 at *generic me push idle ;
-c: *sam -1 olddir ! 16. 8. w v! setup ;
+: setup act> me clear 8 8 at *generic me push idle ;
+c: *sam -1 olddir ! 16. 16. w v! setup ;
