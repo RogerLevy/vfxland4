@@ -1,24 +1,12 @@
-require lib/filetypes.vfx
-
 0 value dragee
 0 value this
 0 value hoveree
 variable snapping
-\ 0 value always-drag?
+0 value workspace
+variable editmode
+reference static
 
 1 bit bolted_ bit locked_ value _attributes
-
-\ - Game config
-: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
-: center
-    winw 2 /  gamew zoom sf* 2 / -
-    winh 64 - 2 /  gameh zoom sf* 2 / -  2s>p game -> x v!
-    zoom f>p dup game -> sx v!
-;
-: game-act act> center zoom f>p dup sx v! ;
-: game-draw draw> matte 0e 0e 0e 1e al_clear_to_color ;
-c: *game game-act game-draw ;
-game as game-act game-draw ' *game con !
 
 \ - Scripting
 motif var ser var attr var post /obj to /basis
@@ -54,33 +42,17 @@ motif var ser var attr var post /obj to /basis
 : s>local 2s>p >local 2p>s ;
 : hide -> vis off ;
 : reveal -> vis on ;
-: visible? en @ vis @ and ;
-: container 0 0 at *generic named ;
+: container: 0 0 at *generic named ;
 : [locked] locked_ aon ;
 : [bolted] bolted_ aon ;
-
-\ - Stage
-game {
-    *generic named stage { }
-}
+: over? mouse 2s>p abox inside? ;
+: static? begin -> parent @ ?dup while dup static = ?dup ?; repeat 0 ; 
+: editable? dup 0; static? workspace static = or ;
 
 \ - Quickly reload a set file
 create reload$ 64 allot
 : rld cr ." ==================== RELOAD ====================" reload$ count included ;
 : fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
-
-\ - Dragging
-: +drag bolted_ a? ?; walt 2s>p ascale/ sx v@ 2p* x v+! ;
-: dragging alt? if workspace else dragee then ?dup 0; { +drag } ;
-: tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
-: ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
-: plop alt? if workspace else dragee then ?dup 0; { ?snap } 0 to dragee ;
-: m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
-: (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
-    mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
-: hovering { 0 to hoveree +t (hovering) -t } ;
-: pick to this ;
-: drag to dragee ;
 
 \ - Serialize
 variable indent
@@ -124,58 +96,130 @@ variable indent
 : ser> r> ser ! ;
 : post: here aligned post ! 0 parse $, ;
 
-\ - Info
+\ - Dragging
+: +drag bolted_ a? ?; the-walt 2s>p ascale/ x v+! ;
+: ?dragging dragee ?dup 0; { +drag } ;
+: tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
+: ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
+: plop dragee ?dup 0; { ?snap } 0 to dragee ;
+: m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
+: (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
+    the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
+: hover +t (hovering) -t ;
+: pick to this ;
+: drag to dragee ;
+
+\ - Figure Editor 1/3
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
 : tiny a+t 0 0 v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
 : outline a+t 0 0 at w v@ 2p>s rect -t ;
-
-\ - UI extension
-: ?drag ( obj - ) 1 mheld? if drop dragging else hovering then ;
 : outlines
-    hoveree ?dup if { yellow outline } then
-    this ?dup if { red outline (info) } then
+    hoveree dup editable? if { yellow outline } else drop then
+    this dup editable? if { red outline (info) } else drop then
 ;
 
+\ - Figure Editor 2/3
 : +zoom
     workspace { 
     0.25 * sx @ dup >r + 0.25 2. clamp dup sx v!
     mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
     } ;
-
 : ?locked dup { locked_ a? } 0; drop cr ." Object is locked. Cannot delete!" r> drop ;
 : unpick 0 pick 0 drag 0 to hoveree ;
-: delete-this this ?dup 0; ?locked unpick delete ;
-: shed-respond
-    respond>
-    editmode @ if
-        ALLEGRO_EVENT_KEY_DOWN happened? if
-            the-key <del> = if delete-this then
-        then
+: delete-this dup editable? if ?locked unpick delete else drop then ;
+
+\ - Figure Editor 3/3
+: shed-events
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key <del> = if delete-this then
     then
-    ALLEGRO_EVENT_KEY_CHAR happened? if
-        this 0;
-        the-key case
-        endcase
-    then            
+;
+c: *shed draw> editmode @ 0; 0 0 at winw winh  $00ff0020 color rectf ;
+c: *info draw> editmode @ 0; outlines ;
+
+\ - Workspace
+: ws-var var does> @ workspace + ;
+motif ws-var ws-static
+: 1workspace [locked] ;
+c: *workspace 1workspace draw> -matte ;
+: disable-each each> me off ;
+
+\ - Shed layout
+root {
+    container: workspaces {
+        *workspace named ws1  { me -> ws-static on }
+        *workspace named ws2  { me -> ws-static on }
+        *workspace named ws3  { me -> ws-static on }
+        *workspace named ws4  { me -> ws-static on }
+        *workspace named ws5  { me -> ws-static on }
+        *workspace named ws6  { me -> ws-static on }
+        *workspace named ws7  { me -> ws-static on }
+        *workspace named ws8  { me -> ws-static on }
+        *workspace named ws9  { me -> ws-static on }
+        *workspace named ws10 { me -> ws-static on }
+        *workspace named ws11 { me -> ws-static on }
+        *workspace named static { me -> ws-static on }
+    }
+    *shed named shed {
+        *info named info { }
+    }
+}
+
+: ?static ws-static @ static ! ;
+: toggle-static static workspace <> if ws-static toggle then  ?static ;
+: switch workspaces disable-each  dup to workspace on  ?static  shed workspace insert-after  shed on ;
+ws1 switch
+
+: ?pickdrag hoveree ?dup 0; dup pick drag ;
+
+\ - Global events
+: ecat e ALLEGRO_EVENT.type @ 10 / ;
+create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws10 , ws11 , static ,
+:noname [ is events ]
+    \ Edit Mode only stuff
+    editmode @ if shed-events then
+    
+    \ Common stuff
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key <f1> >=
+        the-key <f12> <= and if
+            the-key <f1> - workspace-table [] @ switch
+        then
+        the-key <tab> = ctrl? not and shift? not and if toggle-repl then
+        the-key <tab> = shift? and if toggle-static then
+        the-key <tab> = ctrl? and if editmode toggle then
+    then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
-        hoveree ?dup if dup pick drag then
+        alt? if
+            workspace drag
+        else
+            ?pickdrag 
+        then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
     ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
         plop
     then
     ALLEGRO_EVENT_MOUSE_AXES happened? if
-        e MOUSE_EVENT.dz @ ?dup if +zoom then
+        the-wheel ?dup if +zoom then
+        0 to hoveree
+        static { hover }
+        workspace { hover }
+        1 mheld? if ?dragging then
     then
-; 
-
-c: *shed shed-respond act> workspace ?drag draw> -matte ;
-c: *info draw> editmode @ 0; outlines ;
-
-workspace {
-    *shed named shed {
-        *generic named tools { }
-        *info named info { }
-    }
-}
+    
+    \ Pass events to objects
+    ecat 0 = if \ joystick
+        workspace { respond }
+    then
+    ecat 1 = if \ keyboard    
+        repl @ if repl else workspace then { respond }
+    then
+    ecat 2 = if \ mouse
+        editmode @ not if
+            workspace { respond }
+        then
+        workspace static <> if static { respond } then
+    then
+;

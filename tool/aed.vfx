@@ -1,6 +1,6 @@
 require obj/tilemap.vfx
 require obj/tile.vfx
-require lib/filetypes.vfx
+require sys/filetypes.vfx
 
 \ - Editor variables
 obj animations
@@ -14,8 +14,7 @@ create ctw 1 , 1 ,
 \ - Editor actions
 : anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
-: hide-each each> me hide ;
-: sel anm hide-each  anm nth-child reveal ;
+: sel anm disable-each  anm nth-child reveal ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
@@ -47,7 +46,7 @@ create ctw 1 , 1 ,
     subbank@ subbank-xy at
     tbank w v@ 2p>s subbmp dup  0 0 at blit  -bmp ;
 
-: aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ." me tools push " ;
+: aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ." me static push " ;
 defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
@@ -65,7 +64,7 @@ c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit dup o.r anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
+: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
@@ -79,7 +78,7 @@ create untitled$ ," UNTITLED.TL"
 : anm-save untitled? if anm-saveas else (anm-save) then ;
 
 \ - Editor layout
-tools {
+static {
     0 0 at *aed named aed {
         0 0 at *toolbox { ` AED` data!
             0 32 at *generic {
@@ -110,8 +109,6 @@ aed -> first @ :noname each> [locked] me recurse ; execute
 \ - Editor controls (besides shed-provided actions)
 :noname [ is editor-respond ]
     respond>
-    editmode @ ?;
-    repl -> vis @ ?;
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char case
             [char] z of -1 +kf endof

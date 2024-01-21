@@ -1,20 +1,36 @@
-require alpha.vfx
-require obj.vfx
-
-0 0 at
 obj root
-root {
-    *generic named workspace {
-        *generic named game { }
-    }
-    *generic named static { } 
-}
+defer events
+
+\ - Events
+create e /ALLEGRO_EVENT allot&erase
+: happened? e ALLEGRO_EVENT.type @ = ;
+: the-char e KEYBOARD_EVENT.unichar @ ;
+: the-key e KEYBOARD_EVENT.keycode @ ;
+: the-wheel e MOUSE_EVENT.dz @ ;
+: the-mouse e MOUSE_EVENT.x v@ ; 
+: the-walt e MOUSE_EVENT.dx v@ ; 
+
+\ - Event pump
+: pump
+    begin  queue e al_get_next_event  while
+        ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
+            bye
+        then
+        ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? if
+            reset-keyboard reset-mouse
+        then
+        ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
+            display al_acknowledge_resize
+        then
+        events
+    repeat
+;
 
 \ - Main loop
 : present display al_flip_display ;
 : think me >r root as physics act reckon r> as ;
 : paint identity cls me >r root as ?draw r> as ;
-: frame !delta poll think paint ;
+: frame !delta poll pump think paint ;
 : ?quit <esc> pressed? if >vfx quit then ;
 : 0interp 0 #tib ! reset-stacks postpone \\ ;
 : pre !delta !delta 0interp ;

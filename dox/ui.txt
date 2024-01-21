@@ -1,3 +1,19 @@
+=== 2024/1/20 ===
+
+[ ] This control scheme
+
+Global
+    Esc         Quit engine
+	Tab		    Toggle REPL
+	F1...F12	Select Workspace
+	`		    Toggle the Static Layer (always off when viewing Workspace 12)
+
+REPL
+	QWERTY		Enter commands
+	Enter		Enter commands
+	Backspace	Backspace
+
+=== OLD ===
 
 0 value kbfocus
 variable editmode

@@ -123,6 +123,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : b >r sf@+ 255e f* f>s r> or ;
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
 : line 1e f>ds >r  pen v@ 2+  at@f 2s>f fore 4f@ r> al_draw_line ;
+: -matte 0 0 winw winh al_set_clipping_rectangle ;
 
 \ - Bitmaps
 : ?null ?dup 0= if r> drop exit then ;
@@ -173,6 +174,7 @@ variable font  builtin-font font !
     fonth s>f f>ds | lh w z | 
     font @ fore 4f@ at@f w lh 0 z al_draw_multiline_text ;
 : text 9999999 mltext ;
+: nr 0 pen cell+ @ fonth + at ;
 
 \ - Delta
 1e fvalue fdelta

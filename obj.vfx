@@ -53,7 +53,7 @@ defer children
 \ - Naming support
 : reference create 0 , does> @ ; 
 : $create-name $create , does> @ ;
-: name ( obj $ - )
+: name ( obj $ c - )
     find if
         cr ." REASSIGN: "
         2dup >name dup count type swap -> nam !
@@ -74,10 +74,11 @@ defer 1object
     create here 0 , :noname swap !
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
-: obj reference  *slot as  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
+: obj reference  *slot as  0 0 at  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 : delete remove ;
 
 \ - Basic actions
+: visible? en @ vis @ and ;
 : kill dup -> en off -> dead on ;
 : reckon
     first @ {  begin  me while

@@ -1,13 +1,30 @@
 require alpha.vfx 
 require obj.vfx
 require core.vfx
-require tool/ui.vfx \ <-- do not remove
+require tool/repl.vfx \ <-- do not remove
+require sys/filetypes.vfx
 require tool/shed.vfx \ <-- do not remove
 require tool/widgets.vfx \ <-- do not remove
 require obj/tilemap.vfx
 require animate.vfx
 require obj/tile.vfx
 obj misc \ temporary...
+
+\ - Game
+: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
+: center
+    winw 2 /  gamew zoom sf* 2 / -
+    winh 64 - 2 /  gameh zoom sf* 2 / -  2s>p x v!
+    zoom f>p dup sx v!
+;
+: game-act act> center zoom f>p dup sx v! ;
+: game-draw draw> matte 0e 0e 0e 1e al_clear_to_color ;
+c: *game game-act game-draw ;
+ws1 {    
+    *game named game {
+        *generic named stage { }
+    }
+}
 
 0 constant right_
 1 constant up_

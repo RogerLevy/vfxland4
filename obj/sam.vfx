@@ -1,6 +1,6 @@
 \ - Sam data
 misc {
-    container sam-anims {
+    container: sam-anims {
         include fig/tl/sam-walk-r.tl
         include fig/tl/sam-walk-u.tl
         include fig/tl/sam-walk-l.tl

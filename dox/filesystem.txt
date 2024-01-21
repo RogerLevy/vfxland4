@@ -1,3 +1,4 @@
+=== Folders ===
 /
     program components; component dependencies are largely defined externally
     they can bring in libraries and objects but not each other,
@@ -21,6 +22,9 @@ data/
 tool/
     development components such as data editors
 
+
+=== Files ===
+
 allegro-xxx.vfx
     Allegro bindings and convenience words
 
@@ -31,7 +35,7 @@ alpha.vfx
     base game library, depends on Allegro
 
 core.vfx
-    main loop
+    main loop, including  Allegro event pump
 
 main.vfx
     entry point for development; not intended to be the entry point for games
@@ -39,8 +43,8 @@ main.vfx
 obj.vfx
     object system
     
-ui.vfx
-    REPL and dev environment framework
+repl.vfx
+    commandline
     
 shed.vfx
     toolshed dev environment
