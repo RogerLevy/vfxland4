@@ -2,10 +2,15 @@ faster
 
 \ - Window
 require lib/window.vfx
+
 3e fvalue zoom
-320 3 *  240 3 * 64 +  0 window
-display 1920 2 / 0 al_set_window_position
-\ 1920 1080  1 window
+[defined] release [if]
+    -1 -1  1 window
+[else]
+    320 3 *  240 3 * 64 +  0 window
+    display 1920 2 / 0 al_set_window_position
+[then]
+
 vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
 \ - Game

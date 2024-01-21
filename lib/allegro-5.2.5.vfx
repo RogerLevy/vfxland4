@@ -1,5 +1,7 @@
 320 value winw
 240 value winh
+0 value monw
+0 value monh
 0 value fullscreen?
 0 value doublebuf?
 
@@ -2940,7 +2942,7 @@ extern "C" const char *al_get_native_file_dialog_path( void *dialog, size_t i );
 \ extern "C" al_get_next_config_entry( );
 \ extern "C" al_get_next_config_section( );
 extern "C" bool al_get_next_event( void * queue, void * event );
-\ extern "C" al_get_num_display_modes( );
+extern "C" int al_get_num_display_modes( );
 \ extern "C" al_get_num_joysticks( );
 extern "C" int al_get_num_video_adapters( );
 \ extern "C" al_get_opengl_extension_list( );
@@ -3970,6 +3972,9 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
     al_uninstall_keyboard  al_install_keyboard drop
     queue al_get_keyboard_event_source al_register_event_source ;
 
+: @+ dup cell+ swap @ ;
+: 2- rot swap - >r - r> ;
+
 : init-allegro  ( -- )    
     ALLEGRO_VERSION 0 al_install_system check
     
@@ -3992,15 +3997,17 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
 \    then
     
     0 al_set_new_display_adapter
+    0 here al_get_monitor_info
+    here @+ swap @  here 2 cells + @+ swap @ 2over 2- to monh to monw    
     
     fullscreen? if
-        ALLEGRO_FULLSCREEN_WINDOW al_set_new_display_flags
-        winw winh al_create_display to display
+        ALLEGRO_FULLSCREEN_WINDOW al_set_new_display_flags        
+        monw to winw  monh to winh
     else
         $11 al_set_new_display_flags
-        winw winh al_create_display to display
-        display 0 0 al_set_window_position
     then
+    winw winh al_create_display to display
+    \ display 0 0 al_set_window_position
     
     0 to mixer  0 to voice
     64 al_reserve_samples 0= abort" Allegro: Error reserving samples." 
