@@ -9,6 +9,7 @@ create e /ALLEGRO_EVENT allot&erase
 : the-wheel e MOUSE_EVENT.dz @ ;
 : the-mouse e MOUSE_EVENT.x v@ ; 
 : the-walt e MOUSE_EVENT.dx v@ ; 
+: the-mbutton e MOUSE_EVENT.button @ ;
 
 \ - Event pump
 : pump

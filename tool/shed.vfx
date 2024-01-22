@@ -94,7 +94,8 @@ variable indent
 : post: here aligned post ! 0 parse $, ;
 
 \ - Dragging
-: +drag _bolted a? ?; the-walt 2s>p ascale/ x v+! ;
+: ?ws-scale dragee workspace = if workspace -> sx v@ 2p* then ;
+: +drag _bolted a? ?; the-walt 2s>p ascale/ ?ws-scale x v+! ;
 : ?dragging dragee ?dup 0; { +drag } ;
 : plop dragee ?dup 0; { ?snap } 0 to dragee ;
 : m*box x v@ w v@ sx v@ 2p* area v*m 2swap v*m 2swap ;
@@ -188,7 +189,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         the-key <tab> = ctrl? and if editmode toggle then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
-        alt? if
+        the-mbutton 2 = if
             workspace to dragee
         else
             ?pickdrag 
@@ -203,7 +204,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         0 to hoveree
         static { hover }
         workspace { hover }
-        1 mheld? if ?dragging then
+        ?dragging
     then
     
     \ Pass events to objects
