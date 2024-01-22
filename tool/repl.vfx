@@ -27,15 +27,20 @@ z" sys/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
     tib #tib @ + c! 1 #tib +!
 ;
 
-: repl-events
-    ALLEGRO_EVENT_KEY_CHAR happened? if
-        the-char ?charkey
-    then
-;
-
 root value uime
 variable uiosp
 bpage uios uios uiosp !
+: repl-events
+    me >r uime as
+    osp @ >r uiosp @ osp !
+    ALLEGRO_EVENT_KEY_CHAR happened? if
+        the-char ?charkey
+    then
+    osp @ uiosp ! r> osp !
+    me to uime r> as
+;
+
+
 : bar blue winw 64 rectf ;
 : ]z. ]z text ; 
 : bar-text sherry32.fnt font ! white z[ .s ]z. nr z[ .tib ]z. ;
@@ -46,13 +51,6 @@ c: *repl
     draw>
         me parent @ push \ always on top
         -matte bar bar-text
-    respond>
-        visible? 0;
-        me >r uime as
-        osp @ >r uiosp @ osp !
-        repl-events 
-        osp @ uiosp ! r> osp !
-        me to uime r> as
 ;
 
 ' noop is EditOnError
@@ -66,5 +64,5 @@ root {
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key <tab> = if repl toggle then
     then
-    repl { respond }
+    repl-events
 ;

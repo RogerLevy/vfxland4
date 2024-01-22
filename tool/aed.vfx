@@ -98,45 +98,47 @@ workspace {
     0 0 at *aed named aed {
         0 0 at *toolbox { ` AED`
             0 32 at *generic {
-                0 64 at *generic {
-                    0 0 at *editor named editor { 128. 128. w v! [bolted]
+                0 0 at *toolbox { ` Editor`
+                    0 32 at *editor named editor { 128. 128. w v! [bolted]
                         64 64 at *generic named anmc { }
                     }
-                    512 0 at *preview named preview { 
+                }
+                winw 400 - 0 at *toolbox { ` Preview`
+                    0 32 at *preview named preview { 
                         64 64 at *pspr named pspr { } 
                     }
-                    0 winh 2 / at *toolbox { ` Tiles`
-                        0 32 at *tbank named tselector { _bolted aon }
-                    }
-                    300 winh 2 / at *toolbox { ` Tools`
-                        0 32 at *panel { 200. 200. w v! 
-                            8 8 at
-                            *button { ` snapping toggle` }
-                            *button { ` refresh-tbank` break }
-                            *button { ` 0 bank` }
-                            *button { ` 1 bank` }
-                            *button { ` 2 bank` }
-                            *button { ` 3 bank` break }
-                            *button { ` 4 bank` }
-                            *button { ` 5 bank` }
-                            *button { ` 6 bank` }
-                            *button { ` 7 bank` break }
-                            *button { ` slowest` }
-                            *button { ` slow` }
-                            *button { ` normal` }
-                            *button { ` fast` }
-                            *button { ` fastest` break }
-                            *button { ` narrower` }
-                            *button { ` wider` }
-                            *button { ` shorter` }
-                            *button { ` taller` }
-                        }
+                }
+                0 winh 2 / at *toolbox { ` Tiles`
+                    0 32 at *tbank named tselector { _bolted aon }
+                }
+                350 winh 2 / 40 + at *toolbox { ` Tools`
+                    0 32 at *panel { 200. 200. w v! 
+                        8 8 at
+                        *button { ` snapping toggle` }
+                        *button { ` refresh-tbank` break }
+                        *button { ` 0 bank` }
+                        *button { ` 1 bank` }
+                        *button { ` 2 bank` }
+                        *button { ` 3 bank` break }
+                        *button { ` 4 bank` }
+                        *button { ` 5 bank` }
+                        *button { ` 6 bank` }
+                        *button { ` 7 bank` break }
+                        *button { ` slowest` }
+                        *button { ` slow` }
+                        *button { ` normal` }
+                        *button { ` fast` }
+                        *button { ` fastest` break }
+                        *button { ` narrower` }
+                        *button { ` wider` }
+                        *button { ` shorter` }
+                        *button { ` taller` }
                     }
                 }
                 400 0 at *toolbox { ` Status`
                     0 32 at *status { } 
-                }                    
-            }
+                }     
+            }               
         }
     }
 }

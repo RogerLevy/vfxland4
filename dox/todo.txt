@@ -40,4 +40,5 @@ SHED context menu:
         some named slots there!  So we put them in a temporary list ...
     The only caveat with this is if the original object is referenced before NAMED or NAME is called on it,
         it becomes a stale reference...
-        
+
+1/22

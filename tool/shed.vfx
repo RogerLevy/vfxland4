@@ -177,9 +177,6 @@ ws1 switch
 : ecat e ALLEGRO_EVENT.type @ 10 / ;
 create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws10 , ws11 , static ,
 :noname [ is events ]
-    \ Edit Mode only stuff
-    editmode @ if shed-events then
-    
     \ Common stuff
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key <f1> >=
@@ -214,10 +211,16 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         workspace { respond }
     then
     ecat 1 = if \ keyboard
-        repl @ if repl else workspace then { respond }
+        editmode @ if
+            shed-events
+        else
+            repl @ if repl-events else workspace { respond } then 
+        then
     then
     ecat 2 = if \ mouse
-        editmode @ not if
+        editmode @ if
+            shed-events
+        else
             workspace { respond }
         then
         workspace static <> if static { respond } then
