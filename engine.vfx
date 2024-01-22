@@ -33,8 +33,9 @@ ws1 {
 
 create walkv 1. , 0 ,   0 , -1. ,   -1. , 0 ,   0 , 1. , 
 
-z" data/bmp/tbank_initial.png" loadbmp constant b
-0 0 at b tbank bmpwrite
+z" data/bmp/tbank_initial.png" loadbmp 
+    0 0 at
+    dup tbank bmpwrite -bmp
 
 \ - Z offset
 motif var z /obj to /basis

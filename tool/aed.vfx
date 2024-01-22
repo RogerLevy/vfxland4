@@ -10,6 +10,7 @@ reference anmc
 reference pspr
 variable cti
 create ctw 1 , 1 ,
+variable cspd 20. cspd !
 
 \ - Editor actions
 : anm anmc -> first @ ;
@@ -23,11 +24,22 @@ create ctw 1 , 1 ,
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
-: subbank 256 * ckf -> tio ! ;
+: bank 256 * ckf -> tio ! ;
 : subbank@ ckf -> tio @ 256 / ;
 : size ctw v! ;
 : add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
 : nudge this ?dup if -> x v+! else 2drop then ;
+: refresh-tbank
+    z" data/bmp/tbank_initial.png" loadbmp 
+    0 0 at
+    dup tbank bmpwrite -bmp
+;
+: speed dup cspd ! pspr -> spd ! ;
+: slowest 10. speed ;
+: slow 15. speed ;
+: normal 20. speed ;
+: fast 30. speed ;
+: fastest 60. speed ;
 
 \ - Editor components 1/2
 : (status)
@@ -64,7 +76,7 @@ c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm 8. animate } ;
+: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm cspd @ animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
@@ -94,8 +106,23 @@ workspace {
                         0 32 at *tbank named tselector { _bolted aon }
                     }
                     300 winh 2 / at *toolbox { ` Tools` data!
-                        0 32 at *generic {
-                            0 0 at *button { ` snapping toggle` data! }
+                        0 32 at *panel { 200. 200. w v! 
+                            8 8 at
+                            *button { ` snapping toggle` data! }
+                            *button { ` refresh-tbank` data! break }
+                            *button { ` 0 bank` data! }
+                            *button { ` 1 bank` data! }
+                            *button { ` 2 bank` data! }
+                            *button { ` 3 bank` data! break }
+                            *button { ` 4 bank` data! }
+                            *button { ` 5 bank` data! }
+                            *button { ` 6 bank` data! }
+                            *button { ` 7 bank` data! break }
+                            *button { ` slowest` data! }
+                            *button { ` slow` data! }
+                            *button { ` normal` data! }
+                            *button { ` fast` data! }
+                            *button { ` fastest` data! break }
                         }
                     }
                 }
