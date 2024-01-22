@@ -9,7 +9,7 @@ reference editor
 reference anmc
 reference pspr
 variable cti
-create ctw 1 , 1 ,
+create ctw 1 , here 1 , constant cth
 variable cspd 20. cspd !
 
 \ - Editor actions
@@ -40,6 +40,10 @@ variable cspd 20. cspd !
 : normal 20. speed ;
 : fast 30. speed ;
 : fastest 60. speed ;
+: narrower ctw @ 1 - 1 max ctw ! ;
+: wider ctw @ 1 + 16 min ctw ! ;
+: shorter cth @ 1 - 1 max cth ! ;
+: taller cth @ 1 + 16 min cth ! ;
 
 \ - Editor components 1/2
 : (status)
@@ -69,7 +73,7 @@ defer editor-respond
 \ - Editor components 2/2
 : crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 c: *preview 3. 3. sx 2! draw> crosshairs ;
-c: *editor 3. 3. sx 2! editor-respond draw> crosshairs ?ghost ;
+c: *editor 3. 3. sx 2! editor-respond draw> crosshairs ghost ;
 c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
 c: *aed aed-ser ;
 c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
@@ -123,6 +127,10 @@ workspace {
                             *button { ` normal` }
                             *button { ` fast` }
                             *button { ` fastest` break }
+                            *button { ` narrower` }
+                            *button { ` wider` }
+                            *button { ` shorter` }
+                            *button { ` taller` }
                         }
                     }
                 }
