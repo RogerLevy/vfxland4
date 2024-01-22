@@ -26,13 +26,13 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : ?nr _nr a? 0; next @ 0; 8. y @ h @ + 8. + next @ -> x v! ;
 : ?layout _bolted a? 0; next @ if x @ w @ + 15. + y @ next @ -> x v! then ?nr ?expand ;
 
-: ` [char] ` parse ;
 : ser-widget ser>
-    data @ ?dup if ." ` " icount type ." ` data! " then
+    data @ ?dup if ." ` " icount type ." ` " then
     bgc @ h. ." bgc ! " ;
 : 1w h @ 32. >= ?; data @ ?dup 0; count 8. * 32. + w ! drop ;
 : ?freedata data @ ?dup if free drop then ;
 : data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! 1w ;
+: ` [char] ` parse data! ;
 
 : label-draw draw> white data@ stext ?layout ;
 : toolbox-draw draw> white sdims rectf black sdims rect sdims drop 8 black rectf 16 15 +at data@ text ;

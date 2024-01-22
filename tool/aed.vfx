@@ -92,7 +92,7 @@ create untitled$ ," UNTITLED.TL"
 \ - Editor layout
 workspace {
     0 0 at *aed named aed {
-        0 0 at *toolbox { ` AED` data!
+        0 0 at *toolbox { ` AED`
             0 32 at *generic {
                 0 0 at *status { } 
                 0 64 at *generic {
@@ -102,27 +102,27 @@ workspace {
                     512 0 at *preview named preview { 
                         64 64 at *pspr named pspr { } 
                     }
-                    0 winh 2 / at *toolbox { ` Tiles` data!
+                    0 winh 2 / at *toolbox { ` Tiles`
                         0 32 at *tbank named tselector { _bolted aon }
                     }
-                    300 winh 2 / at *toolbox { ` Tools` data!
+                    300 winh 2 / at *toolbox { ` Tools`
                         0 32 at *panel { 200. 200. w v! 
                             8 8 at
-                            *button { ` snapping toggle` data! }
-                            *button { ` refresh-tbank` data! break }
-                            *button { ` 0 bank` data! }
-                            *button { ` 1 bank` data! }
-                            *button { ` 2 bank` data! }
-                            *button { ` 3 bank` data! break }
-                            *button { ` 4 bank` data! }
-                            *button { ` 5 bank` data! }
-                            *button { ` 6 bank` data! }
-                            *button { ` 7 bank` data! break }
-                            *button { ` slowest` data! }
-                            *button { ` slow` data! }
-                            *button { ` normal` data! }
-                            *button { ` fast` data! }
-                            *button { ` fastest` data! break }
+                            *button { ` snapping toggle` }
+                            *button { ` refresh-tbank` break }
+                            *button { ` 0 bank` }
+                            *button { ` 1 bank` }
+                            *button { ` 2 bank` }
+                            *button { ` 3 bank` break }
+                            *button { ` 4 bank` }
+                            *button { ` 5 bank` }
+                            *button { ` 6 bank` }
+                            *button { ` 7 bank` break }
+                            *button { ` slowest` }
+                            *button { ` slow` }
+                            *button { ` normal` }
+                            *button { ` fast` }
+                            *button { ` fastest` break }
                         }
                     }
                 }
