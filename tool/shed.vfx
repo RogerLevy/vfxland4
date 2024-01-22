@@ -1,5 +1,5 @@
 0 value dragee
-0 value this
+root value this
 0 value hoveree
 variable snapping
 0 value workspace
@@ -13,7 +13,7 @@ motif var ser var attr var post /obj to /basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
-: copy *slot { me /slot move  linkage erase  me } ;
+: copy *slot { me /slot move   linkage erase   me } ;
 : (*clone) ( orig new ) | p |
     -> first @ begin ?dup while
         dup dup copy dup p push
@@ -30,7 +30,8 @@ motif var ser var attr var post /obj to /basis
     +m identity
     me begin ?dup while
         dup { x v@ 2p>f  sx v@ 2p>f } 0e
-            m2 al_build_transform  m m2 al_compose_transform
+            m2 al_build_transform
+            m m2 al_compose_transform
         -> parent @
     repeat
     m al_use_transform
@@ -88,7 +89,7 @@ variable indent
 : ?existing search-context if ." EXISTING" execute else 0 then ;
 : ?replace ?dup 0; overwrite ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
-: aload 2dup -path ?existing >r oload r> ?replace { postload me } ;
+: aload 2dup -path   ?existing >r   oload   r> ?replace { postload me } ;
 : load bl parse figpath name>path aload to this ;
 : ser> r> ser ! ;
 : post: here aligned post ! 0 parse $, ;
@@ -116,16 +117,17 @@ variable indent
 \ - Figure Editor 2/3
 : +zoom
     workspace { 
-    0.25 * sx @ dup >r + 0.25 2. clamp dup sx v!
-    mouse 2s>p >local sx v@ 2p* 1. sx @ r> p/ - dup  2p*  x v+!
-    } ;
+        sx @ >r   0.25 * r@ + 0.25 2. clamp dup   sx v!
+        mouse 2s>p >local sx v@ 2p*   1. sx @ r> p/ - dup   2p*   x v+!
+    }
+;
 : can-delete? | it |
     it 0= if 0 exit then 
     it editable? not if cr ." Cannot edit static objects when not editing the static layer." 0 exit then 
     it { _locked a? } if cr ." Object is locked. Cannot delete!" 0 exit then
     -1 ;
-: unpick 0 to this 0 to dragee 0 to hoveree ;
-: delete-this this can-delete? if this delete unpick then ;
+: unpick root to this 0 to dragee 0 to hoveree ;
+: delete-this this can-delete? if this delete   unpick then ;
 
 \ - Figure Editor 3/3
 : shed-events
@@ -133,7 +135,7 @@ variable indent
         the-key <del> = if delete-this then
     then
 ;
-c: *shed draw> editmode @ 0; 0 0 at winw winh  $00ff0020 color rectf ;
+c: *shed draw> editmode @ 0; 0 0 at $00ff0020 color winw winh rectf ;
 c: *info draw> editmode @ 0; outlines ;
 
 \ - Workspace
@@ -165,8 +167,8 @@ root {
 }
 
 : ?static ws-static @ static ! ;
-: toggle-static static workspace <> if ws-static toggle then  ?static ;
-: switch workspaces disable-each  dup to workspace on  ?static  shed workspace insert-after  shed on  unpick ;
+: toggle-static static workspace <> if ws-static toggle then   ?static ;
+: switch workspaces disable-each   dup to workspace on   ?static   shed workspace insert-after   shed on   unpick ;
 ws1 switch
 
 : ?pickdrag hoveree ?dup 0; dup to this to dragee ;

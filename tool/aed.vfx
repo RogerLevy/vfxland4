@@ -28,7 +28,7 @@ variable cspd 20. cspd !
 : subbank@ ckf -> tio @ 256 / ;
 : size ctw v! ;
 : add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
-: nudge this ?dup if -> x v+! else 2drop then ;
+: nudge this { _bolted a? if 2drop else x v+! then } ;
 : refresh-tbank
     z" data/bmp/tbank_initial.png" loadbmp 
     0 0 at
@@ -98,7 +98,6 @@ workspace {
     0 0 at *aed named aed {
         0 0 at *toolbox { ` AED`
             0 32 at *generic {
-                0 0 at *status { } 
                 0 64 at *generic {
                     0 0 at *editor named editor { 128. 128. w v! [bolted]
                         64 64 at *generic named anmc { }
@@ -134,6 +133,9 @@ workspace {
                         }
                     }
                 }
+                400 0 at *toolbox { ` Status`
+                    0 32 at *status { } 
+                }                    
             }
         }
     }
