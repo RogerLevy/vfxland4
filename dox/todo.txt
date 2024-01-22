@@ -27,4 +27,17 @@ SHED context menu:
     to be used with FGET ?
     the wordlists automatically add themselves to the search order
     to reset the search order, ONLY FORTH or maybe a shorthand
-[x] Update shed.txt, ui.txt (rename to repl.txt), 
+[x] Update shed.txt, ui.txt (rename to repl.txt),
+[ ] There are some issues related to serializing and replacement
+    Stale references - solve by never reassigning, only replacing? 
+    But then there is the issue of children
+    One solution is to make all references (i.e. name-words) work like variables (i.e. you have to @ from them),
+        then we can reassign without worry
+    Replacement *is* possible, because we're only reusing the memory slot, not
+        preserving tree structure.  <--- THIS IS THE RIGHT WAY OF THINKING ABOUT IT
+    This will be built into NAME which will copy the entire source slot to the destination slot,
+        removing all the destination's children - but not yet freeing them, because there might be
+        some named slots there!  So we put them in a temporary list ...
+    The only caveat with this is if the original object is referenced before NAMED or NAME is called on it,
+        it becomes a stale reference...
+        
