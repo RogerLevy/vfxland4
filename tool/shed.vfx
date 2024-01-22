@@ -49,7 +49,7 @@ motif var ser var attr var post /obj to /basis
 : is-static? begin -> parent @ ?dup while dup static = ?dup ?; repeat 0 ; 
 : editable? dup 0; is-static? not workspace static = or ;
 : tsnap dup abs 8. + dup 16. mod - swap 0< if negate then ;
-: ?snap x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
+: ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
 
 \ - Serialize
 variable indent

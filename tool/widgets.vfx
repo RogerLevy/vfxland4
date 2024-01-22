@@ -16,11 +16,14 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : exec data@ ?dup 0; zcount evaluate ;
 : button-respond respond>  
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if over? 0; ?click then
-    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if _click aoff over? 0; ['] exec try then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? if _click a? 0; _click aoff ['] exec try then
 ;
+: (down) 2 2 +at sdims 2dup grey <d rectf grey rect ;
+: (up) boxshadow sdims 2dup grey rectf white rect ;
+: button-draw draw> _click a? if (down) else (up) then 16 10 +at data@ text ;
 
 : ?expand x v@ w v@ 2+ 8. 8. 2+ parent @ { w v@ 2max w v! } ;
-: ?nr _nr a? 0; next 0; 8. y @ h @ + 8. + next @ -> x v! ;
+: ?nr _nr a? 0; next @ 0; 8. y @ h @ + 8. + next @ -> x v! ;
 : ?layout _bolted a? 0; next @ if x @ w @ + 15. + y @ next @ -> x v! then ?nr ?expand ;
 
 : ` [char] ` parse ;
@@ -32,9 +35,6 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! 1w ;
 
 : label-draw draw> white data@ stext ?layout ;
-: (down) 2 2 +at sdims 2dup grey <d rectf grey rect -2 -2 +at ;
-: (up) boxshadow sdims 2dup grey rectf white rect ;
-: button-draw draw> _click a? if (down) else (up) then 16 10 +at data@ stext ;
 : toolbox-draw draw> white sdims rectf black sdims rect sdims drop 8 black rectf 16 15 +at data@ text ;
 
 create ox 0 , 0 ,
