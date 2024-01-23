@@ -6,22 +6,6 @@
 [x] hide -> vis, hide reveal
 [x] Compile field offsets using literals
 
-1/18
-
-SHED context menu:
-[ ] bring
-[ ] copy
-[ ] clone
-[ ] trash
-[ ] enable/disable snapping (affects dragging, scaling, and resizing)
-[ ] scale
-[ ] resize
-[ ] group (multiple selection)
-[ ] attach (selection to right-clicked object)
-[ ] detach
-[ ] downstage, upstage
-[ ] edit text (can be turned off for binary data)
-
 1/19
 [x] if needed, add tasks
 

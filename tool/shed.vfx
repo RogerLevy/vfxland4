@@ -187,7 +187,7 @@ root {
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
 : toggle-editmode editmode toggle   editmode @ ws-static !   ?static ;
-: switch workspaces disable-each   dup to workspace on   ?static   shed workspace insert-after   shed on  ?bring ;
+: switch workspaces disable-each   dup to workspace on   ?static   ( ?bring ) ;
 ws1 switch
 
 \ - Global events

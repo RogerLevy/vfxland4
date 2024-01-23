@@ -6,21 +6,21 @@ require sys/filetypes.vfx
 obj animations
 0 value kf#
 reference editor
-reference anme
+reference anmc
 reference pspr
 variable cti
 create ctw 1 , here 1 , constant cth
 variable cspd 20. cspd !
-0 value anm 
 
 \ - Editor actions
+: anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
 : sel anm disable-each  anm nth-child on ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
 : tcenter ctw v@ 8. 8. 2p* 2- ;
-: lay ckf { anme { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
+: lay ckf { anm { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
@@ -48,13 +48,14 @@ variable cspd 20. cspd !
 \ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
-    z[ ." Mouse XY: " mouse anme { s>local } swap . . ]z white stext nr
+    z[ ." Mouse XY: " mouse anmc { s>local } swap . . ]z white stext nr
     z[ ." Tile: " cti @ . ]z white stext nr
     z[ ." Subbank: " subbank@ . ]z white stext nr
     z[ ." Size: " ctw v@ swap . . ]z stext nr
 ;
 : tbank-act act> over? 0;
     1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
+: .anm anm ?dup if .name then ;
 : tbank-draw draw>
     sdims 2dup $00000080 color rectf
     -1 -1 +at 2 2 2+ white rect 1 1 +at
@@ -62,7 +63,6 @@ variable cspd 20. cspd !
     tbank w v@ 2p>s subbmp dup  0 0 at blit  -bmp ;
 
 : aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ;
-defer editor-respond
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
 
@@ -72,20 +72,19 @@ defer editor-respond
 \ - Editor components 2/2
 : crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 c: *preview 3. 3. sx 2! draw> crosshairs ;
-c: *editor 3. 3. sx 2! editor-respond draw> crosshairs ghost ;
-c: *status draw> big z[ anm .name ]z white stext 0 32 +at small (status) ;
+c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
 c: *aed aed-ser ;
 c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit to anm 0 kf! pspr { anm cspd @ animate } ;
+: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm cspd @ animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
 : anm-load chooser ?dup if aload edit then ;
 create untitled$ ," UNTITLED.TL"
-: new animations { 0 0 at *timeline } untitled$ name { *keyframe { } me } edit ;
+: new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
 : anm-saveas chooser ?dup if -path -ext ?clone rename (anm-save) then ;
@@ -93,19 +92,17 @@ create untitled$ ," UNTITLED.TL"
 : anm-save untitled? if anm-saveas else (anm-save) then ;
 
 \ - Animation editor
-c: *anme
-    draw> anm { draw }
-        hoveree if hoveree anm descendant? if hoveree { +t yellow outline -t } then then 
-        this anm descendant? if this { +t red outline -t } then 
-    respond>
-        editor { over? } 0;
-        a+t anm { hover } -t
-        ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
-            hoveree if hoveree anm descendant? if
-                hoveree ?pickdrag
-            then then
-        then
+defer editor-respond
+c: *editor
+    editor-respond
+    draw>
+        crosshairs ghost anmc { +t
+            anm { draw } 
+            hoveree if hoveree anm descendant? if hoveree { +t yellow outline -t } then then 
+            this anm descendant? if this { +t red outline -t } then
+        -t }
 ;
+
 
 \ - Editor layout
 workspace {
@@ -113,8 +110,8 @@ workspace {
         0 0 at *toolbox { ` AED`
             0 32 at *generic {
                 0 0 at *toolbox { ` Editor`
-                    0 32 at *editor named editor { 128. 128. w v! [bolted]
-                        64 64 at *anme named anme { }
+                    0 32 at *editor named editor { 128. 128. w v! 3. 3. sx 2! [bolted]
+                        64 64 at *generic named anmc { }
                     }
                 }
                 winw 400 - 0 at *toolbox { ` Preview`
@@ -162,32 +159,42 @@ aed -> first @ :noname each> [locked] me recurse ; execute
 \ - Editor controls (besides shed-provided actions)
 :noname [ is editor-respond ]
     respond>
-    ALLEGRO_EVENT_KEY_CHAR happened? if
-        the-char case
-            [char] z of -1 +kf endof
-            [char] x of 1 +kf endof
-            [char] a of add-frame endof
-            ( bksp ) 8 of anm #children 1 > if ckf remove then endof
-        endcase
-        the-key case
-            <del> of delete-this endof
-            <left> of -1. 0 nudge endof
-            <right> of 1. 0 nudge endof
-            <up> of 0 -1. nudge endof
-            <down> of 0 1. nudge endof
-        endcase
-    then
-    ALLEGRO_EVENT_KEY_DOWN happened? if
-        the-key case
-            <space> of ?lay endof
-            <s> of ctrl? if shift? if anm-saveas else anm-save then then endof
-            <l> of ctrl? if anm-load then endof
-            <o> of ctrl? if anm-load then endof
-            <n> of ctrl? if new then endof
-            <d> of ctrl? if duplicate then endof
-        endcase
-    then
-    0 +kf 
+        ALLEGRO_EVENT_KEY_CHAR happened? if
+            the-char case
+                [char] z of -1 +kf endof
+                [char] x of 1 +kf endof
+                [char] a of add-frame endof
+                ( bksp ) 8 of anm #children 1 > if ckf remove then endof
+            endcase
+            the-key case
+                <del> of delete-this endof
+                <left> of -1. 0 nudge endof
+                <right> of 1. 0 nudge endof
+                <up> of 0 -1. nudge endof
+                <down> of 0 1. nudge endof
+            endcase
+        then
+        ALLEGRO_EVENT_KEY_DOWN happened? if
+            the-key case
+                <space> of ?lay endof
+                <s> of ctrl? if shift? if anm-saveas else anm-save then then endof
+                <l> of ctrl? if anm-load then endof
+                <o> of ctrl? if anm-load then endof
+                <n> of ctrl? if new then endof
+                <d> of ctrl? if duplicate then endof
+            endcase
+        then
+        0 +kf 
+
+        \ Mouse
+        ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+            over? if
+                anmc { a+t anm { hover } -t } 
+                hoveree if hoveree anm descendant? if
+                    hoveree ?pickdrag
+                then then
+            then
+        then
 ;
 editor as editor-respond
 
