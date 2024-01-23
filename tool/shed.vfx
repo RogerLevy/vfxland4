@@ -140,14 +140,20 @@ variable indent
 : unpick root to this ; \  0 to dragee 0 to hoveree ;
 : delete-this this can-delete? if this delete   unpick then ;
 : ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
+: ?pickdrag ?dup 0; dup to this to dragee ;
 
 \ - Figure Editor 3/3
 : shed-events
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key <del> = if delete-this then
     then
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+        the-mbutton 1 = if
+            hoveree ?pickdrag 
+        then
+    then
 ;
-c: *shed draw> editmode @ 0; 0 0 at $00ff0020 color winw winh rectf ;
+c: *shed draw> editmode @ 0; -matte 2 2 at yellow winw 3 - winh 3 - rect ;
 c: *info draw> editmode @ 0; root outlines ;
 
 \ - Workspace
@@ -180,16 +186,15 @@ root {
 
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
+: toggle-editmode editmode toggle   editmode @ ws-static !   ?static ;
 : switch workspaces disable-each   dup to workspace on   ?static   shed workspace insert-after   shed on  ?bring ;
 ws1 switch
-
-: ?pickdrag hoveree ?dup 0; dup to this to dragee ;
 
 \ - Global events
 : ecat e ALLEGRO_EVENT.type @ 10 / ;
 create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws10 , ws11 , static ,
-:noname [ is events ]
-    \ Common stuff
+
+: common-events
     ALLEGRO_EVENT_KEY_DOWN happened? if
         the-key <f1> >=
         the-key <f12> <= and if
@@ -197,18 +202,12 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         then
         the-key <tab> = ctrl? not and shift? not and if repl toggle then
         the-key <tab> = shift? and if toggle-static then
-        the-key <tab> = ctrl? and if editmode toggle then
+        the-key <tab> = ctrl? and if toggle-editmode then
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         the-mbutton 2 = if
             workspace to dragee
-        else
-            ?pickdrag 
         then
-    then
-    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
-    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
-        plop
     then
     ALLEGRO_EVENT_MOUSE_AXES happened? if
         the-wheel ?dup if +zoom then
@@ -217,24 +216,28 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         workspace { hover }
         ?dragging
     then
-    
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
+    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
+        plop
+    then
+
     \ Pass events to objects
     ecat 0 = if \ joystick
         workspace { respond }
     then
-    ecat 1 = if \ keyboard
-        editmode @ if
-            shed-events
-        else
-            repl @ if repl-events else workspace { respond } then 
-        then
-    then
     ecat 2 = if \ mouse
-        editmode @ if
-            shed-events
-        else
-            workspace { respond }
-        then
         workspace static <> if static { respond } then
+    then
+;
+
+:noname [ is events ]
+    common-events
+    repl @ if
+        ecat 1 = if repl-events then \ keyboard
+        ecat 2 = if \ mouse
+            editmode @ if shed-events else workspace { respond } then
+        then
+    else
+        editmode @ if shed-events else workspace { respond } then
     then
 ;

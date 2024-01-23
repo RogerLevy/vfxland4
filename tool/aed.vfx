@@ -94,9 +94,17 @@ create untitled$ ," UNTITLED.TL"
 
 \ - Animation editor
 c: *anme
-    draw> anm { draw } anm outlines
+    draw> anm { draw }
+        hoveree if hoveree anm descendant? if hoveree { +t yellow outline -t } then then 
+        this anm descendant? if this { +t red outline -t } then 
     respond>
-        editor { over? } 0; a+t anm { hover } -t
+        editor { over? } 0;
+        a+t anm { hover } -t
+        ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+            hoveree if hoveree anm descendant? if
+                hoveree ?pickdrag
+            then then
+        then
 ;
 
 \ - Editor layout
@@ -115,7 +123,7 @@ workspace {
                     }
                 }
                 0 winh 2 / at *toolbox { ` Tiles`
-                    0 32 at *tbank named tselector { _bolted aon }
+                    0 32 at *tbank named tselector { [bolted] }
                 }
                 350 winh 2 / 40 + at *toolbox { ` Tools`
                     0 32 at *panel { 200. 200. w v! 

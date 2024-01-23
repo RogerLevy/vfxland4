@@ -7,7 +7,7 @@ motif var tl var spd var ac var af /obj to /basis \ add animation capability to 
 : animate spd ! tl ! draw> animation ;
 
 \ - Timeline definition
-c: *timeline ;
+c: *timeline [locked] ;
 
 \ - Keyframe definition w/ tile offset support
 motif var tio /obj to /basis
