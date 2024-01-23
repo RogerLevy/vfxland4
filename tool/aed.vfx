@@ -28,7 +28,7 @@ variable cspd 20. cspd !
 : subbank@ ckf -> tio @ 256 / ;
 : size ctw v! ;
 : add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
-: nudge this { _bolted a? if 2drop else x v+! then } ;
+: nudge this anm descendant? if this -> x v+! else 2drop then ; \ this { _bolted a? if 2drop else x v+! then } ;
 : refresh-tbank
     z" data/bmp/tbank_initial.png" loadbmp 
     0 0 at
@@ -64,7 +64,7 @@ variable cspd 20. cspd !
 
 : aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ;
 
-: ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2i 2p>s ;
+: ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2pround ;
 
 : ghost mouse s>local tcenter ?2tsnap at $ffffff80 color ckf -> tio @ tileofs ! ctw v@ cti @ tiles ;
 : ?ghost over? 0; ghost ;
