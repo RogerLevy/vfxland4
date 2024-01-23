@@ -6,21 +6,21 @@ require sys/filetypes.vfx
 obj animations
 0 value kf#
 reference editor
-reference anmc
+reference anme
 reference pspr
 variable cti
 create ctw 1 , here 1 , constant cth
 variable cspd 20. cspd !
+0 value anm 
 
 \ - Editor actions
-: anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
 : sel anm disable-each  anm nth-child on ;
 : kf! 0 anm #children wrap to kf#  kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after 1 +kf ;
 : tcenter ctw v@ 8. 8. 2p* 2- ;
-: lay ckf { anm { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
+: lay ckf { anme { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
@@ -48,14 +48,13 @@ variable cspd 20. cspd !
 \ - Editor components 1/2
 : (status)
     z[ kf# 1 + . ." / " anm #children . ]z white stext nr
-    z[ ." Mouse XY: " mouse anmc { s>local } swap . . ]z white stext nr
+    z[ ." Mouse XY: " mouse anme { s>local } swap . . ]z white stext nr
     z[ ." Tile: " cti @ . ]z white stext nr
     z[ ." Subbank: " subbank@ . ]z white stext nr
     z[ ." Size: " ctw v@ swap . . ]z stext nr
 ;
 : tbank-act act> over? 0;
     1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
-: .anm anm ?dup if .name then ;
 : tbank-draw draw>
     sdims 2dup $00000080 color rectf
     -1 -1 +at 2 2 2+ white rect 1 1 +at
@@ -74,24 +73,31 @@ defer editor-respond
 : crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 c: *preview 3. 3. sx 2! draw> crosshairs ;
 c: *editor 3. 3. sx 2! editor-respond draw> crosshairs ghost ;
-c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
+c: *status draw> big z[ anm .name ]z white stext 0 32 +at small (status) ;
 c: *aed aed-ser ;
 c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 
 \ Save/load
-: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm cspd @ animate } ;
+: edit to anm 0 kf! pspr { anm cspd @ animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
 : anm-load chooser ?dup if aload edit then ;
 create untitled$ ," UNTITLED.TL"
-: new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
+: new animations { 0 0 at *timeline } untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
 : anm-saveas chooser ?dup if -path -ext ?clone rename (anm-save) then ;
 : untitled? anm -> nam @ count untitled$ count compare 0= ;
 : anm-save untitled? if anm-saveas else (anm-save) then ;
+
+\ - Animation editor
+c: *anme
+    draw> anm { draw } anm outlines
+    respond>
+        editor { over? } 0; a+t anm { hover } -t
+;
 
 \ - Editor layout
 workspace {
@@ -100,7 +106,7 @@ workspace {
             0 32 at *generic {
                 0 0 at *toolbox { ` Editor`
                     0 32 at *editor named editor { 128. 128. w v! [bolted]
-                        64 64 at *generic named anmc { }
+                        64 64 at *anme named anme { }
                     }
                 }
                 winw 400 - 0 at *toolbox { ` Preview`

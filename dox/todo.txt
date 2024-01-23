@@ -7,19 +7,28 @@
 [x] Compile field offsets using literals
 
 1/18
-[ ] scale or resize anything with the mouse, smooth or snapped
 
 SHED context menu:
-[ ] grouping/ungrouping
-[ ] push selected to object
+[ ] trash
+[ ] enable/disable snapping (affects dragging, scaling, and resizing)
+[ ] scale
+[ ] resize
+[ ] group (multiple selection)
+[ ] attach (selection to right-clicked object)
+[ ] detach
 [ ] bring-to-front, send-to-back
+[ ] edit text (can be turned off for binary data)
 
 1/19
 [x] if needed, add tasks
 
 1/20
 [ ] aed shouldn't be moving timelines
-    some kind of proxy object
+    A. some kind of proxy object
+        affected words:
+            O. EACH CLEAR PUSH DRAW RESPOND (not ACT or PHYSICS)
+        on delete, the target needs to unlink the proxy
+    -> B. don't actually move the timeline/keyframe, draw it and re-implement the shed
 
 1/21
 [ ] PRIVATE and PUBLIC
@@ -42,3 +51,8 @@ SHED context menu:
         it becomes a stale reference...
 
 1/22
+    [ ] Add ability to bring objects from one workspace to another
+        *** There can only be one instance of every named tool/app but it can be brought anywhere, even its pieces. ***
+        The keyboard controls only work when the app is attached to a workspace (for now)
+        idea: transport widget for preview (play/pause, stop, prev/next keyframe)
+            you can bring the preview anywhere along with the transport controls

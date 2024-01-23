@@ -26,8 +26,7 @@ motif var ser var attr var post /obj to /basis
 : aon attr @ or attr ! ;
 : replace dup >r insert r> kill ;
 : from -> x v@ p>s at ;
-: a+t
-    +m identity
+: rtransform
     me begin ?dup while
         dup { x v@ 2p>f  sx v@ 2p>f } 0e
             m2 al_build_transform
@@ -38,6 +37,7 @@ motif var ser var attr var post /obj to /basis
 ;
 : ascale/ parent @ ?dup if { recurse } then sx v@ 2p/ ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
+: a+t +m identity rtransform ;
 : abox a+t 0 0 v*m w v@ ascale* area -t ;
 : >local abox 2drop 2- ascale/ ;
 : s>local 2s>p >local 2p>s ;
@@ -108,10 +108,21 @@ variable indent
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
 : tiny a+t 0 0 v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
-: outline a+t 0 0 at w v@ 2p>s rect -t ;
+: outline 0 0 at w v@ 2p>s rect ;
+: a-outline a+t outline -t ;
+: descendant? swap { begin parent @ dup while over = if } drop -1 exit then parent @ as repeat nip ( 0 ) } ;
 : outlines
-    hoveree dup editable? if { yellow outline } else drop then
-    this dup editable? if { red outline (info) } else drop then
+    | p |
+    hoveree editable? if
+        hoveree p descendant? if
+            hoveree { yellow a-outline } 
+        then
+    then
+    this editable? if 
+        this p descendant? if
+            this { red a-outline (info) }
+        then
+    then
 ;
 
 \ - Figure Editor 2/3
@@ -126,8 +137,9 @@ variable indent
     it editable? not if cr ." Cannot edit static objects when not editing the static layer." 0 exit then 
     it { _locked a? } if cr ." Object is locked. Cannot delete!" 0 exit then
     -1 ;
-: unpick root to this 0 to dragee 0 to hoveree ;
+: unpick root to this ; \  0 to dragee 0 to hoveree ;
 : delete-this this can-delete? if this delete   unpick then ;
+: ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
 
 \ - Figure Editor 3/3
 : shed-events
@@ -136,7 +148,7 @@ variable indent
     then
 ;
 c: *shed draw> editmode @ 0; 0 0 at $00ff0020 color winw winh rectf ;
-c: *info draw> editmode @ 0; outlines ;
+c: *info draw> editmode @ 0; root outlines ;
 
 \ - Workspace
 : ws-var var does> @ workspace + ;
@@ -168,7 +180,7 @@ root {
 
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
-: switch workspaces disable-each   dup to workspace on   ?static   shed workspace insert-after   shed on   unpick ;
+: switch workspaces disable-each   dup to workspace on   ?static   shed workspace insert-after   shed on  ?bring ;
 ws1 switch
 
 : ?pickdrag hoveree ?dup 0; dup to this to dragee ;
