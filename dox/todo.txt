@@ -9,6 +9,9 @@
 1/18
 
 SHED context menu:
+[ ] bring
+[ ] copy
+[ ] clone
 [ ] trash
 [ ] enable/disable snapping (affects dragging, scaling, and resizing)
 [ ] scale
@@ -16,7 +19,7 @@ SHED context menu:
 [ ] group (multiple selection)
 [ ] attach (selection to right-clicked object)
 [ ] detach
-[ ] bring-to-front, send-to-back
+[ ] downstage, upstage
 [ ] edit text (can be turned off for binary data)
 
 1/19
@@ -29,6 +32,7 @@ SHED context menu:
             O. EACH CLEAR PUSH DRAW RESPOND (not ACT or PHYSICS)
         on delete, the target needs to unlink the proxy
     -> B. don't actually move the timeline/keyframe, draw it and re-implement the shed
+    C. create a copy and continually update the original
 
 1/21
 [ ] PRIVATE and PUBLIC
@@ -56,3 +60,8 @@ SHED context menu:
         The keyboard controls only work when the app is attached to a workspace (for now)
         idea: transport widget for preview (play/pause, stop, prev/next keyframe)
             you can bring the preview anywhere along with the transport controls
+            
+1/23
+    [ ] Userhand
+        Manages what the mouse (and keyboard?) are doing
+        
