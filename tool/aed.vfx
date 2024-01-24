@@ -186,9 +186,14 @@ aed -> first @ :noname each> [locked] me recurse ; execute
         0 +kf 
 
         \ Mouse
-        ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+        ALLEGRO_EVENT_MOUSE_AXES happened? if
             over? if
                 anmc { a+t anm { hover } -t } 
+            then
+        then
+
+        ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+            over? if
                 hoveree if hoveree anm descendant? if
                     hoveree ?pickdrag
                 then then
