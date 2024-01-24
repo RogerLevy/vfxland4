@@ -3,11 +3,15 @@ require obj/tile.vfx
 require sys/filetypes.vfx
 
 \ - Editor variables
+PUBLIC
 obj animations
-0 value kf#
+reference aed
+
+PRIVATE
 reference editor
 reference anmc
 reference pspr
+0 value kf#
 variable cti
 create ctw 1 , here 1 , constant cth
 variable cspd 20. cspd !
@@ -206,3 +210,5 @@ editor as editor-respond
 0.75e fdup fdup 1e backdrop 4f!
 
 new
+
+PREVIOUS DEFINITIONS
