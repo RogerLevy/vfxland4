@@ -6,6 +6,7 @@ variable snapping
 variable editmode
 reference static
 reference editmenu
+reference shed
 
 1 bit _bolted bit _locked value _attributes
 
@@ -146,8 +147,9 @@ variable indent
 : unpick root to this ; \  0 to dragee 0 to hoveree ;
 : delete-this this can-delete? if this delete   unpick then ;
 : ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
-: select to this ;
-: ?pickdrag ?dup 0; ( dup workspace descendant? if ) dup select to dragee ( else drop then ) ;
+: editmenu? shed descendant? editmenu @ and ;
+: select dup editmenu? not if to this else drop then ;
+: ?pickdrag ?dup 0; dup select to dragee ;
 
 \ Clicking
 create omx 0 , 0 ,
@@ -245,7 +247,6 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         workspace { hover }
         static { hover }
         editmenu @ if shed { hover } then
-        \ hoveree ?dup if cr o. then
         ?dragging
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
@@ -276,8 +277,9 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 ;
 
 \ Edit menu actions
-: ?root this root = if editmenu off r> drop cr ." No selection." then ;
-: ?locked this { _locked a? } if editmenu off r> drop cr ." Cannot do that on locked object." then ;
+-sin
+: ?root this root = if r> drop cr ." No selection." then ;
+: ?locked this { _locked a? } if r> drop cr ." Cannot do that on locked object." then ;
 : button: *button { >in @ bl parse data! } >in ! : ;
 : localize { mouse 2s>p >local } this -> x v! ;
 : [newrow] last @ { break } ;
@@ -305,3 +307,4 @@ editmenu -> first @ {
     button: [DESELECT] ?root   unpick ;
     *button { ` snapping toggle` break }
 }
++sin

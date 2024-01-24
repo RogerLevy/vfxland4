@@ -1,5 +1,5 @@
 _attributes bit _click bit _nr drop \ to _attributes
-/basis var data drop
+motif var data var wl 
 
 z" sys/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
    constant ascii8x8.fnt
@@ -14,9 +14,20 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 
 : ?click hoveree me = 0; _click aon ;
 : exec data@ ?dup 0; zcount evaluate ;
+: +.vfx pad place s" .VFX" pad append pad count ;
+: ?parent-wordlist
+    me { begin parent @ dup while
+        as nam @ ?dup if count +.vfx search-context if >body @ } exit then then
+    repeat } 
+;
+: button:exec
+    ?parent-wordlist dup >r if r@ +order then
+    _click aoff ['] exec try
+    r> if previous then
+;
 : button-respond respond>  
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? the-mbutton 1 = and if over? 0; ?click then
-    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? the-mbutton 1 = and if _click a? 0; _click aoff ['] exec try then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? the-mbutton 1 = and if _click a? 0; button:exec then
 ;
 : (down) 2 2 +at sdims 2dup grey <d rectf grey rect ;
 : (up) boxshadow sdims 2dup grey rectf white rect ;
@@ -46,7 +57,6 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     else
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
             the-mbutton 1 = if
-                123 .
                 me ?pickdrag
             then
         then
