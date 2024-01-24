@@ -17,6 +17,7 @@
         on delete, the target needs to unlink the proxy
     -> B. don't actually move the timeline/keyframe, draw it and re-implement the shed
     C. create a copy and continually update the original
+    --- Remains unresolved ---
 
 1/21
 [ ] PRIVATE and PUBLIC
@@ -48,4 +49,3 @@
 1/23
     [ ] Userhand
         Manages what the mouse (and keyboard?) are doing
-        

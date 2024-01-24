@@ -15,19 +15,19 @@ variable cspd 20. cspd !
 \ - Editor actions
 : anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
-: sel anm disable-each  anm nth-child on ;
-: kf! 0 anm #children wrap to kf#  kf# sel ;
+: sel anm disable-each   anm nth-child on ;
+: kf! 0 anm #children wrap to kf#   kf# sel ;
 : +kf kf# + kf! ;
-: duplicate ckf clone ckf insert-after 1 +kf ;
+: duplicate ckf clone ckf insert-after   1 +kf ;
 : tcenter ctw v@ 8. 8. 2p* 2- ;
-: lay ckf { anm { mouse s>local } tcenter at *tile { cti @ ti ! ctw v@ tile:dims! ?snap } } ;
+: lay ckf { anm { mouse s>local } tcenter at *tile } { cti @ ti !   ctw v@ tile:dims!   ?snap   me select } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
 : bank 256 * ckf -> tio ! ;
 : subbank@ ckf -> tio @ 256 / ;
 : size ctw v! ;
-: add-frame ckf -> tio @ *keyframe ckf insert-after 1 +kf ckf -> tio ! ;
+: add-frame ckf -> tio @   *keyframe ckf insert-after   1 +kf   ckf -> tio ! ;
 : nudge this anm descendant? if this -> x v+! else 2drop then ; \ this { _bolted a? if 2drop else x v+! then } ;
 : refresh-tbank
     z" data/bmp/tbank_initial.png" loadbmp 
@@ -66,7 +66,7 @@ variable cspd 20. cspd !
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2pround ;
 
-: ghost mouse s>local tcenter ?2tsnap at $ffffff80 color ckf -> tio @ tileofs ! ctw v@ cti @ tiles ;
+: ghost mouse s>local tcenter ?2tsnap 2p>s at $ffffff80 color ckf -> tio @ tileofs ! ctw v@ cti @ tiles ;
 : ?ghost over? 0; ghost ;
 
 \ - Editor components 2/2
@@ -125,7 +125,6 @@ workspace {
                 350 winh 2 / 40 + at *toolbox { ` Tools`
                     0 32 at *panel { 200. 200. w v! 
                         8 8 at
-                        *button { ` snapping toggle` }
                         *button { ` refresh-tbank` break }
                         *button { ` 0 bank` }
                         *button { ` 1 bank` }
