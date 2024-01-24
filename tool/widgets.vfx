@@ -35,22 +35,26 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : ` [char] ` parse data! ;
 
 : label-draw draw> white data@ stext ?layout ;
-: toolbox-draw draw> white sdims rectf black sdims rect sdims drop 8 black rectf 16 15 +at data@ text ;
 
-
-
+: open-toolbox -> first @ on ;
 : toolbox-respond respond>
     over? 0;
     click? if
-        first @ ?dup 0; toggle
+        the-mbutton 1 = if
+            first @ ?dup 0; toggle
+        then
     else
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
-            hoveree ?pickdrag
+            the-mbutton 1 = if
+                123 .
+                me ?pickdrag
+            then
         then
     then
 ;
+: toolbox-draw draw> -1 -1 at white sdims 2 2 2+ rectf 2 2 +at black sdims 1 1 2- rect sdims drop 1 - 7 black rectf 15 14 +at data@ text ;
 
-: panel-draw draw> sdims bgc @ color rectf ;
+: panel-draw draw> bgc @ color  sdims    2dup rectf   white rect ;
 
 : textbox-draw draw>
     data @ 0;

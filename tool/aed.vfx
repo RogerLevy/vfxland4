@@ -35,11 +35,11 @@ variable cspd 20. cspd !
     dup tbank bmpwrite -bmp
 ;
 : speed dup cspd ! pspr -> spd ! ;
-: slowest 10. speed ;
-: slow 15. speed ;
-: normal 20. speed ;
-: fast 30. speed ;
-: fastest 60. speed ;
+: slowest 5. speed ;
+: slow 10. speed ;
+: normal 15. speed ;
+: fast 20. speed ;
+: fastest 30. speed ;
 : narrower ctw @ 1 - 1 max ctw ! ;
 : wider ctw @ 1 + 16 min ctw ! ;
 : shorter cth @ 1 - 1 max cth ! ;
@@ -125,6 +125,7 @@ workspace {
                 350 winh 2 / 40 + at *toolbox { ` Tools`
                     0 32 at *panel { 200. 200. w v! 
                         8 8 at
+                        *button { ` snapping toggle` }
                         *button { ` refresh-tbank` break }
                         *button { ` 0 bank` }
                         *button { ` 1 bank` }

@@ -52,6 +52,8 @@ motif var ser var attr var post /obj to /basis
 : editable? dup 0; is-static? not workspace static = or ;
 : tsnap dup abs 4. + dup 8. mod - swap 0< if negate then ;
 : ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2i then x v! ;
+: upstage dup -> parent @ unshift ;
+: downstage dup -> parent @ push ;
 
 \ - Serialize
 variable indent
@@ -145,7 +147,7 @@ variable indent
 : delete-this this can-delete? if this delete   unpick then ;
 : ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
 : select to this ;
-: ?pickdrag ?dup 0; dup workspace descendant? if dup select to dragee else drop then ;
+: ?pickdrag ?dup 0; ( dup workspace descendant? if ) dup select to dragee ( else drop then ) ;
 
 \ Clicking
 create omx 0 , 0 ,
@@ -153,11 +155,14 @@ create omx 0 , 0 ,
 : click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? mouse omx v@ d= and ;
 
 \ Edit menu
+require tool/widgets.vfx
 : 2min rot min >r min r> ;
 : toggle-editmenu
     editmenu toggle
     editmenu {
         mouse winw winh w v@ 2p>s 2- 2min   2s>p x v!
+        me downstage
+        me open-toolbox
     }
 ;
 
@@ -187,7 +192,6 @@ c: *workspace 1workspace draw> -matte ;
 : disable-each each> me off ;
 
 \ - Shed layout
-require tool/widgets.vfx
 root {
     container: workspaces {
         *workspace named ws1  { me -> ws-static on }
@@ -205,14 +209,13 @@ root {
     }
     *shed named shed {
         *info named info { }
-        *panel named editmenu { me off
-            8 8 at *generic { } }
+        *toolbox named editmenu { ` -- EDIT --` me off 0 32 at *panel } { 8 8 at *generic } { } 
     }
 }
 
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
-: toggle-editmode editmode toggle   editmode @ ws-static !   ?static ;
+: toggle-editmode editmode toggle   editmode @ ws-static !   editmode @ not if editmenu off then   ?static ;
 : switch workspaces disable-each   dup to workspace on   ?static   ( ?bring ) ;
 ws1 switch
 
@@ -241,7 +244,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         0 to hoveree
         workspace { hover }
         static { hover }
-        editmenu @ if editmenu { hover } then
+        editmenu @ if shed { hover } then
         \ hoveree ?dup if cr o. then
         ?dragging
     then
@@ -279,26 +282,26 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 : localize { mouse 2s>p >local } this -> x v! ;
 : [newrow] last @ { break } ;
 
-editmenu {
+editmenu -> first @ {
     button: [BRING] ?root ?locked   this workspace push   workspace localize    ;
     : ?bring { me workspace descendant? not if [bring] else   me this over insert-after  this { -> parent @ localize } then } ;
-    button: [CLONE] ?root   this >r   this clone select   r> ?bring    ;
+    button: [CLONE] ?root   this >r   this clone select   r> ?bring ;
     [newrow]
-    button: [CLEAR] ?root ?locked   this clear    ;
-    button: [TRASH] ?root ?locked   this trash push   unpick    ;
+    button: [CLEAR] ?root ?locked   this clear ;
+    button: [TRASH] ?root ?locked   this trash push   unpick ;
     [newrow]
-    button: [ATTACH] ?root ?locked   target  0;   this target push   8. 8. this -> x v!    ;
-    button: [DETACH] ?root ?locked   this workspace push    ;
+    button: [ATTACH] ?root ?locked   target 0;   this target push   8. 8. this -> x v! ;
+    button: [DETACH] ?root ?locked   this workspace push ;
     [newrow]
-    button: [UPSTAGE] ?root   this dup -> parent @ unshift    ;
-    button: [DOWNSTAGE] ?root   this dup -> parent @ push    ;
+    button: [UPSTAGE] ?root   this upstage ;
+    button: [DOWNSTAGE] ?root   this downstage ;
     [newrow]
-    button: [LOCK] ?root this   { _locked aon }    ;
-    button: [UNLOCK] ?root this   { _locked aoff }    ;
+    button: [LOCK] ?root this   { _locked aon } ;
+    button: [UNLOCK] ?root this   { _locked aoff } ;
     [newrow]
-    button: [BOLT] ?root this   { _bolted aon }    ;
-    button: [UNBOLT] ?root this   { _bolted aoff }    ;
+    button: [BOLT] ?root this   { _bolted aon } ;
+    button: [UNBOLT] ?root this   { _bolted aoff } ;
     [newrow]
-    button: [DESELECT] ?root   unpick    ;
+    button: [DESELECT] ?root   unpick ;
     *button { ` snapping toggle` break }
 }
