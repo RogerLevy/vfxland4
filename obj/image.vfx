@@ -1,0 +1,7 @@
+PRIVATE
+motif var bmp 
+: !wh bmp @ ?dup if bmpwh 2s>p w v! then ;
+: .file data @ ?dup if icount type then ;
+: ser-image ser> data @ ?dup if .\" z\" " .file .\" \" dup data! loadbmp bmp ! " ;  
+PUBLIC
+: *image ser-image draw> !wh bmp @ blit white outline 0 h @ p>s + at .sfn ;
