@@ -1,5 +1,7 @@
 320 value winw
 240 value winh
+0 value monw
+0 value monh
 0 value fullscreen?
 0 value doublebuf?
 
@@ -2513,7 +2515,7 @@ $05020500 constant ALLEGRO_VERSION
 \ extern "C" _Z7sprintfPcPKcz( );
 \ extern "C" al_acknowledge_drawing_halt( );
 \ extern "C" al_acknowledge_drawing_resume( );
-\ extern "C" al_acknowledge_resize( );
+extern "C" void al_acknowledge_resize( void * display );
 \ extern "C" al_add_config_comment( );
 \ extern "C" al_add_config_section( );
 \ extern "C" al_add_new_bitmap_flag( );
@@ -2607,13 +2609,12 @@ extern "C" void * al_create_mixer( int rate, int depth, int conf );
 \ extern "C" al_create_mouse_cursor( );
 \ extern "C" al_create_mutex( );
 \ extern "C" al_create_mutex_recursive( );
-\ extern "C" al_create_native_file_dialog( );
+extern "C" void * al_create_native_file_dialog( char *initial_path, char *title, char *patterns, int mode );
 \ extern "C" al_create_path( );
 \ extern "C" al_create_path_for_directory( );
 \ extern "C" al_create_popup_menu( );
 \ extern "C" al_create_sample( );
 \ extern "C" al_create_sample_instance( );
-\ extern "C" al_create_shader( );
 extern "C" void * al_create_sub_bitmap( void * bmp, int x, int y, int w, int h );
 \ extern "C" al_create_thread( );
 extern "C" void * al_create_timer( double speed_secs );
@@ -2636,7 +2637,7 @@ extern "C" void al_destroy_fs_entry( void * entry );
 \ extern "C" al_destroy_mixer( );
 \ extern "C" al_destroy_mouse_cursor( );
 \ extern "C" al_destroy_mutex( );
-\ extern "C" al_destroy_native_file_dialog( );
+extern "C" void al_destroy_native_file_dialog( void *dialog );
 \ extern "C" al_destroy_path( );
 extern "C" void al_destroy_sample( void * sample );
 \ extern "C" al_destroy_sample_instance( );
@@ -2685,9 +2686,9 @@ extern "C" void al_draw_indexed_prim( void * vtxs, void * decl, void * texture, 
 \ extern "C" al_draw_justified_text( );
 \ extern "C" al_draw_justified_textf( );
 \ extern "C" al_draw_justified_ustr( );
-extern "C" al_draw_line( float x1, float y1, float x2, float y2, int color, float thickness );
+extern "C" void al_draw_line( float x1, float y1, float x2, float y2, float r, float g, float b, float a, int float-thickness );
 extern "C" void al_draw_multiline_text( void *font,
-     float r, float g, float b, float a, float x, float y, float max_width, float line_height,
+     float r, float g, float b, float a, float x, float y, int float-max_width, int float-line_height,
      int flags, void *text );
 \ extern "C" al_draw_multiline_textf( );
 \ extern "C" al_draw_multiline_ustr( );
@@ -2709,8 +2710,8 @@ extern "C" void al_draw_scaled_rotated_bitmap ( void *bitmap,
 \ extern "C" al_draw_spline( );
 extern "C" void al_draw_text( void *font, float r, float g, float b, float a, float x, float y, int flags, void *text );
 \ extern "C" al_draw_textf( );
-\ extern "C" al_draw_tinted_bitmap( );
-\ extern "C" al_draw_tinted_bitmap_region( );
+extern "C" void al_draw_tinted_bitmap( void *ALLEGRO_BITMAP-*bitmap, float r, float g, float b, float a, float dx, float dy, int flags );
+\ extern "C" void al_draw_tinted_bitmap_region( void *ALLEGRO_BITMAP-*bitmap, float r, float g, float b, float a, float sx, float sy, float sw, float sh, int float-dx, int float-dy, int flags );
 \ extern "C" al_draw_tinted_rotated_bitmap( );
 \ extern "C" al_draw_tinted_scaled_bitmap( );
 \ extern "C" al_draw_tinted_scaled_rotated_bitmap( );
@@ -2821,7 +2822,7 @@ extern "C" void al_flush_event_queue( void * queue );
 extern "C" void * al_get_backbuffer( void * display );
 \ extern "C" al_get_bitmap_depth( );
 \ extern "C" al_get_bitmap_flags( );
-\ extern "C" al_get_bitmap_format( );
+extern "C" int al_get_bitmap_format( void * bmp );
 extern "C" int al_get_bitmap_height( void * bmp );
 \ extern "C" al_get_bitmap_samples( );
 extern "C" int al_get_bitmap_width( void * bmp );
@@ -2923,11 +2924,11 @@ extern "C" void * al_get_mouse_event_source( );
 extern "C" void al_get_mouse_state( void * state );
 extern "C" int al_get_mouse_state_axis( void * state, int axis );
 \ extern "C" al_get_mouse_wheel_precision( );
-\ extern "C" al_get_native_file_dialog_count( );
-\ extern "C" al_get_native_file_dialog_path( );
+extern "C" int al_get_native_file_dialog_count( void *dialog );
+extern "C" const char *al_get_native_file_dialog_path( void *dialog, size_t i );
 \ extern "C" al_get_native_text_log_event_source( );
 \ extern "C" al_get_new_bitmap_depth( );
-\ extern "C" al_get_new_bitmap_flags( );
+extern "C" int al_get_new_bitmap_flags( );
 \ extern "C" al_get_new_bitmap_format( );
 \ extern "C" al_get_new_bitmap_samples( );
 \ extern "C" al_get_new_display_adapter( );
@@ -2940,7 +2941,7 @@ extern "C" int al_get_mouse_state_axis( void * state, int axis );
 \ extern "C" al_get_next_config_entry( );
 \ extern "C" al_get_next_config_section( );
 extern "C" bool al_get_next_event( void * queue, void * event );
-\ extern "C" al_get_num_display_modes( );
+extern "C" int al_get_num_display_modes( );
 \ extern "C" al_get_num_joysticks( );
 extern "C" int al_get_num_video_adapters( );
 \ extern "C" al_get_opengl_extension_list( );
@@ -2961,7 +2962,7 @@ extern "C" int al_get_num_video_adapters( );
 \ extern "C" al_get_path_filename( );
 \ extern "C" al_get_path_num_components( );
 \ extern "C" al_get_path_tail( );
-\ extern "C" al_get_pixel( );
+\ extern "C" void * al_get_pixel( void * bmp, int x, int y );
 \ extern "C" al_get_pixel_block_height( );
 \ extern "C" al_get_pixel_block_size( );
 \ extern "C" al_get_pixel_block_width( );
@@ -3089,7 +3090,7 @@ extern "C" void * al_load_audio_stream( void * filepath, int bufs, int bufsize )
 \ extern "C" al_load_audio_stream_f( );
 extern "C" void * al_load_bitmap( void * filename );
 \ extern "C" al_load_bitmap_f( );
-\ extern "C" al_load_bitmap_flags( );
+extern "C" void * al_load_bitmap_flags( void * filename, int flags );
 \ extern "C" al_load_bitmap_flags_f( );
 \ extern "C" al_load_bitmap_font( );
 \ extern "C" al_load_bitmap_font_flags( );
@@ -3102,7 +3103,7 @@ extern "C" void * al_load_ttf_font( void * zstr, int size, int flags );
 \ extern "C" al_load_ttf_font_f( );
 \ extern "C" al_load_ttf_font_stretch( );
 \ extern "C" al_load_ttf_font_stretch_f( );
-\ extern "C" al_lock_bitmap( );
+extern "C" void * al_lock_bitmap( void * bmp, int format, int flags );
 \ extern "C" al_lock_bitmap_blocked( );
 \ extern "C" al_lock_bitmap_region( );
 \ extern "C" al_lock_bitmap_region_blocked( );
@@ -3140,7 +3141,7 @@ extern "C" void al_play_sample( void * sample, float gain, float pan, float spee
 \ extern "C" al_premul_rgba( );
 \ extern "C" al_premul_rgba_f( );
 \ extern "C" al_put_blended_pixel( );
-\ extern "C" al_put_pixel( );
+extern "C" void al_put_pixel( int x, int y, float r, float g, float b, float a );
 \ extern "C" al_radtofix_r( );
 \ extern "C" al_read_directory( );
 \ extern "C" al_realloc_with_context( );
@@ -3250,8 +3251,8 @@ extern "C" bool al_set_mixer_playing( void * mixer, int state );
 extern "C" void al_set_mouse_xy( void * display, int x, int y );
 \ extern "C" al_set_mouse_z( );
 \ extern "C" al_set_new_bitmap_depth( );
-\ extern "C" al_set_new_bitmap_flags( );
-\ extern "C" al_set_new_bitmap_format( );
+extern "C" void al_set_new_bitmap_flags( int flags );
+extern "C" void al_set_new_bitmap_format( int format );
 \ extern "C" al_set_new_bitmap_samples( );
 extern "C" void al_set_new_display_adapter( int adapter );
 extern "C" void al_set_new_display_flags( int flags );
@@ -3298,7 +3299,7 @@ extern "C" void al_set_target_bitmap( void * bitmap );
 extern "C" void al_set_window_position( void * display, int x, int y );
 \ extern "C" al_set_window_title( );
 \ extern "C" al_show_mouse_cursor( );
-\ extern "C" al_show_native_file_dialog( );
+extern "C" bool al_show_native_file_dialog( void * display, void * dialog );
 \ extern "C" al_show_native_message_box( );
 \ extern "C" al_shutdown_font_addon( );
 \ extern "C" al_shutdown_image_addon( );
@@ -3333,7 +3334,7 @@ extern "C" void al_uninstall_keyboard( );
 \ extern "C" al_uninstall_mouse( );
 extern "C" void al_uninstall_system( );
 \ extern "C" al_uninstall_touch_input( );
-\ extern "C" al_unlock_bitmap( );
+extern "C" void al_unlock_bitmap( void * bmp );
 \ extern "C" al_unlock_index_buffer( );
 \ extern "C" al_unlock_mutex( );
 \ extern "C" al_unlock_sample_id( );
@@ -3685,7 +3686,9 @@ extern "C" void al_wait_for_event( void * queue, void * event );
 256 constant /ALLEGRO_KEYBOARD_STATE
 
 1 1 lshift constant ALLEGRO_FULLSCREEN
+1 2 lshift constant ALLEGRO_OPENGL
 1 9 lshift constant ALLEGRO_FULLSCREEN_WINDOW
+1 11 lshift constant ALLEGRO_PROGRAMMABLE_PIPELINE 
 
 enum ALLEGRO_DISPLAY_OPTIONS {
    ALLEGRO_RED_SIZE = 0,
@@ -3970,6 +3973,13 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
     al_uninstall_keyboard  al_install_keyboard drop
     queue al_get_keyboard_event_source al_register_event_source ;
 
+: @+ dup cell+ swap @ ;
+: 2- rot swap - >r - r> ;
+
+ALLEGRO_OPENGL ALLEGRO_PROGRAMMABLE_PIPELINE or constant display-flags
+\ ALLEGRO_OPENGL constant display-flags
+\ 0 constant display-flags
+
 : init-allegro  ( -- )    
     ALLEGRO_VERSION 0 al_install_system check
     
@@ -3985,21 +3995,24 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
     al_install_mouse check
     al_install_touch_input check
     ALLEGRO_VSYNC  1  ALLEGRO_SUGGEST  al_set_new_display_option
-    doublebuf? not if
-        \ gets us one less frame of input lag
-        \ and in development keeps the framebuffer always presented
-        ALLEGRO_SINGLE_BUFFER 1 2 al_set_new_display_option
-    then
+\    doublebuf? not if
+\        \ gets us one less frame of input lag
+\        \ and in development keeps the framebuffer always presented
+        ALLEGRO_SINGLE_BUFFER 1 1 al_set_new_display_option
+\    then
     
     0 al_set_new_display_adapter
+    0 here al_get_monitor_info
+    here @+ swap @  here 2 cells + @+ swap @ 2over 2- to monh to monw    
     
     fullscreen? if
-        ALLEGRO_FULLSCREEN_WINDOW al_set_new_display_flags
-        winw winh al_create_display to display
+        ALLEGRO_FULLSCREEN_WINDOW display-flags or al_set_new_display_flags
+        monw to winw  monh to winh
     else
-        winw winh al_create_display to display
-        display 0 0 al_set_window_position
+        $11 display-flags or al_set_new_display_flags
     then
+    winw winh al_create_display to display
+    \ display 0 0 al_set_window_position
     
     0 to mixer  0 to voice
     64 al_reserve_samples 0= abort" Allegro: Error reserving samples." 
@@ -4054,14 +4067,21 @@ create ms1 /ALLEGRO_MOUSE_STATE allot&erase
 
 : resume-audio-stream ( var - )
     @ 1 al_set_audio_stream_playing drop ;
-    
-: ?load-bitmap ( var zstr )
-    dup 0= if 2drop exit then
-    dup zcount FileExist? if        
-        over @ ?dup if al_destroy_bitmap then
-        cr dup zcount type
-        al_load_bitmap swap !
-    else  2drop  then ;
+
+$01 constant ALLEGRO_FILECHOOSER_FILE_MUST_EXIST
+$02 constant ALLEGRO_FILECHOOSER_SAVE           
+$04 constant ALLEGRO_FILECHOOSER_FOLDER         
+$08 constant ALLEGRO_FILECHOOSER_PICTURES       
+$10 constant ALLEGRO_FILECHOOSER_SHOW_HIDDEN    
+$20 constant ALLEGRO_FILECHOOSER_MULTIPLE      
+
+: file-dialog  ( zpath ztitle zformats - a n ) 
+    al_create_native_file_dialog >r  
+    display r@ al_show_native_file_dialog drop
+    r@ al_get_native_file_dialog_count if
+        r@ 0 al_get_native_file_dialog_path zcount 
+    else 0 then
+    r> al_destroy_native_file_dialog ;
 
 \ - Key constants
 
@@ -4219,3 +4239,44 @@ $08000 constant ALLEGRO_KEYMOD_ACCENT4
 #define ALLEGRO_TTF_NO_KERNING  $1
 #define ALLEGRO_TTF_MONOCHROME  $2
 #define ALLEGRO_TTF_NO_AUTOHINT $4
+
+enum {
+   ALLEGRO_KEEP_BITMAP_FORMAT       = 0x0002,   /* was a bitmap flag in 5.0 */
+   ALLEGRO_NO_PREMULTIPLIED_ALPHA   = 0x0200,   /* was a bitmap flag in 5.0 */
+   ALLEGRO_KEEP_INDEX               = 0x0800
+};
+
+enum ALLEGRO_PIXEL_FORMAT {
+   ALLEGRO_PIXEL_FORMAT_ANY                   = 0,
+   ALLEGRO_PIXEL_FORMAT_ANY_NO_ALPHA          = 1,
+   ALLEGRO_PIXEL_FORMAT_ANY_WITH_ALPHA        = 2,
+   ALLEGRO_PIXEL_FORMAT_ANY_15_NO_ALPHA       = 3,
+   ALLEGRO_PIXEL_FORMAT_ANY_16_NO_ALPHA       = 4,
+   ALLEGRO_PIXEL_FORMAT_ANY_16_WITH_ALPHA     = 5,
+   ALLEGRO_PIXEL_FORMAT_ANY_24_NO_ALPHA       = 6,
+   ALLEGRO_PIXEL_FORMAT_ANY_32_NO_ALPHA       = 7,
+   ALLEGRO_PIXEL_FORMAT_ANY_32_WITH_ALPHA     = 8,
+   ALLEGRO_PIXEL_FORMAT_ARGB_8888             = 9,
+   ALLEGRO_PIXEL_FORMAT_RGBA_8888             = 10,
+   ALLEGRO_PIXEL_FORMAT_ARGB_4444             = 11,
+   ALLEGRO_PIXEL_FORMAT_RGB_888               = 12, /* 24 bit format */
+   ALLEGRO_PIXEL_FORMAT_RGB_565               = 13,
+   ALLEGRO_PIXEL_FORMAT_RGB_555               = 14,
+   ALLEGRO_PIXEL_FORMAT_RGBA_5551             = 15,
+   ALLEGRO_PIXEL_FORMAT_ARGB_1555             = 16,
+   ALLEGRO_PIXEL_FORMAT_ABGR_8888             = 17,
+   ALLEGRO_PIXEL_FORMAT_XBGR_8888             = 18,
+   ALLEGRO_PIXEL_FORMAT_BGR_888               = 19, /* 24 bit format */
+   ALLEGRO_PIXEL_FORMAT_BGR_565               = 20,
+   ALLEGRO_PIXEL_FORMAT_BGR_555               = 21,
+   ALLEGRO_PIXEL_FORMAT_RGBX_8888             = 22,
+   ALLEGRO_PIXEL_FORMAT_XRGB_8888             = 23,
+   ALLEGRO_PIXEL_FORMAT_ABGR_F32              = 24,
+   ALLEGRO_PIXEL_FORMAT_ABGR_8888_LE          = 25,
+   ALLEGRO_PIXEL_FORMAT_RGBA_4444             = 26,
+   ALLEGRO_PIXEL_FORMAT_SINGLE_CHANNEL_8      = 27,
+   ALLEGRO_PIXEL_FORMAT_COMPRESSED_RGBA_DXT1  = 28,
+   ALLEGRO_PIXEL_FORMAT_COMPRESSED_RGBA_DXT3  = 29,
+   ALLEGRO_PIXEL_FORMAT_COMPRESSED_RGBA_DXT5  = 30,
+   ALLEGRO_NUM_PIXEL_FORMATS
+}

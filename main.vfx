@@ -1,29 +1,22 @@
 faster
+
+\ - Window
 require lib/window.vfx
 
 3e fvalue zoom
-320 3 *  240 3 * 64 +  0 window
-display 1920 2 / 0 al_set_window_position
-\ 1920 1080  1 window
+[defined] release [if]
+    -1 -1  1 window
+[else]
+    320 3 *  240 3 * 64 +  0 window
+    display 1920 2 / 8 - 0 al_set_window_position
+[then]
 
-vfx-hwnd 0 0 0 1920 2 / 1000 $40 SetWindowPos drop
+vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
 
-include shed.vfx
+\ - Game
+[undefined] release [if] include tools.vfx [then]
+include notzelda.vfx
+[undefined] release [if] include test.vfx [then]
 
-require scripts/tilemap.vfx
-z" data/tbank_test.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-include scripts/animation.vfx
-
-\ - Debugging info
-obj dbg  dbg root push
-: dbg-draw draw>
-    sherry32.fnt font !
-    z[ ." mouse: " mouse swap . . ]z red stext nr
-\    z[ this -> ax v@ swap p. p. ]z text
-; dbg-draw
-
-me to this
-mixer 0e al_set_mixer_gain
-
-go 
+\ - Enter main loop
+go

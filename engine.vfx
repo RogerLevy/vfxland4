@@ -1,0 +1,84 @@
+require lib/private.vfx
+require alpha.vfx 
+require obj.vfx
+require core.vfx
+require tool/repl.vfx \ <-- do not remove
+require sys/filetypes.vfx
+require tool/shed.vfx \ <-- do not remove
+require tool/widgets.vfx \ <-- do not remove
+require obj/tilemap.vfx
+require animate.vfx
+require obj/tile.vfx
+require lib/files.vfx
+require task.vfx
+require lib/shader.vfx
+require palette.vfx
+
+obj misc \ temporary...
+
+\ - Palette stuff
+: draw-paletted-tilemap draw> ?paletted tilemap -shader ;
+
+\ - Game
+: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
+: center
+    winw 2 /  gamew zoom sf* 2 / -
+    winh 64 - 2 /  gameh zoom sf* 2 / -  2s>p x v!
+    zoom f>p dup sx v!
+;
+: game-act act> center zoom f>p dup sx v! ;
+: game-draw draw> matte 0e 0e 0e 1e al_clear_to_color ;
+c: *game game-act game-draw ;
+ws1 {    
+    *game named game {
+        *generic named stage { }
+    }
+}
+
+0 constant right_
+1 constant up_
+2 constant left_
+3 constant down_
+
+create walkv 1. , 0 ,   0 , -1. ,   -1. , 0 ,   0 , 1. , 
+
+\ - CSV tilemap
+: csv-cells, read> lines> csv> evaluate , ;
+: (csv-wh) read> 0 here cell+ ! lines> 0 here ! 1 here cell+ +! csv> 2drop 1 here +! ;
+: csv-wh (csv-wh) here v@ ;
+\ : csv-cells! h[ csv-cells, ]h ;
+
+\ - Z offset
+motif var z +basis
+: zanimate
+    animate draw> 
+        0 z @ negate 2i sx v@ 2p/ 2p>f 1e 1e 0e transform
+        ?paletted animation -shader ;
+
+\ - Simple state counter
+motif var ctr +basis
+: (after) delta ctr +! ctr @ >= if r> drop else 0 ctr ! then ;
+: after> postpone (after) postpone (act>) discard-sinline ; immediate
+
+\ - Input tools
+motif var dir +basis
+: dirkeys? <left> held? <right> held? or <up> held? or <down> held? or ;
+: dirkeysup? <left> letgo? <right> letgo? or <up> letgo? or <down> letgo? or ;
+: pudlr4 ( -- )  \ detects presses, no diagonals, no velocity stuff
+        <left> pressed? if left_ dir ! exit then
+        <right> pressed? if right_ dir ! exit then
+        <up> pressed? if up_ dir ! exit then
+        <down> pressed? if down_ dir ! exit then ;
+: sudlr4 ( -- )  \ detects state, no diagonals, no velocity stuff
+        <left> held? if left_ dir ! exit then
+        <right> held? if right_ dir ! exit then
+        <up> held? if up_ dir ! exit then
+        <down> held? if down_ dir ! exit then ;
+
+\ - Collisions
+
+\ - Items
+
+\ - Game will live in heap memory
+256 mb allocate throw dup constant gamebase dp !
+: unused gamebase 256 mb + here - ;

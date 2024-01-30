@@ -21,7 +21,6 @@ require lib/fileout.vfx
 : sf-! cell- dup sf! ;
 : f>ds 0 >r rp@ sf! r> ;
 synonym | locals|
-: :> :noname  [char] ; parse evaluate  postpone ;  execute ;
 : >> rshift ;
 : << lshift ;
 : sf/ s>f fswap f/ f>s ;
@@ -29,33 +28,54 @@ synonym | locals|
 : f[ write[ ;
 : ]f ]write ;
 : u+ rot + swap ;
+synonym dup-endcase end-case
+: bit dup constant 1 lshift ;
+: udup over swap ;
+: defer defer ['] noop latest-xt defer! ;
+: [] swap cells + ; \ "indexed"
+: toggle dup @ not swap ! ;
+: z[ zstr[ ;
+: ]z ]zstr ;
+: $[ z[ ;
+: ]$ ]z zcount ;
+: iplace 2dup ! cell+ swap move ;
+: icount @+ ;
+: icount+ cell+ ;
+: kb 1024 * ;
+: mb 1048576 * ;
+: for s" 0 ?do" evaluate ; immediate
 
-\ - Arrays
-: get  swap cells + @ ;
-: set  swap cells + ! ;
-
-\ - 2D Vectors p1
+\ - 2D Vectors
 : v@ dup @ swap 4 + @ ;
 : v! dup >r 4 + ! r> ! ;
 : v+! dup >r 4 + +! r> +! ;
 : v, swap , , ;
 : 2+ rot + >r + r> ;
-: 2* rot * >r * r> ;
-: 2/ rot swap / >r / r> ;
 : 2mod rot swap mod >r mod r> ;
 : 2negate swap negate swap negate ;
 : 2s>f swap s>f s>f ;
 : x@ @ ;
 : y@ cell+ @ ;
+: 2p>s p>s swap p>s swap ;  
+: 2s>p s>p swap s>p swap ;
+: 2p>f swap p>f p>f ;
+: 2f>p f>p f>p swap ;
+: 2p. swap p. p. ; 
 : vp? v@ 2p. ;
+: 2i 1i swap 1i swap ;
 : 2p* rot p* >r p* r> ;
+: 2p/ rot swap p/ >r p/ r> ;
 
 \ - Ranges
-: area 2over 2+ ;
 : 2rnd rnd swap rnd swap ;
 : overlap? 2swap 2rot rot > -rot < and >r rot > -rot < and r> and ;
 : inside? 2>r 2>r 2dup 2r> 2r> overlap? ;
 : clamp >r max r> min ;
+: lerp ( n. src dest -- ) over - rot p* + ;
+: wrap ( n u-start u-range -- n ) >r swap over - r> swap over 2* + swap mod + ;
+: 2max rot max >r max r> ;
+: 2min rot min >r min r> ;
+: 2clamp 2swap 2>r 2min 2r> 2max ;
 
 \ - Input
 : held? kbs0 swap al_key_down 0<> ;
@@ -70,7 +90,7 @@ synonym | locals|
 : 2- rot swap - >r - r> ;
 : walt mouse mickey 2- ;
 : mheld? ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
-: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0< 1 and - ;
+: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0<> 1 and - ;
 : mpressed? mdelta 1 = ;
 : mletgo? mdelta -1 = ;
 : poll poll-keyboard poll-mouse ;
@@ -105,24 +125,44 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : color c 8 << c 8 << c 8 << c drop fcolor ;
 : b >r sf@+ 255e f* f>s r> or ;
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
+: line 1e f>ds >r  pen v@ 2+  at@f 2s>f fore 4f@ r> al_draw_line ;
+: -matte 0 0 winw winh al_set_clipping_rectangle ;
 
 \ - Bitmaps
 : ?null ?dup 0= if r> drop exit then ;
 : fblit at@f swap al_draw_bitmap ;
 : blit ?null 0 swap fblit ;
-: bmpw al_get_bitmap_width ;
-: bmph al_get_bitmap_height ;
-: bmpwh dup bmpw swap bmph ; 
-: loadbmp al_load_bitmap ;
+: bmpwh 7 cells + v@ ; 
+: bmpw bmpwh drop ;
+: bmph bmpwh nip ;
+: 32bit ALLEGRO_PIXEL_FORMAT_RGBA_8888 al_set_new_bitmap_format ;
+: 8bit ALLEGRO_PIXEL_FORMAT_SINGLE_CHANNEL_8 al_set_new_bitmap_format ;
+: loadbmp 32bit al_load_bitmap ;
+\ $1 constant ALLEGRO_MEMORY_BITMAP
+\ $1000 constant ALLEGRO_CONVERT_BITMAP
+: bflags! al_set_new_bitmap_flags ;
+: loadbmp8 8bit ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
+: loadbmpm $1001 bflags! al_load_bitmap $1000 bflags! ;
 : subbmp pen v@ 2swap al_create_sub_bitmap ;
 : hold al_hold_bitmap_drawing ;
+: *bmp 32bit al_create_bitmap ;
+: *bmp8 8bit al_create_bitmap ;
 : -bmp ?null al_destroy_bitmap ;
 : onto ?null al_set_target_bitmap ;
 : backbuf display al_get_backbuffer ;
 : opaque ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO al_set_blender ;
 : transparent ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender ;
-: bmpwrite onto opaque blit backbuf onto transparent ;
+: writebmp onto opaque blit backbuf onto transparent ;
 : rblit swap >r  dup bmpwh 2 2 2/ 2s>f  at@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
+: tblit swap >r  fore 4f@  at@f  r> al_draw_tinted_bitmap ;
+: pixel at@ fore 4f@ al_put_pixel ;
+: bmpformat@ al_get_bitmap_format ;
+: pitch@ 2 cells + @ ;
+: lockbmp dup bmpformat@ 0 al_lock_bitmap dup @ swap pitch@ ;
+: -lockbmp al_unlock_bitmap ;
+: pixel@ swap >r >r dup lockbmp r> * + r> cells + @ swap -lockbmp ;
+: lpixel[] rot * swap cells + + ;
+: blitr 2swap 2s>f 2s>f at@ 2s>f 0 al_draw_bitmap_region ;
 
 \ - Colors
 : red 1e 0e 0e 1e fcolor ;
@@ -136,6 +176,8 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : orange 1e 0.5e 0e 1e fcolor ;
 : purple 0.5 0e 1e 1e fcolor ;
 : white 1e 1e 1e 1e fcolor ;
+: gray 0.75e fdup fdup 1e fcolor ;
+: grey gray ;
 : black 0e 0e 0e 1e fcolor ;
 : dk dup sf@ 2e f/ sf!+ ;
 : br dup sf@ 2e f* sf!+ ;
@@ -144,11 +186,15 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 
 \ - Text
 variable font  builtin-font font !
-: z[ zstr[ ;
-: ]z ]zstr ;
 : ?type ?dup if type else drop then ;
 : >z z[ ?type ]z ;
-: text >r font @ fore 4f@ at@f 0 r> al_draw_text ;
+: fonth font @ al_get_font_line_height ;
+: mltext ( z w - )
+    s>f f>ds   
+    fonth s>f f>ds | lh w z | 
+    font @ fore 4f@ at@f w lh 0 z al_draw_multiline_text ;
+: text 9999999 mltext ;
+: nr 0 pen cell+ @ fonth + at ;
 
 \ - Delta
 1e fvalue fdelta
@@ -162,3 +208,8 @@ dcounter 2value dLastTime
 : delta* fdelta f>p p* ;
 : 2delta* fdelta f>p p* swap fdelta f>p p* swap ;
 : delta tdelta f>p ;
+
+\ - Quickly reload a set file
+create reload$ 256 allot
+: rld cr ." ==================== RELOAD ====================" reload$ count included ;
+: fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;

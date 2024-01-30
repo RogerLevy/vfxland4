@@ -1,0 +1,9 @@
+require lib/files.vfx
+
+: >prefix count ;
+: >newext count + aligned count ;
+: name>path >r r@ >prefix pad place -ext pad append r> >newext pad append pad count ;
+
+create bmppath ," data/bmp/" ," .png"
+create tlpath  ," fig/tl/"   ," .tl"
+create figpath ," fig/"      ," .fig"

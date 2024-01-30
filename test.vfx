@@ -1,44 +1,12 @@
-include scripts/tilemap.vfx
+\ - Ball
+gamew gameh 2. 2. 2p/ at actors { *bouncer } named ball {
+    *generic {
+        :noname act> 5.0 after> parent @ { 0.1 0.1 sx v+! } 2. after> parent @ kill ; execute
+    }
+    *generic {
+        :noname 1 perform> parent @ as 5 0 do cr ." BIG" 1. 1. sx v! 0.5 wait cr ." SMALL" 2. 2. sx v! 0.5 wait loop ; execute
+    }
+}
 
-create buf 20 16 * cells allot 
-: *map
-    buf 20 *actor 1tilemap 
-    320. 240. w v!
-    act> 1. 1. 2delta* scrollx v+!
-    ser> scrollx vp? ." scrollx v! "
-;
-
-z" data/tbank_test.png" loadbmp constant b
-0 0 at b tbank bmpwrite
-object: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
-
-: !textbounds 2dup nip 9 * font @ al_get_font_line_height 2s>p w v! ;
-object: *hello draw> white s" Hello" !textbounds >z stext ; 
-
-\ ' shed shed -> constructor !
-
-0 value bg
-object: *bg me to bg 0 0 x v! ;
-
-fget starfield
-
-\ stage {             \ ignore this: }
-\ 50 50 at *map named map
-\ 100 100 at  *box named box  33. 66. w v!
-\ 160 120 at *hello named hello
-\ } 
-
-\ *bg me dup viewport unshift {
-\     200 stars    
-\ }
-
-load test
-
-create c1 0e sf, 0.1e sf, 0.5e sf, 1e sf,
-create c2 0.1 sf, 0.1 sf, 0.1 sf, 1e sf,
-bg { :> draw> c2 c1 gamew gameh gradient ; }
-
-\ : *block *actor 16. 16. w v! draw> 1 tile+ act> 0.25 y +! ;
-\ :> *one act> gamew gameh 2rnd at stage { *block } ;
-
-stage clear bg clear fget snow
+sam -> plt on
+bg0 -> plt on

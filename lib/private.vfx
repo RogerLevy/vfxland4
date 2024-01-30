@@ -1,0 +1,11 @@
+require lib/files.vfx
+
+: wlname CurrSourceName -path ;
+: CurrWordlist wlname search-context if >body @ else 0 then ;
+: ?wordlist ( -- wl )
+    CurrWordlist ?dup if exit then
+    forth-wordlist set-current
+    s" vocabulary " pad place wlname pad append pad count evaluate
+    CurrWordlist ;
+: private ?wordlist dup +order set-current ;
+: public ?wordlist +order forth-wordlist set-current ;

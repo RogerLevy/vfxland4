@@ -1,3 +1,5 @@
+256 constant /slot
+
 \ - Object stack
 : bpage here $ff and 256 swap - allot here $100 allot constant ;
 bpage os
@@ -6,14 +8,13 @@ variable osp  os osp !
 : o> -4 osp c+! osp @ @ ;
 
 \ - Structs
-: field create over , + does> @ + ;
+: field create over , + $C0FFEE , does> @ + ;
 
 \ - Addressing
 0 value me
-0 value you
 : as to me ;
-: { you >o me >o dup to me to you ;
-: } o> to me o> to you ;
+: { me >o to me ;
+: } o> to me ;
 : -> ' >body @ ?literal s" +" evaluate ; immediate 
 : require me { require } ;
 : include me { include } ;
@@ -23,53 +24,84 @@ variable osp  os osp !
 0 value /obj
 0 value /basis
 : ofield /obj swap field to /obj does> @ me + ;
-: var cell ofield ;
+: ?already >in @ bl word find if dup >body cell+ @ $C0FFEE = if r> drop drop drop exit then then drop >in ! ; DoNotSin
+: var ?already cell ofield ; DoNotSin 
 : motif /basis to /obj ;
 
 \ - Double-linked tree
-var next var prev var first var last var parent
+var en var next var prev var first var last var parent
 include lib/dltree.vfx
 : remove dlremove ;
 : push dlpush ;
 : unshift dlunshift ;
-: insert dlinsert ;
+: insert-after dlinsert-after ;
 : each dleach ;
 : (each>) r> swap dleach ;
 : each> postpone (each>) discard-sinline ; immediate
 : clear dlclear ;
+: insert 2dup 2>r insert-after 2r> swap insert-after ;
+: linkage next parent cell+ over - ;
 
 \ - Basis
-var en var hide var halt
+var nam
+var dead var vis var halt var con 
 var x var y var w var h var vx var vy var sx var sy
-var beh var drw var phy
-/obj to /basis
+var beh var drw var phy var fgc var bgc 
+: +basis /obj to /basis ;
++basis
 defer children
 
+
+\ - Naming support
+: reference create 0 , does> @ ; 
+: $create-name $create , does> @ ;
+: name ( obj $ c - )
+    find if
+        cr ." REASSIGN: "
+        2dup >name dup count type swap -> nam !
+        udup >body !
+    else
+        udup $create-name latest ctrl>nfa over -> nam !
+    then ;
+: named bl word name ;
+: .name -> nam @ ?dup if count type space then ;
+
 \ - Instancing
-: init en on 1. dup sx v! ;
-: *child here 256 allot&erase dup rot push dup { init }  ;
-: obj create here as 256 allot&erase init ;
-: child obj me you push ;
+defer 1object
+:noname [ is 1object ] con ! pen v@ 2s>p x v! ;
+: init en on vis on 1. dup sx v! ;
+: *slot here 256 allot&erase ;
+: *child ( parent - obj ) *slot dup rot push dup { init }  ;
+: c:
+    create here 0 , :noname swap !
+    does> me *child { dup body> 1object @ execute me } ;    
+c: *generic ;
+: obj reference  *slot as  0 0 at  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
+: delete remove ;
 
 \ - Basic actions
+: visible? en @ vis @ and ;
+: kill dup -> en off -> dead on ;
 : reckon
     first @ {  begin  me while
         next @ >r
             recurse
-            en @ 0= if me remove  then
+            dead @ if me delete then
         r> as
     repeat }
 ;
 : ?execute ?dup 0; catch dup .throw if quit then ;
-: +t +m x v@ 2i 2p>f sx v@ 2p>f 0e transform ;
+: +t +m x v@ 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
-: draw en @ 0; hide @ ?; x v@ 2p>s at drw @ ?execute children ; 
+: ?children first @ if +t children -t then ;
+: draw drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ;
+: ?draw en @ 0; vis @ 0; draw ; 
+:noname [ is children ] first @ 0; ['] ?draw me each ;
 : act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
 : physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
 : (draw>) r> drw ! ; : draw> postpone (draw>) discard-sinline ; immediate
 : (act>) r> beh ! ; : act> postpone (act>) discard-sinline ; immediate
-:noname [ is children ] first @ 0; +t ['] draw me each -t ;
 
 \ - Indexed child access
-: #children 0 first @ ?dup 0; begin 1 u+ -> next @ ?dup 0= until ;
-: nth-child first @ dup 0= if nip exit then swap 0 ?do -> next @ loop ;
+: #children -> first @ dup if 0 swap begin 1 u+ -> next @ ?dup 0= until then ;
+: nth-child dup #children >r -> first @ swap 0 r> wrap 0 ?do -> next @ loop ;

@@ -3,7 +3,7 @@ create str 1000 allot
 
 : Emit-string  drop  str >str + c!  1 +to >str ;
 : Type-string  drop  bounds do i c@ emit loop ;
-: CR-string drop ;
+: CR-string drop  10 0 emit-string ;
 
 create string-vectors
   ' drop ,
@@ -34,6 +34,5 @@ create string-vectors
 
 create strdev   0 , string-vectors ,
 
-0 value old-dev
-: zstr[  0 to >str  op-handle @ to old-dev  strdev op-handle ! ;
-: ]zstr  0 emit  str  old-dev op-handle ! ;
+: zstr[  0 to >str  strdev op-handle ! ;
+: ]zstr  0 emit  str  ConsoleDev op-handle ! ;

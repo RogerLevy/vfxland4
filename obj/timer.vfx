@@ -1,0 +1,17 @@
+require lib/counter.vfx
+
+motif var et var xt var tc
+
+: 1timer
+    xt !  f>p et !
+    act>
+        tc @ et @ >= if
+            xt @ parent @ { execute } me kill
+        then
+        delta tc +!
+;
+c: *timer act> me kill ; \ suicide after deserializing
+: (timer>)  ( f: sec -- <code> )
+    *timer { r> 1timer } ;
+: timer> postpone (timer>) discard-sinline ; immediate
+: clear-timers me each> con @ ['] *timer = if me kill then ;

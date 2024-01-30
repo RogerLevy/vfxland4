@@ -1,0 +1,40 @@
+\ - Sam data
+PUBLIC
+misc {
+    container: sam-anims {
+        include fig/tl/sam-walk-r.tl
+        include fig/tl/sam-walk-u.tl
+        include fig/tl/sam-walk-l.tl
+        include fig/tl/sam-walk-d.tl
+    }
+}
+
+\ for now, we have to have a separate table because of how AED moves timelines around...
+create sam-walk-table sam-walk-r.tl , sam-walk-u.tl , sam-walk-l.tl , sam-walk-d.tl ,
+
+\ - Sam
+PRIVATE
+defer walk defer idle
+motif var dir var olddir 
+: spd! first @ -> spd ! ;
+: zanimate-child first @ { zanimate } ;
+: ?face
+    dir @ olddir @ = ?;
+    17 256 * dir @ sam-walk-table [] @ -> tio !
+    dir @ olddir !  dir @ sam-walk-table [] @ 8. zanimate-child ;
+: !walkv dir @ 2 * walkv [] v@  1.5 dup 2p*  vx v! ;
+: ?walk dirkeys? 0; walk ; 
+: ?turnstop dirkeys? 0= if idle exit then  ?face !walkv ;
+: ?udlr4 dirkeysup? if sudlr4 else pudlr4 then ;
+: nearest dup >r  2 / + dup  r> mod - ;
+: csnap dup @ 8. nearest swap ! ;
+: snap x csnap y csnap ;
+: reached? delta ctr +! ctr @ 0.08888 >= dup if 0 ctr ! then ;
+: pace begin ?udlr4 reached? not while 0 wait repeat snap ( ?edge ) ;
+:noname [ is walk ] 8. spd! !walkv ?face 0 perform> begin pace ?turnstop again ;
+:noname [ is idle ] 0 0 vx v! ?face 0 spd! act> sudlr4 ?walk ;
+: setup act> me clear 8 8 at *generic me push idle
+    draw> plt v@ first @ { plt v! } ;
+PUBLIC
+c: *sam -1 olddir ! 16. 16. w v! setup ;
+PREVIOUS DEFINITIONS

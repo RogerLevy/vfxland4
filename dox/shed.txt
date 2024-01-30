@@ -1,0 +1,45 @@
+the (tool)shed is a visual interactive development environment
+
+Control Scheme
+
+	F1...F12	Select Workspace
+	Shift-Tab   Toggle the Static Layer (always off when viewing Workspace 12)
+    Ctrl-Tab    Toggle Edit Mode
+    Delete      Delete selection
+
+SHED context menu
+
+[x] bring
+[x] clone
+[x] clear
+[x] trash
+[x] enable/disable snapping (affects dragging, scaling, and resizing)
+[ ] scale
+[ ] resize
+[ ] group (multiple selection)
+[x] attach (selection to right-clicked object)
+[x] detach
+[x] downstage, upstage
+[ ] edit text (can be turned off for binary data)
+[x] deselect (selects ROOT)
+[x] bolt/lock
+
+[x] <tab> toggles the REPL; allows entering commands, and picking and moving of anything not bolted down
+[x] when neither the SHED nor the REPL are on, an application gets keyboard and mouse focus
+    therefore if any of the SHED's editing features are wanted in parts of an app they have to be implemented there
+[ ] keyboard focus can be stolen by an object
+
+When editmode is on...
+[x] scroll the workspace with <rmb>
+[x] zoom the workspace with the mousewheel (0.25x...2x)
+[x] the STATIC layer (Workspace 12) never scrolls and can contain some locked common tools.
+
+--- Misc notes ---
+
+- you can load multiple instances of a program just by including it again.
+
+- when loading a figure,
+    named objects are matched to corresponding words if they exist, which are then reassigned.
+    (^this is a function of NAME / NAMED.)
+    if the root of a figure is named, any object with a matching name is replaced. (the old one is removed/deleted.)
+    LOAD picks the loaded figure, good in case of error, you can delete it immediately

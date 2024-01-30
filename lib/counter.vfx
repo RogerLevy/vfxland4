@@ -11,4 +11,4 @@ extern bool QueryPerformanceFrequency( void * lpFrequency );
    DCOUNTER  1000 0 0 SP@ QueryPerformanceFrequency DROP NIP M*/ DROP  ;
 
 : time?  ( xt - )
-   >r ucounter r> execute ucounter 2swap d- d. ;
+   ucounter 2>r execute ucounter 2r> d- d. ;

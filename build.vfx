@@ -1,4 +1,0 @@
-256 mb set-size
-: game  s" game.vfx" included  0 ;
-' game is EntryPoint
-save ..\snow

@@ -1,0 +1,48 @@
+require lib/allegro-5.2.5.vfx
+require lib/files.vfx
+
+enum ALLEGRO_SHADER_PLATFORM {
+    ALLEGRO_SHADER_AUTO = 0,
+    ALLEGRO_SHADER_GLSL = 1,
+    ALLEGRO_SHADER_HLSL = 2
+}
+
+enum ALLEGRO_SHADER_TYPE {
+    ALLEGRO_VERTEX_SHADER = 1,
+    ALLEGRO_PIXEL_SHADER = 2,
+}
+
+extern "C" void * al_create_shader( void * ALLEGRO_SHADER_PLATFORM-platform );
+extern "C" bool al_attach_shader_source( void * ALLEGRO_SHADER-shader, int ALLEGRO_SHADER_TYPE-type,
+    void * const-char-source );
+extern "C" bool al_build_shader( void * ALLEGRO_SHADER-shader);
+extern "C" void * al_get_shader_log( void * ALLEGRO_SHADER-shader );
+extern "C" bool al_use_shader( void * ALLEGRO_SHADER-*shader );
+extern "C" bool al_set_shader_sampler( void * const-char-*name, void * ALLEGRO_BITMAP-*bitmap, int unit );
+extern "C" bool al_set_shader_matrix( void * const-char-*name, void * const-ALLEGRO_TRANSFORM-*matrix );
+extern "C" bool al_set_shader_int( void * const-char-*name, int i );
+extern "C" bool al_set_shader_float( void * const-char-*name, float f );
+extern "C" bool al_set_shader_bool( void * const-char-*name, bool b );
+extern "C" bool al_set_shader_int_vector( void * const-char-*name, int num_components,
+    void * const-int-*i, int num_elems );
+extern "C" bool al_set_shader_float_vector( void * const-char-*name, int num_components,
+    void * const-float-*f, int num_elems ); 
+extern "C" void * al_get_default_shader_source( int ALLEGRO_SHADER_PLATFORM-platform,
+   int ALLEGRO_SHADER_TYPE-type ); \ "
+
+: load-shader ( $ c $ c - shader ) \ vertex shader, fragment shader
+    ALLEGRO_SHADER_GLSL al_create_shader | s |
+    2swap
+    zread> s ALLEGRO_VERTEX_SHADER rot al_attach_shader_source 0= abort" Vertex shader attach error!"
+    zread> s ALLEGRO_PIXEL_SHADER rot al_attach_shader_source 0= abort" Fragment shader attach error!"
+    s dup al_build_shader 0= if s al_get_shader_log zcount type -1 abort" Build shader error!" then 
+;
+
+s" glsl/default.v.glsl" s" glsl/default.f.glsl" load-shader constant default.s
+
+: shader al_use_shader drop ;
+: -shader 0 shader ;
+: sampler! al_set_shader_sampler 0= abort" Uniform not found in current target's shader!" ;
+: float! al_set_shader_float 0= abort" Uniform not found in current target's shader!" ;
+
+extern "C" void al_get_opengl_texture_size( void * ALLEGRO_BITMAP-*bitmap, void * int-*w, void * int-*h );

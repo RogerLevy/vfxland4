@@ -1,4 +1,0 @@
-create floats 8 cells allot
-variable #floats
-: fsave fdepth dup #floats ! 0 ?do i cells floats + sf! loop ;
-: frestore #floats @ 0 swap 1 - 0 max ?do i cells floats + sf@ -1 +loop ;

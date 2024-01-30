@@ -1,0 +1,22 @@
+: 2allocate * cells allocate throw ;
+variable (dp)
+: h[ dp @ (dp) ! dp ! ;
+: ]h (dp) @ dp ! ;
+
+\ find a random position in the rectangle (x,y,x+w,y+h)
+\ : somewhere  ( x y w h - x y )  2rnd 2+ ;
+
+\ - 2D Vectors p2 (fp)
+: v? fv@ fswap f. f. ;
+
+\ : lowerupper  ( n n -- lower higher )  2dup > if  swap  then ;
+\ : between  ( n n -- n )  lowerupper  over -  #1 +  rnd + ;
+\ : vary  ( n rnd -- n )  dup 0.5 *  -rot rnd +  swap - ;
+\ : 2vary  ( n n rnd rnd -- n n )  rot swap vary >r vary r> ;
+\ : either  ( a b - a | b )  2 rnd if  drop  else  nip  then ;
+\ : 2ratio  ( x y w h xfactor. yfactor. - x y )  2* 2+ ;
+\ : middle  ( x y w h - x y )  0.5 0.5 2ratio ;
+\ : 2halve  0.5 0.5 2* ;
+\  center a rectangle (1) in the middle of another one (2).
+\  returns x/y of top-left corner.
+\ : center  ( w1 h1 x y w2 h2 - x y )  2halve 2rot 2halve 2- 2+ ;

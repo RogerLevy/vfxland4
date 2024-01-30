@@ -14,3 +14,13 @@
 
 : object: ( - <name> ) ( - ) ( - obj )
 : named ( obj - <name> obj )
+
+: oload ( a c - obj )
+: aload ( a c - obj ) overwrites already named objects
+: load ( - <name> ) loads figure from fig\
+
+: overwrite ( src dest - dest )
+    dest is cleared,
+    src's params are copied to dest,
+    all children are moved to dest,
+    and src is deleted

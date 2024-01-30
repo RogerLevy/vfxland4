@@ -1,0 +1,119 @@
+16 constant tw \ tile width
+2048 2048 *bmp value tbank
+2048 2048 *bmp8 value tbank8
+variable tileofs
+
+: ?tbank 16 / if tbank8 else tbank then ;
+: subbank ( - bmp x y ) dup ?tbank swap 15 and 8 /mod 256 * swap 256 * swap ;
+: subbankbmp subbank at 256 256 subbmp ;
+: tiles, | th tw b |
+    b bmph for
+        b bmpw for
+            i j at b tw th subbmp ,
+        tw +loop
+    th +loop ;
+: tile-subbitmaps, 32 for i subbankbmp dup tw tw tiles, -bmp loop ;
+create tarr tile-subbitmaps,
+: ?bdload 16 < if loadbmp else loadbmp8 then ;
+: subbank! subbank at writebmp ;
+: loadbank dup >r ?bdload dup r> subbank! -bmp ;
+
+\ - Drawing
+motif var ba var stride var scrollx var scrolly var tmo
+/obj value /tilemap
+: tile@ { stride @ * + ba @ [] @ } ;
+: tile! { stride @ * + ba @ [] ! } ;
+: tile dup 28 rshift swap tileofs @ + $1fff and tarr [] @ ;
+: tile+ dup -1 <> if tile fblit else drop then tw 0 +at ;
+: row pen v@ 2>r 0 ?do @+ tile+ loop drop 2r> tw + at ;
+: scrolled ( x y - ofs )
+    2dup  tw dup 2mod 2negate +at  tw / stride @ *  swap tw / + cells ;
+: t/ tw + 1 - tw / ;
+: stride+ stride @ cells + ;
+: width w @ p>s t/ scrollx @ p>s tw mod if 1 + then ;
+: height h @ p>s t/ scrolly @ p>s tw mod if 1 + then ;
+: rows 1 hold 0 ?do dup width row stride+ loop drop 0 hold ;
+: tilemap tmo @ tileofs ! scrollx v@ 2p>s scrolled ba @ + height rows ;
+: 1tilemap 2s>p w v! stride ! ba ! draw> tilemap ;
+c: *tilemap here gamew tw / gamew gameh 1tilemap ;
+
+\ - Collisions
+\ what sides the object collided
+0 value lwall?
+0 value rwall?
+0 value floor?
+0 value ceiling?
+1 constant BIT_CEL
+2 constant BIT_FLR
+4 constant BIT_WLT
+8 constant BIT_WRT
+
+PUBLIC
+defer on-tilemap-collision ( tileval - )
+' drop is on-tilemap-collision
+
+defer tile@props  ( tileval - bitmask )
+: default-tile@props  0 >= ;
+' default-tile@props is tile@props
+
+PRIVATE
+0 value map
+tw s>f fvalue gap
+0e fvalue nx
+0e fvalue ny
+0 value t
+
+: cel? BIT_CEL and ; \ ' ceiling '
+: flr? BIT_FLR and ; \ ' floor '
+: wlt? BIT_WLT and ; \ ' wall left '
+: wrt? BIT_WRT and ; \ ' wall right '
+    
+: fs@  @ p>f ;
+: fs!  f>p swap ! ; 
+: px  x fs@ ;
+: py  y fs@ ;
+: mbw w fs@ ;
+: mbh h fs@ ;
+
+: xy>cr  ( f: x y - c r )  gap f/ f>s gap f/ f>s swap ;
+: pt  ( f: x y - n )  xy>cr  map tile@  dup to t  tile@props ;          
+
+( increment coordinates )
+: ve+  fswap  gap f+  px mbw f+ 1e f-  fmin  fswap ;
+: he+  gap f+  mbh ny f+ 1e f-  fmin ;
+
+: +vy  +to ny  ny py f- delta f/ vy fs! ;
+: +vx  +to nx  nx px f- delta f/ vx fs! ;
+
+( push up/down )
+: pu ( f:xy ) fnip gap fmod fnegate +vy
+    true to floor?  t on-tilemap-collision  ;
+: pd ( f:xy ) fnip gap fmod fnegate gap f+ +vy
+    true to ceiling?  t on-tilemap-collision ;
+
+( check up/down )
+: cu  mbw gap f/ f>s 2 + 0 do  f2dup pt cel? if pd unloop exit then ve+  loop f2drop ;
+: cd  mbw gap f/ f>s 2 + 0 do  f2dup pt flr? if pu unloop exit then ve+  loop f2drop ;
+
+( push left/right )
+: pl ( f:xy ) fdrop gap fmod fnegate +vx
+    true to rwall?  t on-tilemap-collision ;
+: pr ( f:xy ) fdrop gap fmod fnegate gap f+ +vx
+    true to lwall?  t on-tilemap-collision ;
+
+( check left/right )
+: cl  mbh gap f/ f>s 2 + 0 do  f2dup pt wrt? if pr unloop exit then he+  loop f2drop ;
+: crt mbh gap f/ f>s 2 + 0 do  f2dup pt wlt? if pl unloop exit then he+  loop f2drop ;
+
+: ud  vy fs@ f0<> if  vy fs@ f0< if  px ny cu  else  px ny mbh f+ cd  then then ;
+: lr  vx fs@ f0<> if  vx fs@ f0< if  nx ny cl  else  nx mbw f+ ny crt  then then ;
+
+: init
+    px vx fs@ delta f* f+ to nx  py vy fs@ delta f* f+ to ny 
+    0 to lwall?  0 to rwall?  0 to floor?  0 to ceiling? ;
+    
+PUBLIC
+: collide-tilemap  ( tilemap - )
+    to map  init ud lr ;
+
+PREVIOUS DEFINITIONS
