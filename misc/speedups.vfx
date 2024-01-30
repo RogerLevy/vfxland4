@@ -1,0 +1,2 @@
+: -> ' >body @ ?literal s" +" evaluate ; immediate 
+: ofield /obj swap field to /obj does> >r s" me" evaluate r> @ ?literal s" +" evaluate ;
