@@ -3,7 +3,7 @@ require lib/counter.vfx
 
 motif var et var xt var tc
 
-: 1timer
+: 1timer ( xt f: sec -- )
     xt !  f>p et !
     act>
         tc @ et @ >= if
@@ -11,7 +11,7 @@ motif var et var xt var tc
         then
         delta tc +!
 ;
-object: *timer act> me kill ; \ suicide after deserializing
+object: *timer ;
 : (timer>)  ( f: sec -- <code> )
     *timer { r> 1timer } ;
 : timer> postpone (timer>) discard-sinline ; immediate
