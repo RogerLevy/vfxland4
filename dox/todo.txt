@@ -15,12 +15,12 @@
         affected words:
             O. EACH CLEAR PUSH DRAW RESPOND (not ACT or PHYSICS)
         on delete, the target needs to unlink the proxy
-    -> B. don't actually move the timeline/keyframe, draw it and re-implement the shed
+    B. don't actually move the timeline/keyframe, draw it and re-implement the shed
     C. create a copy and continually update the original
     --- Remains unresolved ---
 
 1/21
-[ ] PRIVATE and PUBLIC
+[x] PRIVATE and PUBLIC
     PRIVATE automatically creates a wordlist with the name of the current file
     to be used with FGET ?
     the wordlists automatically add themselves to the search order
@@ -31,16 +31,16 @@
     But then there is the issue of children
     One solution is to make all references (i.e. name-words) work like variables (i.e. you have to @ from them),
         then we can reassign without worry
-    Replacement *is* possible, because we're only reusing the memory slot, not
+    Replacement *is* possible, if we're only reusing the memory slot, not
         preserving tree structure.  <--- THIS IS THE RIGHT WAY OF THINKING ABOUT IT
     This will be built into NAME which will copy the entire source slot to the destination slot,
         removing all the destination's children - but not yet freeing them, because there might be
-        some named slots there!  So we put them in a temporary list ...
-    The only caveat with this is if the original object is referenced before NAMED or NAME is called on it,
-        it becomes a stale reference...
+        some named slots there!  So we put them in a holding area ... [then idk]
+    The only caveat with this is if the just-created object is stored anywhere before NAMED or NAME is called on it,
+        it will become a stale reference...
 
 1/22
-    [ ] Add ability to bring objects from one workspace to another
+    [x] Add ability to bring objects from one workspace to another
         *** There can only be one instance of every named tool/app but it can be brought anywhere, even its pieces. ***
         The keyboard controls only work when the app is attached to a workspace (for now)
         idea: transport widget for preview (play/pause, stop, prev/next keyframe)
