@@ -76,9 +76,12 @@ variable cspd 20. cspd !
 : crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
 c: *preview 3. 3. sx 2! draw> crosshairs ;
 c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
-c: *aed aed-ser ;
 c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
+
+PUBLIC
+c: *aed aed-ser ;
+PRIVATE
 
 \ Save/load
 : edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm cspd @ animate } ;
@@ -88,7 +91,7 @@ c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 : anm-load chooser ?dup if aload edit then ;
 create untitled$ ," UNTITLED.TL"
 : new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
-: rename pad place s" .tl" pad append anm pad name drop ;
+: rename pad place s" .tl" pad append   anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
 : anm-saveas chooser ?dup if -path -ext ?clone rename (anm-save) then ;
 : untitled? anm -> nam @ count untitled$ count compare 0= ;

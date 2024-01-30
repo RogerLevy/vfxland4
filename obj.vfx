@@ -41,6 +41,7 @@ include lib/dltree.vfx
 : clear dlclear ;
 : insert 2dup 2>r insert-after 2r> swap insert-after ;
 : linkage next parent cell+ over - ;
+: params { linkage cell+ nip dup me + /slot rot - } ;
 
 \ - Basis
 var nam
@@ -51,18 +52,36 @@ var beh var drw var phy var fgc var bgc
 +basis
 defer children
 
+\ - Transplant
+\ 0 value dst
+\ : transplant-children to dst each> me dst push ;
+: transplant ( obj dest - )
+    >r { r@ clear   en @ r@ -> en !   me params drop r> params move } ;
 
 \ - Naming support
-: reference create 0 , does> @ ; 
-: $create-name $create , does> @ ;
-: name ( obj $ c - )
-    find if
-        cr ." REASSIGN: "
-        2dup >name dup count type swap -> nam !
-        udup >body !
+: my-context nam @ name> >body cell+ @ ;
+: $create-name $create , context @ , does> @ ;
+: reference 0 bl word $create-name ;
+: ?+order dup ?order if +order else drop then ;
+: name ( obj $ - obj|orig ) 
+    swap { find if
+        cr ." Reference already exists: "
+        dup >name    dup nam !   count type
+        dup >body @ if
+            ."  ... REPLACING"
+            >body @ >r   me r@ transplant
+            me remove
+            r@ { my-context } ?+order
+            r> ( original )
+        else
+            ."  ... ASSIGNING" 
+            me swap >body !
+            me ( obj )
+        then
     else
-        udup $create-name latest ctrl>nfa over -> nam !
-    then ;
+        me swap $create-name latest ctrl>nfa nam !
+        me ( obj )
+    then } ;
 : named bl word name ;
 : .name -> nam @ ?dup if count type space then ;
 

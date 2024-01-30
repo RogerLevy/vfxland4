@@ -1,0 +1,3 @@
+x y - the top-left corner of the object's hitbox
+w h - the width and height of the object's hitbox
+ox oy - the origin of the object. used as the origin for drawing and scaling (and rotation)
