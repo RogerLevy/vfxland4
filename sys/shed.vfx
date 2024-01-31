@@ -3,6 +3,7 @@ root value this
 0 value hoveree
 variable snapping
 0 value workspace
+synonym ws workspace
 variable editmode
 reference static
 reference editmenu
@@ -213,7 +214,14 @@ root {
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
 : toggle-editmode editmode toggle   editmode @ not if editmenu off then   ( editmode @ ws-static ! )   ?static ;
-: switch workspaces disable-each   dup to workspace on   ?static ;
+: forthwid ['] forth >body @ ;
+: switch
+    workspace ?dup if -> first @ ?dup if { my-context dup forthwid <> if -order else drop then } then then
+    workspaces disable-each
+    dup to workspace on
+    ?static
+    workspace -> first @ ?dup if { my-context ?+order } then
+;
 ws1 switch
 
 \ - Global events

@@ -56,7 +56,7 @@
     [ ] Start working with persistent workspace
     [ ] Organize animations
     [ ] Tweens in animations
-    [x] Group node
+    [-] Group node
     [ ] Global pallette allocation
     [ ] More convenient serialization definition
     [ ] More ergonomic attach
