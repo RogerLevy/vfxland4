@@ -1,8 +1,14 @@
-=== Folders ===
-/
-    program components; component dependencies are largely defined externally
+=== Terminology ===
+component - files whose dependencies are largely defined externally
     they can bring in libraries and objects but not each other,
     except chapter-load-style components such as main.vfx
+
+=== Folders ===
+/
+    program components 
+
+sys/
+    system components
 
 obj/
     scripts defining one exposed constructor
@@ -20,7 +26,7 @@ data/
     data files used by the program, such as images
 
 tool/
-    development components such as data editors
+    development modules; can be coupled to the program
 
 
 === Files ===

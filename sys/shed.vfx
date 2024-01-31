@@ -3,15 +3,16 @@ root value this
 0 value hoveree
 variable snapping
 0 value workspace
+synonym ws workspace
 variable editmode
 reference static
 reference editmenu
 reference shed
-
+create drag-s 0 , 0 ,
 1 bit _bolted bit _locked bit _sealed value _attributes
 
 \ - Scripting
-motif var ser var attr var post +basis
+motif var ser var attr var post var hx var hy +basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
@@ -40,7 +41,7 @@ motif var ser var attr var post +basis
 : ascale/ parent @ ?dup if { recurse } then sx v@ 2p/ ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : a+t +m identity rtransform ;
-: abox a+t 0 0 v*m w v@ ascale* 2over 2+ -t ;
+: abox a+t hx v@ v*m w v@ ascale* 2over 2+ -t ;
 : >local abox 2drop 2- ascale/ ;
 : s>local 2s>p >local 2p>s ;
 : hide -> vis off ;
@@ -51,12 +52,13 @@ motif var ser var attr var post +basis
 : [sealed] _sealed aon ;
 : over? mouse 2s>p abox inside? ;
 : is-static? begin -> parent @ ?dup while dup static = ?dup if nip exit then repeat 0 ; 
-: editable? dup 0;  is-static?  not workspace static = or ;
+: editable? dup 0;   is-static? not   workspace static = or ;
 : tsnap dup abs 4. + dup 8. mod - swap 0< if negate then ;
 : 2pround 2p>f fround fswap fround f>p f>p ; 
 : ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2pround then x v! ;
 : upstage dup -> parent @ unshift ;
 : downstage dup -> parent @ push ;
+: box! 2s>p w v! 2s>p hx v! ;
 
 \ - Serialize
 variable indent
@@ -68,7 +70,7 @@ variable indent
 : ?.vis vis @ 0= if ." vis off " then ;
 : ?.halt halt @ if ." halt on " then ;
 : ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
-: ?.wh w v@ or if w vp? ." w v! " then ;
+: ?.wh w v@ or if hx vp? ." hx v! " w vp? ." w v! " then ;
 : ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
 : .con con @ ?dup if >name count type space else ." *GENERIC " then ;
 : .{ ." { " ;
@@ -83,45 +85,39 @@ variable indent
 \ Save/Load
 : osave >r dup -> nam @ count r> name>path 2dup 2>r f[ o.r ]f cr ." Saved to " 2r> type ;
 : save ' execute figpath osave ;
-: oload 2dup type me { included } me -> last @ ;
-0 value dst
-: transplant-children to dst each> me dst push ;
-: params { linkage cell+ nip dup me + /slot rot - } ;
-: overwrite
-    >r r@ clear
-    dup params r@ params drop swap move
-    dup r@ transplant-children
-    delete r> ;
-: ?existing search-context if ." EXISTING" execute else 0 then ;
-: ?replace ?dup 0; overwrite ;
+: oload 2dup type workspace { included last @ } ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
-: aload 2dup -path   ?existing >r   oload   r> ?replace { postload me } ;
+: aload oload { postload   me } ;
 : load bl parse figpath name>path aload to this ;
-: ser> r> ser ! ;
+: (ser>) r> ser ! ; : ser> postpone (ser>) discard-sinline ; immediate
 : post: here aligned post ! 0 parse $, ;
 
+\ - Selecting
+: editmenu? shed descendant? editmenu @ and ;
+: select dup editmenu? not if to this else drop then ;
+
 \ - Dragging
-\ : ?ws-scale dragee workspace = if workspace -> sx v@ 2p* then ;
-: ?parent-scale parent @ ?dup if { ascale/ } then ;
-: +drag _bolted a? ?; the-walt 2s>p ?parent-scale x v+! ;
+: +drag _bolted a? ?;   the-walt 2s>p drag-s v@ 2p* x v+! ;
 : ?dragging dragee ?dup 0; { +drag } ;
 : plop dragee ?dup 0; { ?snap } 0 to dragee ;
-: m*box x v@ w v@ sx v@ 2p* 2over 2+ v*m 2swap v*m 2swap ;
-: (hovering) me each> visible? 0; w v@ or 0<> first @ or 0; 
+: m*box x v@ hx v@ sx v@ 2p* 2+ w v@ sx v@ 2p* 2over 2+ v*m 2swap v*m 2swap ;
+: (hover) me each> visible? 0; w v@ or 0<> first @ or 0; 
     the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
-: hover +t (hovering) -t ;
+: hover +t (hover) -t ;
+: drag-context { 1. 1. ascale/ drag-s v! } ;
+: drag dup to dragee   drag-context ; 
+: pickdrag ?dup 0; dup select drag ;
 
 \ - Figure Editor 1/3
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
-: tiny a+t 0 0 v*m 2p>s at -t identity ;
+: tiny a+t hx v@ v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
-: outline 0 0 at w v@ 2p>s rect ;
+: outline hx v@ 2p>s at w v@ 2p>s rect ;
 : a-outline a+t outline -t ;
-: descendant? swap { begin parent @ dup while over = if } drop -1 exit then parent @ as repeat nip ( 0 ) } ;
 : (outlines) each> +t outline me recurse -t ;
 : outlines
-    | p |
-    p { a+t $00ff0080 color me (outlines) -t }
+    me | p |
+    $00ff0080 color me (outlines)
     hoveree editable? if
         hoveree p descendant? if
             hoveree { yellow a-outline } 
@@ -133,6 +129,9 @@ variable indent
         then
     then
 ;
+: connector x v@ 2p>s line ;
+: (connectors) me each> visible? 0; connector +t recurse -t ;
+: connectors 0 0 at $ffffff40 color (connectors) ;
 
 \ - Figure Editor 2/3
 : +zoom
@@ -149,9 +148,6 @@ variable indent
 : unpick root to this ; \  0 to dragee 0 to hoveree ;
 : delete-this this can-delete? if this delete   unpick then ;
 : ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
-: editmenu? shed descendant? editmenu @ and ;
-: select dup editmenu? not if to this else drop then ;
-: ?pickdrag ?dup 0; dup select to dragee ;
 
 \ Clicking
 create omx 0 , 0 ,
@@ -159,11 +155,13 @@ create omx 0 , 0 ,
 : click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? mouse omx v@ d= and ;
 
 \ Edit menu
-require tool/widgets.vfx
+require sys/widgets.vfx
 : toggle-editmenu
+    hoveree to target
     editmenu toggle
+    editmenu @ 0;
     editmenu {
-        mouse winw winh w v@ 2p>s 2- 2min   2s>p x v!
+        mouse winwh w v@ 2p>s 2- 2min 2s>p x v!
         me downstage
         me open-toolbox
     }
@@ -176,16 +174,16 @@ require tool/widgets.vfx
     then
     ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
         the-mbutton 1 = if
-            hoveree ?pickdrag
+            hoveree pickdrag
         then
     then
     click? the-mbutton 2 = and if
-        hoveree ?dup if to target then
         toggle-editmenu 
     then
 ;
-c: *shed draw> editmode @ 0; -matte 2 2 at magenta winw 3 - winh 3 - rect ;
-c: *info draw> editmode @ 0; workspace outlines ;
+c: *shed draw> editmode @ 0; -matte 2 2 at ;
+: edit-info outlines connectors ;
+c: *info draw> editmode @ 0; workspace { a+t edit-info -t } ;
 
 \ - Workspace
 : ws-var var does> @ workspace + ;
@@ -219,7 +217,14 @@ root {
 : ?static ws-static @ static ! ;
 : toggle-static static workspace <> if ws-static toggle then   ?static ;
 : toggle-editmode editmode toggle   editmode @ not if editmenu off then   ( editmode @ ws-static ! )   ?static ;
-: switch workspaces disable-each   dup to workspace on   ?static   ( ?bring ) ;
+: forthwid ['] forth >body @ ;
+: switch
+    workspace ?dup if -> first @ ?dup if { my-context dup forthwid <> if -order else drop then } then then
+    workspaces disable-each
+    dup to workspace on
+    ?static
+    workspace -> first @ ?dup if { my-context ?+order } then
+;
 ws1 switch
 
 \ - Global events
@@ -240,7 +245,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
         mouse omx v!
         the-mbutton 2 =
         the-mbutton 1 = alt? and   or if
-            workspace to dragee
+            workspace drag
         then
     then
     ALLEGRO_EVENT_MOUSE_AXES happened? if
@@ -291,18 +296,18 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 : ?sealed target { _sealed a? } if r> drop cr ." Target is sealed." then ;
 
 editmenu -> first @ {
-    button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize    ;
+    button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v!   editmenu off ;
+    button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push   editmenu off ;
+    [newrow]
+    button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize   editmode off ;
     : ?bring { me workspace descendant? not if [bring] else   me this over insert-after   this { -> parent @ localize } then } ;
-    button: [CLONE] ?root   this >r   this clone select   r> ?bring ;
+    button: [CLONE] ?root   this >r   this clone select   r> ?bring   editmenu off ;
     [newrow]
-    button: [CLEAR] ?root ?locked ?sealed   this clear ;
-    button: [TRASH] ?root ?locked ?sealed   this trash push   unpick ;
+    button: [CLEAR] ?root ?locked ?sealed   this clear   editmenu off ;
+    button: [TRASH] ?root ?locked ?sealed   this trash push   unpick   editmenu off ;
     [newrow]
-    button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v! ;
-    button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push ;
-    [newrow]
-    button: [UPSTAGE] ?root ?bolted   this upstage ;
-    button: [DOWNSTAGE] ?root ?bolted   this downstage ;
+    button: [UPSTAGE] ?root ?bolted   this upstage   editmenu off ;
+    button: [DOWNSTAGE] ?root ?bolted   this downstage   editmenu off ;
     [newrow]
     button: [LOCK] ?root this   { _locked aon } ;
     button: [UNLOCK] ?root this   { _locked aoff } ;
@@ -313,7 +318,7 @@ editmenu -> first @ {
     button: [SEAL] ?root ?locked   this { _sealed aon } ;
     button: [UNSEAL] ?root ?locked   this { _sealed aoff } ;
     [newrow]
-    button: [DESELECT] ?root   unpick ;
+    button: [DESELECT] ?root   unpick   editmenu off ;
     *button { ` snapping toggle` break }
 }
 +sin

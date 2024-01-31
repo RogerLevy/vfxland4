@@ -1,15 +1,15 @@
 _attributes bit _click bit _nr to _attributes
 motif var data var wl 
 
-z" sys/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
+z" sys/data/MxPlus_IBM_BIOS.ttf" #8 3 al_load_ttf_font
    constant ascii8x8.fnt
-z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
+z" sys/data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     constant ibm8x16.fnt
 
 : sdims w v@ 2p>s ;
 : !font ascii8x8.fnt font ! ;
 : data@ data @ dup 0; !font icount >z ;
-: boxshadow  5 5 +at  sdims $00000040 color rectf  -5 -5 +at ;
+: boxshadow 5 5 +at   sdims $00000040 color rectf   -5 -5 +at ;
 
 : ?click hoveree me = 0; _click aon ;
 : exec data@ ?dup 0; zcount evaluate ;
@@ -36,9 +36,11 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : ?nr _nr a? 0; next @ 0; 8. y @ h @ + 8. + next @ -> x v! ;
 : ?layout _bolted a? 0; next @ if x @ w @ + 8. + y @ next @ -> x v! then ?nr ?expand ;
 
-: ser-widget ser>
+: .widget
     data @ ?dup if ." ` " icount type ." ` " then
-    bgc @ h. ." bgc ! " ;
+    bgc @ ?dup if h. ." bgc ! " then
+;
+: ser-widget ser> .widget ;
 : 1w h @ 32. >= ?; data @ ?dup 0; count 8. * 32. + w ! drop ;
 : ?freedata data @ ?dup if free drop then ;
 : data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! 1w ;
@@ -56,7 +58,7 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     else
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
             the-mbutton 1 = if
-                me ?pickdrag
+                me pickdrag
             then
         then
     then
@@ -73,14 +75,18 @@ z" sys/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     data@  w @ p>s 8 -  black mltext
 ;
 
+: group-draw draw> editmode @ 0; blue 8 circf yellow 8 circ ;
+
 c: *label 16. h ! [bolted] label-draw ser-widget act> ?layout ;
 c: *textbox 160. 160. w v! $fff8a0e0 bgc ! textbox-draw ser-widget $[ ." The rain " cr ." in Spain falls mainly on the plain." ]$ data! ;
 c: *button 28. h ! [bolted] button-draw ser-widget button-respond act> ?layout ;
 c: *toolbox 128. 28. w v! toolbox-draw ser-widget toolbox-respond ;
 c: *panel _bolted aon $00000040 bgc ! panel-draw act> 0 0 w v! ;
 c: *spanel _bolted aon $00000040 bgc ! panel-draw ;
+c: *group 16. 16. w v! group-draw ;
 
 \ : [toolbox] *toolbox 0 32 at ;
 \ : [panel] *panel 8 8 at ;
 
 : break _nr aon ;
+ 
