@@ -2668,10 +2668,10 @@ extern "C" void al_draw_bitmap_region(
     void * bitmap,
     float sx, float sy, float sw, float sh, float dx, float dy, int flags
 );
-\ extern "C" al_draw_circle( );
-\ extern "C" al_draw_ellipse( );
+extern "C" void al_draw_circle( float cx , float cy , float rx, float r , float g , float b , float a , int float-thickness );
+\ extern "C" void al_draw_ellipse( float cx , float cy , float rx , float ry , float r , float g , float b , float a , float thickness );
 \ extern "C" al_draw_elliptical_arc( );
-\ extern "C" al_draw_filled_circle( );
+extern "C" void al_draw_filled_circle( float cx , float cy , float rx, float r , float g , float b , float a , int float-thickness );
 \ extern "C" al_draw_filled_ellipse( );
 \ extern "C" al_draw_filled_pieslice( );
 \ extern "C" al_draw_filled_polygon( );

@@ -49,3 +49,7 @@ sam to target
 
 sam -> plt on \ Just for testing palette stuff
 bg0 -> plt on
+
+
+\ groups
+ws2 { 50 50 at *group { *group } } } ws2 switch editmode on

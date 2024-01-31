@@ -51,7 +51,7 @@ variable cspd 20. cspd !
 
 \ - Hovering and dragging keyframe contents
 : hover-anm anmc { a+t anm { hover } -t } ;
-: drag-anm hoveree ?pickdrag   anmc drag-context ;
+: drag-anm hoveree pickdrag   anmc drag-context ;
 
 \ - Editor components 1/2
 : (status)

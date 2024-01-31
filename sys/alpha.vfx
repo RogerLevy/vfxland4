@@ -117,15 +117,17 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : at@f pen v@ 2s>f ;
 : 4f@ sf@+ sf@+ sf@+ sf@ ;
 : 4f! 4 cells + sf-! sf-! sf-! cell- sf! ;
-: rect 1e f>ds >r  at@f  pen v@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
+: rect 1e f>ds >r  at@f  at@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
 : rectf pen v@ 2+  at@f 2s>f  fore 4f@  al_draw_filled_rectangle ;
+: circ 1e f>ds >r  at@f  s>f  fore 4f@  r> al_draw_circle ;
+: circf 1e f>ds >r  at@f  s>f  fore 4f@  r> al_draw_filled_circle ;
 : fcolor fore 4f! ;
 : cls backdrop 4f@ al_clear_to_color ;
 : c dup 24 >> s>f 255e f/ ;
 : color c 8 << c 8 << c 8 << c drop fcolor ;
 : b >r sf@+ 255e f* f>s r> or ;
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
-: line 1e f>ds >r  pen v@ 2+  at@f 2s>f fore 4f@ r> al_draw_line ;
+: line 1e f>ds >r  at@ 2+ 2s>f  at@f  fore 4f@ r> al_draw_line ;
 : -matte 0 0 winw winh al_set_clipping_rectangle ;
 
 \ - Bitmaps
