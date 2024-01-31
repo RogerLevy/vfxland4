@@ -128,6 +128,8 @@ variable indent
         then
     then
 ;
+: connector x v@ ( parent @ { sx v@ 2p* } ) 2p>s line ;
+: connectors me each> visible? 0; connector +t recurse -t ;
 
 \ - Figure Editor 2/3
 : +zoom
@@ -176,8 +178,8 @@ require sys/widgets.vfx
         toggle-editmenu 
     then
 ;
-c: *shed draw> editmode @ 0; -matte 2 2 at magenta winw 3 - winh 3 - rect ;
-c: *info draw> editmode @ 0; workspace outlines ;
+c: *shed draw> editmode @ 0; -matte 2 2 at ;
+c: *info draw> editmode @ 0; workspace outlines   workspace { a+t 0 0 at $ffffff40 color connectors -t } ;
 
 \ - Workspace
 : ws-var var does> @ workspace + ;
