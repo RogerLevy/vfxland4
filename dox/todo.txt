@@ -10,14 +10,14 @@
 [x] if needed, add tasks
 
 1/20
-[ ] aed shouldn't be moving timelines
+[x] aed shouldn't be moving timelines
+    --- Fixed by adding a way to drag items with arbitrary scaling applied ---
     A. some kind of proxy object
         affected words:
             O. EACH CLEAR PUSH DRAW RESPOND (not ACT or PHYSICS)
         on delete, the target needs to unlink the proxy
     B. don't actually move the timeline/keyframe, draw it and re-implement the shed
     C. create a copy and continually update the original
-    --- Remains unresolved ---
 
 1/21
 [x] PRIVATE and PUBLIC

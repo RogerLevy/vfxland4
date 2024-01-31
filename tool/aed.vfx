@@ -15,16 +15,16 @@ reference pspr
 variable cti
 create ctw 1 , here 1 , constant cth
 variable cspd 20. cspd !
+0 value anm
 
 \ - Editor actions
-: anm anmc -> first @ ;
 : ckf kf# anm nth-child ;
 : sel anm disable-each   anm nth-child on ;
 : kf! 0 anm #children wrap to kf#   kf# sel ;
 : +kf kf# + kf! ;
 : duplicate ckf clone ckf insert-after   1 +kf ;
 : tcenter ctw v@ 8. 8. 2p* 2- ;
-: lay ckf { anm { mouse s>local } tcenter at *tile } { cti @ ti !   ctw v@ tile:dims!   ?snap   me select } ;
+: lay ckf { anmc { mouse s>local } tcenter at *tile } { cti @ ti !   ctw v@ tile:dims!   ?snap   me select } ;
 : ?lay editor { over? } 0; lay ;
 : small sherry16.fnt font ! ;
 : big sherry32.fnt font ! ;
@@ -48,6 +48,10 @@ variable cspd 20. cspd !
 : wider ctw @ 1 + 16 min ctw ! ;
 : shorter cth @ 1 - 1 max cth ! ;
 : taller cth @ 1 + 16 min cth ! ;
+
+\ - Hovering and dragging keyframe contents
+: hover-anm anmc { a+t anm { hover } -t } ;
+: drag-anm hoveree ?pickdrag   anmc drag-context ;
 
 \ - Editor components 1/2
 : (status)
@@ -84,7 +88,7 @@ c: *aed aed-ser ;
 PRIVATE
 
 \ Save/load
-: edit anmc -> first @ ?dup if animations push then anmc push 0 kf! pspr { anm cspd @ animate } ;
+: edit to anm 0 kf! pspr { anm cspd @ animate } ;
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
@@ -200,14 +204,14 @@ aed lock&seal
         \ Mouse
         ALLEGRO_EVENT_MOUSE_AXES happened? if
             over? if
-                anmc { a+t anm { hover } -t } 
+                hover-anm
             then
         then
 
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
             over? if
                 hoveree if hoveree anm descendant? if
-                    hoveree ?pickdrag
+                    drag-anm
                 then then
             then
         then

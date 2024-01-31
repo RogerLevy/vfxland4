@@ -124,3 +124,6 @@ c: *generic ;
 \ - Indexed child access
 : #children -> first @ dup if 0 swap begin 1 u+ -> next @ ?dup 0= until then ;
 : nth-child dup #children >r -> first @ swap 0 r> wrap 0 ?do -> next @ loop ;
+
+\ - Misc
+: descendant? swap { begin parent @ dup while over = if } drop -1 exit then parent @ as repeat nip ( 0 ) } ;
