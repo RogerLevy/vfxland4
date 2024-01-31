@@ -151,7 +151,7 @@ create omx 0 , 0 ,
 : click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? mouse omx v@ d= and ;
 
 \ Edit menu
-require tool/widgets.vfx
+require sys/widgets.vfx
 : toggle-editmenu
     editmenu toggle
     editmenu {
