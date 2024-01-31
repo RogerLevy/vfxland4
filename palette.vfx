@@ -6,6 +6,7 @@ s" glsl/default.v.glsl" s" glsl/palette.f.glsl" load-shader constant palette.s
     palette.bmp onto opaque
     b bmph for b 0 i b bmpw 1 blitr b bmpw 0 +at loop
     backbuf onto transparent ;
+: palclip! ( n len - ) palette.bmp onto 0 swap 1 clip! ;
 
 \ Extend objects
 motif var plt var plo +basis

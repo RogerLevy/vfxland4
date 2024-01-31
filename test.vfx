@@ -24,12 +24,14 @@ z" data/bmp/vga-palette.png" loadbmp constant vga-palette.bmp
 c: *wow
     4. 4. sx v!
     draw>
-    bg-palette.bmp ctr @ p>s 31 and 32 - setpal
-    bg-palette.bmp ctr @ p>s 31 and setpal
+    clip@ 0 32 palclip!
+        bg-palette.bmp ctr @ p>s 31 and 32 - setpal
+        bg-palette.bmp ctr @ p>s 31 and setpal
+    clip!
     0.2 delta* ctr +!
     0 0 at palette.bmp blit 
 ;
-\ game { 0 0 at *wow named wow }
+game { 0 0 at *wow named wow }
 bg-palette.bmp 0 setpal
 
 create buf 4 cells allot

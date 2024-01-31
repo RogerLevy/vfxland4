@@ -20,7 +20,7 @@ obj misc \ temporary...
 : draw-paletted-tilemap draw> ?paletted tilemap -shader ;
 
 \ - Game
-: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* al_set_clipping_rectangle ;
+: matte x v@ 2p>s gamew zoom sf* gameh zoom sf* clip!  ;
 : center
     winw 2 /  gamew zoom sf* 2 / -
     winh 64 - 2 /  gameh zoom sf* 2 / -  2s>p x v!
