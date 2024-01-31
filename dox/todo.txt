@@ -49,3 +49,14 @@
 1/23
     [ ] Userhand
         Manages what the mouse (and keyboard?) are doing
+        
+1/30
+    [ ] Palette editor
+    [x] Fix serialization
+    [ ] Start working with persistent workspace
+    [ ] Organize animations
+    [ ] Tweens in animations
+    [ ] Group node
+    [ ] Global pallette allocation
+    [ ] More convenient serialization definition
+    [ ] More ergonomic attach
