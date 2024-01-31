@@ -38,7 +38,7 @@ motif var ser var attr var post var hx var hy +basis
     repeat
     m al_use_transform
 ;
-: ascale/ parent @ ?dup if { recurse } then sx v@ 2p/ ;
+: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : a+t +m identity rtransform ;
 : abox a+t hx v@ v*m w v@ ascale* 2over 2+ -t ;

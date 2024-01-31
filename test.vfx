@@ -1,9 +1,9 @@
 \ - Ball
 gamew gameh 2. 2. 2p/ at actors { *bouncer } named ball {
-\    *hidden {
+\    *helper {
 \        :noname act> 5.0 after> parent @ { 0.1 0.1 sx v+! } 2. after> parent @ kill ; execute
 \    }
-    *hidden {
+    *helper {
         :noname 1 perform>
             parent @ as
 \            5 0 do
