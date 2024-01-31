@@ -60,3 +60,4 @@
     [ ] Global pallette allocation
     [ ] More convenient serialization definition
     [ ] More ergonomic attach
+    [ ] Revamp how hitboxes work
