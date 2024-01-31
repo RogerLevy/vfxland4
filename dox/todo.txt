@@ -51,8 +51,11 @@
         Manages what the mouse (and keyboard?) are doing
         
 1/30
-    [ ] Palette editor
+    CRITICAL:
     [x] Fix serialization
+    [x] Revamp how hitboxes work
+
+    [ ] Palette editor
     [ ] Start working with persistent workspace
     [ ] Organize animations
     [ ] Tweens in animations
@@ -60,4 +63,3 @@
     [ ] Global pallette allocation
     [ ] More convenient serialization definition
     [ ] More ergonomic attach
-    [ ] Revamp how hitboxes work

@@ -9,11 +9,10 @@ reference static
 reference editmenu
 reference shed
 create drag-s 0 , 0 ,
-
 1 bit _bolted bit _locked bit _sealed value _attributes
 
 \ - Scripting
-motif var ser var attr var post +basis
+motif var ser var attr var post var hx var hy +basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
@@ -42,7 +41,7 @@ motif var ser var attr var post +basis
 : ascale/ parent @ ?dup if { recurse } then sx v@ 2p/ ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : a+t +m identity rtransform ;
-: abox a+t 0 0 v*m w v@ ascale* 2over 2+ -t ;
+: abox a+t hx v@ v*m w v@ ascale* 2over 2+ -t ;
 : >local abox 2drop 2- ascale/ ;
 : s>local 2s>p >local 2p>s ;
 : hide -> vis off ;
@@ -59,6 +58,7 @@ motif var ser var attr var post +basis
 : ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2pround then x v! ;
 : upstage dup -> parent @ unshift ;
 : downstage dup -> parent @ push ;
+: box! 2s>p w v! 2s>p hx v! ;
 
 \ - Serialize
 variable indent
@@ -70,7 +70,7 @@ variable indent
 : ?.vis vis @ 0= if ." vis off " then ;
 : ?.halt halt @ if ." halt on " then ;
 : ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
-: ?.wh w v@ or if w vp? ." w v! " then ;
+: ?.wh w v@ or if hx vp? ." hx v! " w vp? ." w v! " then ;
 : ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
 : .con con @ ?dup if >name count type space else ." *GENERIC " then ;
 : .{ ." { " ;
@@ -100,7 +100,7 @@ variable indent
 : +drag _bolted a? ?;   the-walt 2s>p drag-s v@ 2p* x v+! ;
 : ?dragging dragee ?dup 0; { +drag } ;
 : plop dragee ?dup 0; { ?snap } 0 to dragee ;
-: m*box x v@ w v@ sx v@ 2p* 2over 2+ v*m 2swap v*m 2swap ;
+: m*box x v@ hx v@ sx v@ 2p* 2+ w v@ sx v@ 2p* 2over 2+ v*m 2swap v*m 2swap ;
 : (hover) me each> visible? 0; w v@ or 0<> first @ or 0; 
     the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hover +t (hover) -t ;
@@ -110,9 +110,9 @@ variable indent
 
 \ - Figure Editor 1/3
 : stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
-: tiny a+t 0 0 v*m 2p>s at -t identity ;
+: tiny a+t hx v@ v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
-: outline 0 0 at w v@ 2p>s rect ;
+: outline hx v@ 2p>s at w v@ 2p>s rect ;
 : a-outline a+t outline -t ;
 : (outlines) each> +t outline me recurse -t ;
 : outlines

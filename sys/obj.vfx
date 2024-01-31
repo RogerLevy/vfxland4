@@ -95,6 +95,7 @@ defer 1object
     create here 0 , :noname swap !
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
+c: *hidden vis off ;
 : obj reference  *slot as  0 0 at  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
 : delete remove ;
 
