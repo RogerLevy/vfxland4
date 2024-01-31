@@ -82,7 +82,6 @@ c: *preview 3. 3. sx 2! draw> crosshairs ;
 c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
 c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
-
 PUBLIC
 c: *aed aed-ser ;
 PRIVATE
@@ -106,11 +105,16 @@ defer editor-respond
 c: *editor
     editor-respond
     draw>
-        crosshairs ghost anmc { +t
-            anm { draw } 
-            hoveree if hoveree anm descendant? if hoveree { +t yellow outline -t } then then 
-            this anm descendant? if this { +t red outline -t } then
-        -t }
+        crosshairs
+        editmode @ not if
+            ghost
+            anmc { +t
+                anm { editmode on draw editmode off }
+                \ anm { edit-info }
+                hoveree if hoveree anm descendant? if hoveree { +t yellow outline -t } then then 
+                this anm descendant? if this { +t red outline -t } then
+            -t }
+        then
 ;
 
 
@@ -210,9 +214,13 @@ aed lock&seal
 
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
             over? if
-                hoveree if hoveree anm descendant? if
-                    drag-anm
-                then then
+                the-mbutton 1 = if
+                    hoveree if hoveree anm descendant? if
+                        drag-anm
+                    then then
+                else
+                    toggle-editmenu
+                then
             then
         then
 ;

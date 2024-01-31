@@ -128,7 +128,8 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : b >r sf@+ 255e f* f>s r> or ;
 : @color fore 0 b 8 << b 8 << b 8 << b nip ;
 : line 1e f>ds >r  at@ 2+ 2s>f  at@f  fore 4f@ r> al_draw_line ;
-: -matte 0 0 winw winh al_set_clipping_rectangle ;
+: winwh winw winh ;
+: -matte 0 0 winwh al_set_clipping_rectangle ;
 
 \ - Bitmaps
 : ?null ?dup 0= if r> drop exit then ;

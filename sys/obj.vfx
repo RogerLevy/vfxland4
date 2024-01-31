@@ -62,7 +62,7 @@ defer children
 : my-context nam @ name> >body cell+ @ ;
 : $create-name $create , context @ , does> @ ;
 : reference 0 bl word $create-name ;
-: ?+order dup ?order if +order else drop then ;
+: ?+order dup ?order if drop else +order then ;
 : name ( obj $ - obj|orig ) 
     swap { find if
         cr ." Reference already exists: "

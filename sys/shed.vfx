@@ -53,7 +53,7 @@ motif var ser var attr var post +basis
 : [sealed] _sealed aon ;
 : over? mouse 2s>p abox inside? ;
 : is-static? begin -> parent @ ?dup while dup static = ?dup if nip exit then repeat 0 ; 
-: editable? dup 0;  is-static?  not workspace static = or ;
+: editable? dup 0;   is-static? not   workspace static = or ;
 : tsnap dup abs 4. + dup 8. mod - swap 0< if negate then ;
 : 2pround 2p>f fround fswap fround f>p f>p ; 
 : ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2pround then x v! ;
@@ -104,7 +104,7 @@ variable indent
 : (hover) me each> visible? 0; w v@ or 0<> first @ or 0; 
     the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hover +t (hover) -t ;
-: drag-context { 1. 1. ascale/ p.s drag-s v! } ;
+: drag-context { 1. 1. ascale/ drag-s v! } ;
 : drag dup to dragee   drag-context ; 
 : pickdrag ?dup 0; dup select drag ;
 
@@ -116,8 +116,8 @@ variable indent
 : a-outline a+t outline -t ;
 : (outlines) each> +t outline me recurse -t ;
 : outlines
-    | p |
-    p { a+t $00ff0080 color me (outlines) -t }
+    me | p |
+    $00ff0080 color me (outlines)
     hoveree editable? if
         hoveree p descendant? if
             hoveree { yellow a-outline } 
@@ -129,8 +129,9 @@ variable indent
         then
     then
 ;
-: connector x v@ ( parent @ { sx v@ 2p* } ) 2p>s line ;
-: connectors me each> visible? 0; connector +t recurse -t ;
+: connector x v@ 2p>s line ;
+: (connectors) me each> visible? 0; connector +t recurse -t ;
+: connectors 0 0 at $ffffff40 color (connectors) ;
 
 \ - Figure Editor 2/3
 : +zoom
@@ -156,9 +157,11 @@ create omx 0 , 0 ,
 \ Edit menu
 require sys/widgets.vfx
 : toggle-editmenu
+    hoveree to target
     editmenu toggle
+    editmenu @ 0;
     editmenu {
-        mouse winw winh w v@ 2p>s 2- 2min   2s>p x v!
+        mouse winwh w v@ 2p>s 2- 2min 2s>p x v!
         me downstage
         me open-toolbox
     }
@@ -175,12 +178,12 @@ require sys/widgets.vfx
         then
     then
     click? the-mbutton 2 = and if
-        hoveree ?dup if to target then
         toggle-editmenu 
     then
 ;
 c: *shed draw> editmode @ 0; -matte 2 2 at ;
-c: *info draw> editmode @ 0; workspace outlines   workspace { a+t 0 0 at $ffffff40 color connectors -t } ;
+: edit-info outlines connectors ;
+c: *info draw> editmode @ 0; workspace { a+t edit-info -t } ;
 
 \ - Workspace
 : ws-var var does> @ workspace + ;
@@ -293,18 +296,18 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 : ?sealed target { _sealed a? } if r> drop cr ." Target is sealed." then ;
 
 editmenu -> first @ {
-    button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize    ;
+    button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v!   editmenu off ;
+    button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push   editmenu off ;
+    [newrow]
+    button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize   editmode off ;
     : ?bring { me workspace descendant? not if [bring] else   me this over insert-after   this { -> parent @ localize } then } ;
-    button: [CLONE] ?root   this >r   this clone select   r> ?bring ;
+    button: [CLONE] ?root   this >r   this clone select   r> ?bring   editmenu off ;
     [newrow]
-    button: [CLEAR] ?root ?locked ?sealed   this clear ;
-    button: [TRASH] ?root ?locked ?sealed   this trash push   unpick ;
+    button: [CLEAR] ?root ?locked ?sealed   this clear   editmenu off ;
+    button: [TRASH] ?root ?locked ?sealed   this trash push   unpick   editmenu off ;
     [newrow]
-    button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v! ;
-    button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push ;
-    [newrow]
-    button: [UPSTAGE] ?root ?bolted   this upstage ;
-    button: [DOWNSTAGE] ?root ?bolted   this downstage ;
+    button: [UPSTAGE] ?root ?bolted   this upstage   editmenu off ;
+    button: [DOWNSTAGE] ?root ?bolted   this downstage   editmenu off ;
     [newrow]
     button: [LOCK] ?root this   { _locked aon } ;
     button: [UNLOCK] ?root this   { _locked aoff } ;
@@ -315,7 +318,7 @@ editmenu -> first @ {
     button: [SEAL] ?root ?locked   this { _sealed aon } ;
     button: [UNSEAL] ?root ?locked   this { _sealed aoff } ;
     [newrow]
-    button: [DESELECT] ?root   unpick ;
+    button: [DESELECT] ?root   unpick   editmenu off ;
     *button { ` snapping toggle` break }
 }
 +sin
