@@ -9,5 +9,5 @@ s" glsl/default.v.glsl" s" glsl/palette.f.glsl" load-shader constant palette.s
 
 \ Extend objects
 motif var plt var plo +basis
-: paletted palette.s shader z" pal_tex" palette.bmp 1 sampler! z" pal_ofs" plo @ s>f 256e f/ float! ;
+: paletted palette.s shader   z" pal_tex" palette.bmp 1 sampler!   z" pal_ofs" plo @ s>f 256e f/ float! ;
 : ?paletted plt @ if paletted then ;

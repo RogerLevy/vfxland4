@@ -96,14 +96,14 @@ defer 1object
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
 c: *helper vis off 0 0 x v! ;
-: obj reference  *slot as  0 0 at  init  ['] *generic con !  latest-xt  me over >body !  >name nam ! ;
+: obj reference   *slot as   0 0 at   init   ['] *generic con !   latest-xt me over >body !  >name nam ! ;
 : delete remove ;
 
 \ - Basic actions
 : visible? en @ vis @ and ;
-: kill dup -> en off -> dead on ;
+: kill dup -> en off   -> dead on ;
 : reckon
-    first @ {  begin  me while
+    first @ { begin me while
         next @ >r
             recurse
             dead @ if me delete then
@@ -115,10 +115,10 @@ c: *helper vis off 0 0 x v! ;
 : -t -m ;
 : ?children first @ if +t children -t then ;
 : draw drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ;
-: ?draw en @ 0; vis @ 0; draw ; 
+: ?draw en @ 0;   vis @ 0;   draw ; 
 :noname [ is children ] ['] ?draw me each ;
-: act halt @ ?;  en @ 0;  beh @ ?execute  me each>  recurse ;
-: physics halt @ ?;  en @ 0;  phy @ ?execute  me each>  recurse ;
+: act halt @ ?;   en @ 0;   beh @ ?execute   me each> recurse ;
+: physics halt @ ?;   en @ 0;   phy @ ?execute   me each> recurse ;
 : (draw>) r> drw ! ; : draw> postpone (draw>) discard-sinline ; immediate
 : (act>) r> beh ! ; : act> postpone (act>) discard-sinline ; immediate
 
@@ -127,4 +127,9 @@ c: *helper vis off 0 0 x v! ;
 : nth-child dup #children >r -> first @ swap 0 r> wrap 0 ?do -> next @ loop ;
 
 \ - Misc
-: descendant? swap { begin parent @ dup while over = if } drop -1 exit then parent @ as repeat nip ( 0 ) } ;
+: descendant? ( obj obj - f )
+    swap { begin
+        parent @ dup while
+        over = if   } drop -1   exit then
+        parent @ as
+    repeat nip ( 0 ) } ;

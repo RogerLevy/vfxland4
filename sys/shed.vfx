@@ -15,7 +15,7 @@ create drag-s 0 , 0 ,
 motif var ser var attr var post var hx var hy +basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
-:noname [ is 1object ] con ! pen v@ 2s>p x v! physics> vx v@ 2delta* x v+! ;
+:noname [ is 1object ] con !   pen v@ 2s>p x v!   physics> vx v@ 2delta* x v+! ;
 : copy *slot { me /slot move   linkage erase   me } ;
 : (*clone) ( orig new ) | p |
     -> first @ begin ?dup while
@@ -23,11 +23,11 @@ motif var ser var attr var post var hx var hy +basis
         recurse
         -> next @
     repeat ;
-: clone dup copy dup >r (*clone) r> ;
+: clone dup copy   dup >r (*clone) r> ;
 : a? attr @ and 0<> ;
 : aoff invert attr @ and attr ! ;
 : aon attr @ or attr ! ;
-: replace dup >r insert r> kill ;
+: replace dup >r insert   r> kill ;
 : from -> x v@ p>s at ;
 : rtransform
     me begin ?dup while
@@ -80,10 +80,10 @@ variable indent
 : (o.) .xy ." at " .con ?.named .{ ?.en ?.vis ?.halt ?.a ?.wh ?.s ;
 : o. { (o.) .} ;
 : o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
-: o.r cri { (o.) ser @ ?execute space ['] .}r >r me each> +i me recurse -i ;
+: o.r cri { (o.)   ser @ ?execute space   ['] .}r >r   me each> +i me recurse -i ;
 
 \ Save/Load
-: osave >r dup -> nam @ count r> name>path 2dup 2>r f[ o.r ]f cr ." Saved to " 2r> type ;
+: osave >r dup -> nam @ count r> name>path 2dup 2>r   f[ o.r ]f cr ." Saved to "   2r> type ;
 : save ' execute figpath osave ;
 : oload 2dup type workspace { included last @ } ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
@@ -109,7 +109,7 @@ variable indent
 : pickdrag ?dup 0; dup select drag ;
 
 \ - Figure Editor 1/3
-: stext @color >r 1 1 +at dup black text -1 -1 +at r> color text ;
+: stext @color >r   1 1 +at dup black text   -1 -1 +at r> color text ;
 : tiny a+t hx v@ v*m 2p>s at -t identity ;
 : (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
 : outline hx v@ 2p>s at w v@ 2p>s rect ;
@@ -152,7 +152,7 @@ variable indent
 \ Clicking
 create omx 0 , 0 ,
 0 value target
-: click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened? mouse omx v@ d= and ;
+: click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?   mouse omx v@ d= and ;
 
 \ Edit menu
 require sys/widgets.vfx
