@@ -12,7 +12,7 @@ variable osp  os osp !
 
 \ - Addressing
 0 value me
-: as to me ;
+: in to me ;
 : { me >o to me ;
 : } o> to me ;
 : -> ' >body @ ?literal s" +" evaluate ; immediate 
@@ -96,7 +96,7 @@ defer 1object
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
 c: *helper vis off 0 0 x v! ;
-: obj reference   *slot as   0 0 at   init   ['] *generic con !   latest-xt me over >body !  >name nam ! ;
+: obj reference   *slot in   0 0 at   init   ['] *generic con !   latest-xt me over >body !  >name nam ! ;
 : delete remove ;
 
 \ - Basic actions
@@ -107,7 +107,7 @@ c: *helper vis off 0 0 x v! ;
         next @ >r
             recurse
             dead @ if me delete then
-        r> as
+        r> in
     repeat }
 ;
 : ?execute ?dup 0; catch dup .throw if quit then ;
@@ -131,5 +131,5 @@ c: *helper vis off 0 0 x v! ;
     swap { begin
         parent @ dup while
         over = if   } drop -1   exit then
-        parent @ as
+        parent @ in
     repeat nip ( 0 ) } ;

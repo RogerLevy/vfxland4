@@ -5,7 +5,7 @@ gamew gameh 2. 2. 2p/ at actors { *bouncer } named ball {
 \    }
     *helper {
         :noname 1 perform>
-            parent @ as
+            parent @ in
 \            5 0 do
             begin
                 ( cr ." BIG" )

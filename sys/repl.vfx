@@ -32,13 +32,13 @@ root value uime
 variable uiosp
 bpage uios uios uiosp !
 : repl-events
-    me >r uime as
+    me >r uime in
     osp @ >r uiosp @ osp !
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char ?charkey
     then
     osp @ uiosp ! r> osp !
-    me to uime r> as
+    me to uime r> in
 ;
 
 : bar blue winw 64 rectf ;

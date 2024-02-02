@@ -8,10 +8,10 @@ require lib/window.vfx
     -1 -1  1 window
 [else]
     320 3 *  240 3 * 64 +  0 window
-    display 1920 2 / 8 - 0 al_set_window_position
+    display  1920 2 / 8 -  0 al_set_window_position
 [then]
 
-vfx-hwnd 0 -10 0 1920 2 / 20 + 520 $40 SetWindowPos drop
+vfx-hwnd 0 -10 0  1920 2 / 20 +  520 $40 SetWindowPos drop
 
 \ - Game
 [undefined] release [if] include tools.vfx [then]
