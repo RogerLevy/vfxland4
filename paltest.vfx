@@ -1,0 +1,23 @@
+\ Palette cycling tests
+z" data/bmp/bg-palette.png" loadbmp constant bg-palette.bmp
+z" data/bmp/vga-palette.png" loadbmp constant vga-palette.bmp
+c: *wow
+    4. 4. sx v!
+    draw>
+    bg-palette.bmp  ctr @ p>s 31 and 32 -  0 32 setpal
+    bg-palette.bmp  ctr @ p>s 31 and  0 32 setpal
+    0.2 delta* ctr +!
+    0 0 at palette.bmp blit 
+;
+game { 0 0 at *wow named wow }
+bg-palette.bmp 0 0 256 setpal
+
+create buf 4 cells allot
+: cycle-water
+    palette.bmp lockbmp drop | a |
+    4 for   i 17 + a [] @  i 1 - 0 4 wrap buf [] !   loop
+    buf 17 a [] 4 cells move
+    palette.bmp -lockbmp
+;
+\ c: *cycler 0 perform> begin cycle-water 1. 10 / wait again ;
+\ game { *cycler } 

@@ -12,14 +12,14 @@ variable tileofs
             i j at b tw th subbmp ,
         tw +loop
     th +loop ;
-: tile-subbitmaps, 32 for i subbankbmp dup tw tw tiles, -bmp loop ;
-create tarr tile-subbitmaps,
+: all-tiles, 32 for i subbankbmp dup tw tw tiles, -bmp loop ;
+create tarr all-tiles,
 : ?bdload 16 < if loadbmp else loadbmp8 then ;
 : subbank! subbank at writebmp ;
 : loadbank dup >r ?bdload dup r> subbank! -bmp ;
 
 \ - Drawing
-motif var ba var stride var scrollx var scrolly var tmo
+motif var ba var stride var scrollx var scrolly var tio
 /obj value /tilemap
 : tile@ { stride @ * + ba @ [] @ } ;
 : tile! { stride @ * + ba @ [] ! } ;
@@ -33,11 +33,12 @@ motif var ba var stride var scrollx var scrolly var tmo
 : width w @ p>s t/ scrollx @ p>s tw mod if 1 + then ;
 : height h @ p>s t/ scrolly @ p>s tw mod if 1 + then ;
 : rows 1 hold 0 ?do dup width row stride+ loop drop 0 hold ;
-: tilemap tmo @ tileofs ! scrollx v@ 2p>s scrolled ba @ + height rows ;
+: tilemap tio @ tileofs ! scrollx v@ 2p>s scrolled ba @ + height rows ;
 : 1tilemap 2s>p w v! stride ! ba ! draw> tilemap ;
 c: *tilemap here gamew tw / gamew gameh 1tilemap ;
 
 \ - Collisions
+PUBLIC
 \ what sides the object collided
 0 value lwall?
 0 value rwall?
@@ -47,11 +48,8 @@ c: *tilemap here gamew tw / gamew gameh 1tilemap ;
 2 constant BIT_FLR
 4 constant BIT_WLT
 8 constant BIT_WRT
-
-PUBLIC
 defer on-tilemap-collision ( tileval - )
 ' drop is on-tilemap-collision
-
 defer tile@props  ( tileval - bitmask )
 : default-tile@props  0 >= ;
 ' default-tile@props is tile@props
@@ -66,22 +64,19 @@ tw s>f fvalue gap
 : cel? BIT_CEL and ; \ ' ceiling '
 : flr? BIT_FLR and ; \ ' floor '
 : wlt? BIT_WLT and ; \ ' wall left '
-: wrt? BIT_WRT and ; \ ' wall right '
-    
+: wrt? BIT_WRT and ; \ ' wall right '    
 : fs@  @ p>f ;
 : fs!  f>p swap ! ; 
 : px  x fs@ ;
 : py  y fs@ ;
 : mbw w fs@ ;
 : mbh h fs@ ;
-
 : xy>cr  ( f: x y - c r )  gap f/ f>s gap f/ f>s swap ;
 : pt  ( f: x y - n )  xy>cr  map tile@  dup to t  tile@props ;          
 
 ( increment coordinates )
 : ve+  fswap  gap f+  px mbw f+ 1e f-  fmin  fswap ;
 : he+  gap f+  mbh ny f+ 1e f-  fmin ;
-
 : +vy  +to ny  ny py f- delta f/ vy fs! ;
 : +vx  +to nx  nx px f- delta f/ vx fs! ;
 
@@ -104,7 +99,6 @@ tw s>f fvalue gap
 ( check left/right )
 : cl  mbh gap f/ f>s 2 + 0 do  f2dup pt wrt? if pr unloop exit then he+  loop f2drop ;
 : crt mbh gap f/ f>s 2 + 0 do  f2dup pt wlt? if pl unloop exit then he+  loop f2drop ;
-
 : ud  vy fs@ f0<> if  vy fs@ f0< if  px ny cu  else  px ny mbh f+ cd  then then ;
 : lr  vx fs@ f0<> if  vx fs@ f0< if  nx ny cl  else  nx mbw f+ ny crt  then then ;
 

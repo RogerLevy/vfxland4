@@ -76,10 +76,10 @@ variable cspd 20. cspd !
 : ghost mouse s>local sx v@ 2p/ tcenter ?2tsnap 2p>s at $ffffff80 color anm -> tio @ tileofs ! ctw v@ cti @ tiles ;
 
 \ - Editor components 2/2
-: crosshairs 64 0 +at 0 128 black line -64 64 +at 128 0 black line 64 0 +at ;
-c: *preview 3. 3. sx 2! draw> crosshairs ;
-c: *status draw> big z[ .anm ]z white stext 0 32 +at small (status) ;
-c: *pspr ser> tl -> nam @ 0; tl @ .name spd p? ." animate " ;
+: crosshairs 64 0 +at 0 128 black line   -64 64 +at 128 0 black line   64 0 +at ;
+c: *preview 3. 3. sx 2!   draw> crosshairs ;
+c: *status draw> big z[ .anm ]z white stext   0 32 +at small (status) ;
+c: *pspr ser> tl @ -> nam @ 0; tl @ .name spd p? ." animate " ;
 c: *tbank 256. 256. w v! tbank-act tbank-draw ;
 PUBLIC
 c: *aed aed-ser ;
