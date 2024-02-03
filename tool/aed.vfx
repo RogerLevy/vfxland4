@@ -11,6 +11,7 @@ PRIVATE
 reference editor
 reference anmc
 reference pspr
+reference tsel
 0 value kf#
 variable cti
 create ctw 1 , here 1 , constant cth
@@ -33,11 +34,6 @@ variable cspd 20. cspd !
 : size ctw v! ;
 : add-frame anm -> tio @   *keyframe ckf insert-after   1 +kf   anm -> tio ! ;
 : nudge this anm descendant? if this -> x v+! else 2drop then ; \ this { _bolted a? if 2drop else x v+! then } ;
-: refresh-tbank
-    z" data/bmp/tbank_initial.png" loadbmp 
-    0 0 at
-    dup tbank writebmp -bmp
-;
 : speed dup cspd ! pspr -> spd ! ;
 : slowest 5. speed ;
 : slow 10. speed ;
@@ -61,26 +57,24 @@ variable cspd 20. cspd !
     z[ ." Subbank: " subbank@ . ]z white stext nr
     z[ ." Size: " ctw v@ swap . . ]z stext nr
 ;
-: tbank-act act> over? 0;
+: tsel-act act> over? 0;
     1 mpressed? if mouse s>local 16. 16. 2p/ 16 * + cti ! then ;
 : .anm anm ?dup if .name then ;
-: tbank-draw draw>
-    sdims 2dup $00000080 color rectf
-    -1 -1 +at 2 2 2+ white rect 1 1 +at
+: tsel-draw draw>
     subbank@ subbank at w v@ 2p>s subbmp dup  0 0 at blit  -bmp ;
 
 : aed-ser ser> ." post: " anm { nam @ if me .name ." edit " then } kf# . ." kf! " ;
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2pround ;
 
-: ghost mouse s>local sx v@ 2p/ tcenter ?2tsnap 2p>s at $ffffff80 color anm -> tio @ tileofs ! ctw v@ cti @ tiles ;
+: ghost mouse s>local tcenter ?2tsnap 2p>s at $ffffff80 color anm -> tio @ tileofs ! ctw v@ cti @ tiles ;
 
 \ - Editor components 2/2
 : crosshairs 64 0 +at 0 128 black line   -64 64 +at 128 0 black line   64 0 +at ;
 c: *preview 3. 3. sx 2!   draw> crosshairs ;
 c: *status draw> big z[ .anm ]z white stext   0 32 +at small (status) ;
 c: *pspr ser> tl @ -> nam @ 0; tl @ .name spd p? ." animate " ;
-c: *tbank 256. 256. w v! tbank-act tbank-draw ;
+c: *tsel 256. 256. w v! tsel-act tsel-draw ;
 PUBLIC
 c: *aed aed-ser ;
 PRIVATE
@@ -90,7 +84,7 @@ PRIVATE
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
-: anm-load chooser ?dup if aload edit then ;
+: anm-load chooser ?dup if oload edit then ;
 create untitled$ ," UNTITLED.TL"
 : new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append   anm pad name drop ;
@@ -137,26 +131,34 @@ workspace {
                     }
                 }
                 0 winh 2 / 40 + at *toolbox { ` Tiles`
-                    0 32 at *tbank { [bolted] }
+                    0 32 at *generic {
+                        0 0 at *panel { 40. 256. w v! [bolted]
+                            button: 1x 1. 1. tsel -> parent @ -> sx v! ; <nr 
+                            button: 2x 2. 2. tsel -> parent @ -> sx v! ; <nr
+                        }
+                        70 0 at *spanel { 256. 256. w v! [bolted]
+                            0 0 at *tsel named tsel { [bolted] }
+                        }
+                    }
                 }
-                256 16 + winh 2 / 40 + at *toolbox { ` Tools`
+                256 50 + winh 2 / 40 + at *toolbox { ` Tools`
                     0 32 at *panel { 200. 200. w v! [bolted]
                         8 8 at
                         *button { ` snapping toggle` }
-                        *button { ` refresh-tbank` break }
+                        \ *button { ` refresh-tbank` [nr] }
                         *button { ` 0 bank` }
                         *button { ` 1 bank` }
                         *button { ` 2 bank` }
-                        *button { ` 3 bank` break }
+                        *button { ` 3 bank` [nr] }
                         *button { ` 4 bank` }
                         *button { ` 5 bank` }
                         *button { ` 6 bank` }
-                        *button { ` 7 bank` break }
+                        *button { ` 7 bank` [nr] }
                         *button { ` slowest` }
                         *button { ` slow` }
                         *button { ` normal` }
                         *button { ` fast` }
-                        *button { ` fastest` break }
+                        *button { ` fastest` [nr] }
                         *button { ` narrower` }
                         *button { ` wider` }
                         *button { ` shorter` }

@@ -53,12 +53,12 @@ z" sys/data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
     over? 0;
     click? if
         the-mbutton 1 = if
-            first @ ?dup 0; toggle
+            first @ ?dup 0; toggle 
         then
     else
         ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
             the-mbutton 1 = if
-                me pickdrag
+                me pickdrag   me downstage
             then
         then
     then
@@ -88,5 +88,5 @@ c: *group 16. 16. w v! group-draw ;
 \ : [toolbox] *toolbox 0 32 at ;
 \ : [panel] *panel 8 8 at ;
 
-: break _nr aon ;
+: [nr] _nr aon ;
  
