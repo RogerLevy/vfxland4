@@ -6,7 +6,10 @@ reference actors
 /obj to /tilemap
 : tilemap:wh { #cols v@ 2s>p tw s>p dup 2p* } ;
 
-: 1csv-map 2dup csv-wh 2dup #cols v!   tw * swap tw * swap 2s>p w v!   #cols @ stride !   here tma ! csv-cells, ;
+create (bits) 0 , 2 , 1 , 3 ,
+: twiddle dup 30 rshift cells (bits) + @ 28 lshift swap $0fffffff and or ;
+: fix-bits tma @ #cols v@ * cells bounds do i @ twiddle i ! cell +loop ; \ Tiled's flip bits are reversed
+: 1csv-map 2dup csv-wh 2dup #cols v!   tw * swap tw * swap 2s>p w v!   #cols @ stride !   here tma ! csv-cells,  fix-bits ;
 : csv-map: 0 0 at *tilemap   named   { [locked]   1csv-map   draw-paletted-tilemap me } ;
 
 : pgame gamew gameh 2s>p ;
