@@ -38,7 +38,7 @@ motif var ser var attr var post var hx var hy +basis
     repeat
     m al_use_transform
 ;
-: ascale/ parent @ ?dup if { recurse sx v@ 2p/ } then ;
+: ascale/ sx v@ 2p/ parent @ ?dup if { recurse } then ;
 : ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
 : a+t +m identity rtransform ;
 : abox a+t hx v@ v*m w v@ ascale* 2over 2+ -t ;
@@ -109,8 +109,8 @@ variable indent
 
 \ - Figure Editor 1/3
 : stext @color >r   1 1 +at dup black text   -1 -1 +at r> color text ;
-: tiny a+t hx v@ v*m 2p>s at -t identity ;
-: (info) +m tiny 0 -33 +at sherry32.fnt font ! z[ me o. ]z stext -m ;
+\ : tiny a+t hx v@ v*m 2p>s at -t identity ;
+: (info) +m identity 0 0 at sherry32.fnt font ! z[ me o. ]z stext -m ;
 : outline hx v@ 2p>s at w v@ 2p>s rect ;
 : a-outline a+t outline -t ;
 : (outlines) each> +t outline me recurse -t ;
@@ -286,39 +286,40 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 
 \ Edit menu actions
 -sin
+: button: 8 8 at *button { >in @ bl parse data! [bolted] } >in ! : ;
+: <nr last @ { [nr] } ;
+
 : ?root this root = if r> drop cr ." No selection." then ;
 : ?locked this { _locked a? } if r> drop cr ." Cannot do that on a locked object." then ;
 : ?bolted this { _bolted a? } if r> drop cr ." Cannot do that on a bolted object." then ;
-: button: *button { >in @ bl parse data! } >in ! : ;
 : localize { mouse 2s>p >local } this -> x v! ;
-: [newrow] last @ { break } ;
 : ?sealed target { _sealed a? } if r> drop cr ." Target is sealed." then ;
 
 editmenu -> first @ {
     button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v!   editmenu off ;
     button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push   editmenu off ;
-    [newrow]
+    <nr
     button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize   editmode off ;
     : ?bring { me workspace descendant? not if [bring] else   me this over insert-after   this { -> parent @ localize } then } ;
     button: [CLONE] ?root   this >r   this clone select   r> ?bring   editmenu off ;
-    [newrow]
+    <nr
     button: [CLEAR] ?root ?locked ?sealed   this clear   editmenu off ;
     button: [TRASH] ?root ?locked ?sealed   this trash push   unpick   editmenu off ;
-    [newrow]
+    <nr
     button: [UPSTAGE] ?root ?bolted   this upstage   editmenu off ;
     button: [DOWNSTAGE] ?root ?bolted   this downstage   editmenu off ;
-    [newrow]
+    <nr
     button: [LOCK] ?root this   { _locked aon } ;
     button: [UNLOCK] ?root this   { _locked aoff } ;
-    [newrow]
+    <nr
     button: [BOLT] ?root ?locked   this { _bolted aon } ;
     button: [UNBOLT] ?root ?locked   this { _bolted aoff } ;
-    [newrow]
+    <nr
     button: [SEAL] ?root ?locked   this { _sealed aon } ;
     button: [UNSEAL] ?root ?locked   this { _sealed aoff } ;
-    [newrow]
+    <nr
     button: [DESELECT] ?root   unpick   editmenu off ;
-    *button { ` snapping toggle` break }
+    *button { ` snapping toggle` [nr] }
 }
 +sin
 
