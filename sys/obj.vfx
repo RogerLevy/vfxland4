@@ -67,7 +67,7 @@ defer children
             >body @ >r   me r@ transplant
             me remove
             r@ { my-context } ?+order
-            r> ( original )
+            r> ( original ) } dup me push exit 
         else
             ."  ... ASSIGNING" 
             me swap >body !
