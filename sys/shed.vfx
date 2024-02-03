@@ -85,10 +85,9 @@ variable indent
 \ Save/Load
 : osave >r dup -> nam @ count r> name>path 2dup 2>r   f[ o.r ]f cr ." Saved to "   2r> type ;
 : save ' execute figpath osave ;
-: oload 2dup type workspace { included last @ } ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
-: aload oload { postload   me } ;
-: load bl parse figpath name>path aload to this ;
+: oload included   former { postload   me } ;
+: load bl parse figpath name>path oload to this ;
 : (ser>) r> ser ! ; : ser> postpone (ser>) discard-sinline ; immediate
 : post: here aligned post ! 0 parse $, ;
 

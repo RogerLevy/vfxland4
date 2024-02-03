@@ -6,12 +6,12 @@ bpage os
 variable osp   os osp !
 0 value me
 : in to me ;
-: { me osp @ ! 4 osp c+!   to me ;
-: } -4 osp c+! osp @ @ to me ;
-: -> ' >body @ ?literal s" +" evaluate ; immediate 
-: require me { require } ;
-: include me { include } ;
-: included me { included } ;
+: { me osp @ !   4 osp c+!   to me ;
+: } -4 osp c+!   osp @ @ to me ;
+: require me >r require r> in ;
+: include me >r include r> in ;
+: included me >r included r> in ;
+: former 4 osp c+!   osp @ @   -4 osp c+! ;
 
 \ - Structure
 0 value /obj
@@ -21,6 +21,7 @@ variable osp   os osp !
 : ?already >in @ bl word find if dup >body cell+ @ $C0FFEE = if r> drop drop drop exit then then drop >in ! ; DoNotSin
 : var ?already cell ofield ; DoNotSin 
 : motif /basis to /obj ;
+: -> ' >body @ ?literal s" +" evaluate ; immediate 
 
 \ - Double-linked tree
 var en var next var prev var first var last var parent
