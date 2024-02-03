@@ -15,8 +15,8 @@ vfx-hwnd 0 -10 0  1920 2 / 20 +  520 $40 SetWindowPos drop
 
 \ - Game
 [undefined] release [if] include tools.vfx [then]
-include notzelda.vfx
-[undefined] release [if] include test.vfx [then]
+include mountaindog.vfx
+\ [undefined] release [if] include test.vfx [then]
 
 \ - Enter main loop
 go

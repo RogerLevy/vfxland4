@@ -5,25 +5,28 @@ variable tileofs
 
 : ?tbank 16 / if tbank8 else tbank then ;
 : subbank ( - bmp x y ) dup ?tbank swap 15 and 8 /mod 256 * swap 256 * swap ;
-: subbankbmp subbank at 256 256 subbmp ;
+: *subbank subbank at 256 256 subbmp ;
 : tiles, | th tw b |
     b bmph for
         b bmpw for
             i j at b tw th subbmp ,
         tw +loop
     th +loop ;
-: all-tiles, 32 for i subbankbmp dup tw tw tiles, -bmp loop ;
+: all-tiles, 32 for i *subbank dup tw tw tiles, -bmp loop ;
 create tarr all-tiles,
 : ?bdload 16 < if loadbmp else loadbmp8 then ;
 : subbank! subbank at writebmp ;
 : loadbank dup >r ?bdload dup r> subbank! -bmp ;
+: tilebank dup 256 * constant loadbank ;
+: tilebank8 16 + tilebank ;
 
 \ - Drawing
-motif var ba var stride var scrollx var scrolly var tio
+motif var tma var stride var scrollx var scrolly var tio
 /obj value /tilemap
-: tile@ { stride @ * + ba @ [] @ } ;
-: tile! { stride @ * + ba @ [] ! } ;
+: tile@ { stride @ * + tma @ [] @ } ;
+: tile! { stride @ * + tma @ [] ! } ;
 : tile dup 28 rshift swap tileofs @ + $1fff and tarr [] @ ;
+PRIVATE
 : tile+ dup -1 <> if tile fblit else drop then tw 0 +at ;
 : row pen v@ 2>r 0 ?do @+ tile+ loop drop 2r> tw + at ;
 : scrolled ( x y - ofs )
@@ -33,8 +36,9 @@ motif var ba var stride var scrollx var scrolly var tio
 : width w @ p>s t/ scrollx @ p>s tw mod if 1 + then ;
 : height h @ p>s t/ scrolly @ p>s tw mod if 1 + then ;
 : rows 1 hold 0 ?do dup width row stride+ loop drop 0 hold ;
-: tilemap tio @ tileofs ! scrollx v@ 2p>s scrolled ba @ + height rows ;
-: 1tilemap 2s>p w v! stride ! ba ! draw> tilemap ;
+PUBLIC
+: tilemap tio @ tileofs ! scrollx v@ 2p>s scrolled tma @ + height rows ;
+: 1tilemap 2s>p w v! stride ! tma ! draw> tilemap ;
 c: *tilemap here gamew tw / gamew gameh 1tilemap ;
 
 \ - Collisions

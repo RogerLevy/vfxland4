@@ -1,0 +1,28 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "coolstuff1.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1055.5,
+                "y": 597.5
+            }
+        },
+        "coolstuff1.tmx#ROGER-sheet": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/roger/Dev/vfxland4/mountaindog-dev/data/csv",
+    "last.imagePath": "C:/Users/roger/Dev/vfxland4/mountaindog-dev/assets/tiled/coolstuff/images",
+    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "openFiles": [
+    ],
+    "project": "coolstuff.tiled-project",
+    "recentFiles": [
+    ]
+}

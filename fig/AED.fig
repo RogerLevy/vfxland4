@@ -1,52 +1,55 @@
 
-0 0 at *AED named AED { post: UNTITLED.TL edit 0 kf!  
-    0 0 at *TOOLBOX { $6 attr ! 56. 28. w v! ` AED` $0 bgc !  
+0 0 at *AED named AED { post: UNTITLED.TL edit 0 kf!
+    0 0 at *TOOLBOX { $6 attr ! 0. 0. hx v! 56. 28. w v! ` AED`  
         0 32 at *GENERIC { $7 attr !  
-            0 0 at *TOOLBOX { $6 attr ! 80. 28. w v! ` Editor` $0 bgc !  
-                0 32 at *SPANEL { $7 attr ! 384. 384. w v!  
-                    0 0 at *EDITOR named EDITOR { $7 attr ! 128. 128. w v! 3. 3. sx v!  
-                        64 64 at *GENERIC named ANMC { $7 attr !  
-                            0 0 at *TIMELINE named UNTITLED.TL { $2 attr ! 0 tio !  
-                                0 0 at *KEYFRAME {  } 
-                            } 
-                        } 
+            0 0 at *TOOLBOX { $6 attr ! 0. 0. hx v! 80. 28. w v! ` Editor`  
+                0 32 at *SPANEL { $7 attr ! 0. 0. hx v! 384. 384. w v!  
+                    0 0 at *EDITOR named EDITOR { $7 attr ! 0. 0. hx v! 128. 128. w v! 3. 3. sx v!  
+                        64 64 at *GENERIC named ANMC { $7 attr !  } 
                     } 
                 } 
             } 
-            576 0 at *TOOLBOX { $6 attr ! 88. 28. w v! ` Preview` $0 bgc !  
-                0 32 at *SPANEL { $7 attr ! 384. 384. w v!  
+            0 416 at *TOOLBOX { $6 attr ! 0. 0. hx v! 88. 28. w v! ` Preview`  
+                0 32 at *SPANEL { $7 attr ! 0. 0. hx v! 384. 384. w v!  
                     0 0 at *PREVIEW named PREVIEW { $7 attr ! 3. 3. sx v!  
-                        64 64 at *PSPR named PSPR { $7 attr !  } 
+                        64 64 at *PSPR named PSPR { $7 attr ! UNTITLED.TL 20. animate  } 
                     } 
                 } 
             } 
-            0 432 at *TOOLBOX { $6 attr ! 72. 28. w v! ` Tiles` $0 bgc !  
-                0 32 at *TBANK { $7 attr ! 256. 256. w v!  } 
-            } 
-            272 432 at *TOOLBOX { $6 attr ! 72. 28. w v! ` Tools` $0 bgc !  
-                0 32 at *PANEL { $7 attr ! 200. 200. w v!  
-                    8 8 at *BUTTON { $7 attr ! 152. 28. w v! ` snapping toggle` $0 bgc !  } 
-                    8 8 at *BUTTON { $17 attr ! 136. 28. w v! ` refresh-tbank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 0 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 1 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 2 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $17 attr ! 80. 28. w v! ` 3 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 4 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 5 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 6 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $17 attr ! 80. 28. w v! ` 7 bank` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 88. 28. w v! ` slowest` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 64. 28. w v! ` slow` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` normal` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 64. 28. w v! ` fast` $0 bgc !  } 
-                    8 8 at *BUTTON { $17 attr ! 88. 28. w v! ` fastest` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 96. 28. w v! ` narrower` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 72. 28. w v! ` wider` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 88. 28. w v! ` shorter` $0 bgc !  } 
-                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` taller` $0 bgc !  } 
+            392 152 at *TOOLBOX { $6 attr ! 0. 0. hx v! 72. 28. w v! ` Tiles`  
+                0 32 at *GENERIC { $6 attr !  
+                    0 0 at *PANEL { $7 attr ! 0. 0. hx v! 64. 80. w v!  
+                        8 8 at *BUTTON { $17 attr ! 0. 0. hx v! 48. 28. w v! ` 1x`  } 
+                        8 44 at *BUTTON { $17 attr ! 0. 0. hx v! 48. 28. w v! ` 2x`  } 
+                    } 
+                    70 0 at *SPANEL { $7 attr ! 0. 0. hx v! 256. 256. w v! 2. 2. sx v!  
+                        0 0 at *TSEL named TSEL { $7 attr ! 0. 0. hx v! 256. 256. w v!  } 
+                    } 
                 } 
             } 
-            390 0 at *TOOLBOX { $6 attr ! 80. 28. w v! ` Status` $0 bgc !  
+            392 -16 at *TOOLBOX { $6 attr ! 0. 0. hx v! 72. 28. w v! ` Tools`  
+                0 32 at *PANEL { $7 attr ! 0. 0. hx v! 520. 152. w v!  
+                    8 8 at *BUTTON { $7 attr ! 0. 0. hx v! 152. 28. w v! ` snapping toggle`  } 
+                    168 8 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 0 bank`  } 
+                    256 8 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 1 bank`  } 
+                    344 8 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 2 bank`  } 
+                    432 8 at *BUTTON { $17 attr ! 0. 0. hx v! 80. 28. w v! ` 3 bank`  } 
+                    8 44 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 4 bank`  } 
+                    96 44 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 5 bank`  } 
+                    184 44 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` 6 bank`  } 
+                    272 44 at *BUTTON { $17 attr ! 0. 0. hx v! 80. 28. w v! ` 7 bank`  } 
+                    8 80 at *BUTTON { $7 attr ! 0. 0. hx v! 88. 28. w v! ` slowest`  } 
+                    104 80 at *BUTTON { $7 attr ! 0. 0. hx v! 64. 28. w v! ` slow`  } 
+                    176 80 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` normal`  } 
+                    264 80 at *BUTTON { $7 attr ! 0. 0. hx v! 64. 28. w v! ` fast`  } 
+                    336 80 at *BUTTON { $17 attr ! 0. 0. hx v! 88. 28. w v! ` fastest`  } 
+                    8 116 at *BUTTON { $7 attr ! 0. 0. hx v! 96. 28. w v! ` narrower`  } 
+                    112 116 at *BUTTON { $7 attr ! 0. 0. hx v! 72. 28. w v! ` wider`  } 
+                    192 116 at *BUTTON { $7 attr ! 0. 0. hx v! 88. 28. w v! ` shorter`  } 
+                    288 116 at *BUTTON { $7 attr ! 0. 0. hx v! 80. 28. w v! ` taller`  } 
+                } 
+            } 
+            816 -8 at *TOOLBOX { $6 attr ! 0. 0. hx v! 80. 28. w v! ` Status`  
                 0 32 at *STATUS { $6 attr !  } 
             } 
         } 

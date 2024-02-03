@@ -1,0 +1,18 @@
+require engine.vfx
+require stage.vfx
+
+z" data/bmp/roger-sheet.png" 0 tilebank tilebank_0
+
+misc {
+    container: tilemaps {
+        s" data/csv/world.csv" csv-map: world.tm { tilebank_0 tio ! }
+    }
+}
+: get-params params me params drop swap move ;
+: mimic x v@ 2>r nam @ >r   get-params   r> nam ! 2r> x v! ;
+
+: scene1 bg0 { world.tm mimic } ;
+\ : scene2 bg0 { 1-1_g1.tm mimic } ;
+
+scene1
+
