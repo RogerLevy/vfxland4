@@ -87,7 +87,7 @@ variable indent
 : save ' execute figpath osave ;
 : postload post @ ?dup if count evaluate then me each> recurse ;
 : oload included   former { postload   me } ;
-: load bl parse figpath name>path oload to this ;
+: load bl parse figpath name>path ws { oload } to this ;
 : (ser>) r> ser ! ; : ser> postpone (ser>) discard-sinline ; immediate
 : post: here aligned post ! 0 parse $, ;
 
@@ -103,7 +103,7 @@ variable indent
 : (hover) me each> visible? 0; w v@ or 0<> first @ or 0; 
     the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
 : hover +t (hover) -t ;
-: drag-context { 1. 1. ascale/ drag-s v! } ;
+: drag-context { 1. 1. parent @ { ascale/ } drag-s v! } ;
 : drag dup to dragee   drag-context ; 
 : pickdrag ?dup 0; dup select drag ;
 
@@ -176,9 +176,9 @@ require sys/widgets.vfx
             hoveree pickdrag
         then
     then
-    click? the-mbutton 2 = and if
-        toggle-editmenu 
-    then
+\    click? the-mbutton 2 = and if
+\        toggle-editmenu 
+\    then
 ;
 c: *shed draw> editmode @ 0; -matte 2 2 at ;
 : edit-info outlines connectors ;

@@ -84,7 +84,7 @@ PRIVATE
 : (anm-save) anm tlpath osave ;
 : ?ext ?dup if -ext pad place s" .tl" pad append pad count then ;
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
-: anm-load chooser ?dup if oload edit then ;
+: anm-load chooser ?dup if ws { oload } edit then ;
 create untitled$ ," UNTITLED.TL"
 : new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append   anm pad name drop ;
@@ -130,7 +130,7 @@ workspace {
                         }
                     }
                 }
-                0 winh 2 / 40 + at *toolbox { ` Tiles`
+                16 winh 2 / 40 + at *toolbox { ` Tiles`
                     0 32 at *generic {
                         0 0 at *panel { 40. 256. w v! [bolted]
                             button: 1x 1. 1. tsel -> parent @ -> sx v! ; <nr 
@@ -141,7 +141,7 @@ workspace {
                         }
                     }
                 }
-                256 50 + winh 2 / 40 + at *toolbox { ` Tools`
+                256 150 + winh 2 / 40 + at *toolbox { ` Tools`
                     0 32 at *panel { 200. 200. w v! [bolted]
                         8 8 at
                         *button { ` snapping toggle` }
@@ -219,11 +219,13 @@ aed lock&seal
                     hoveree if hoveree anm descendant? if
                         drag-anm
                     then then
-                else
-                    toggle-editmenu
                 then
             then
         then
+        click? the-mbutton 2 = and if
+            over? if toggle-editmenu then
+        then
+
 ;
 editor { editor-respond } 
 
