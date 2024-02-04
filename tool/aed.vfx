@@ -86,7 +86,7 @@ PRIVATE
 : chooser z" fig/tl" z" Load Timeline" z" *.tl" 0 file-dialog ?ext ;
 : anm-load chooser ?dup if ws { oload } edit then ;
 create untitled$ ," UNTITLED.TL"
-: new 0 0 at *timeline untitled$ name { *keyframe { } me } edit ;
+: new 0 0 at *timeline untitled$ name { nam @ count tlpath name>path 1extension   *keyframe { } me } edit ;
 : rename pad place s" .tl" pad append   anm pad name drop ;
 : ?clone anm -> nam @ if anm clone edit then ;
 : anm-saveas chooser ?dup if -path -ext ?clone rename (anm-save) then ;

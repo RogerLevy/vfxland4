@@ -9,10 +9,10 @@ reference static
 reference editmenu
 reference shed
 create drag-s 0 , 0 ,
-1 bit _bolted bit _locked bit _sealed value _attributes
+1 bit _bolted bit _locked bit _sealed bit _extension value _attributes
 
 \ - Scripting
-motif var ser var attr var post var hx var hy +basis
+motif var ser var attr var post var hx var hy var data +basis
 : (physics>) r> phy ! ;
 : physics> postpone (physics>) discard-sinline ; immediate
 :noname [ is 1object ] con !   pen v@ 2s>p x v!   physics> vx v@ 2delta* x v+! ;
@@ -59,6 +59,24 @@ motif var ser var attr var post var hx var hy +basis
 : upstage dup -> parent @ unshift ;
 : downstage dup -> parent @ push ;
 : box! 2s>p w v! 2s>p hx v! ;
+: ?freedata data @ ?dup if free drop then ;
+: data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! ;
+: data@ data @ dup 0; icount ;
+: zdata@ data@ >z ;
+: sdims w v@ 2p>s ;
+
+\ Load
+: postload post @ ?dup if count evaluate then me each> recurse ;
+: oload osp @ >r me >r   ['] included catch .throw   r> in r> osp !   former { postload   me } ;
+: load bl parse figpath name>path ws { oload } to this ;
+
+\ Extensions
+: 1extension data! _extension aon ;
+c: *extension ;
+: load-extension
+    cr ." Loading extension: " 2dup type space
+    2dup oload   dup me insert   me remove   in   1extension ;
+: .extension .\" *EXTENSION { s\" " data@ type .\" \" load-extension } " ;
 
 \ - Serialize
 variable indent
@@ -72,7 +90,7 @@ variable indent
 : ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
 : ?.wh w v@ or if hx vp? ." hx v! " w vp? ." w v! " then ;
 : ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
-: .con con @ ?dup if >name count type space else ." *GENERIC " then ;
+: .con con @ >name count type space ;
 : .{ ." { " ;
 : .} ." } " } ;
 : .}r first @ if cri then .} ;
@@ -81,13 +99,19 @@ variable indent
 : o. { (o.) .} ;
 : o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
 : o.r cri { (o.)   ser @ ?execute space   ['] .}r >r   me each> +i me recurse -i ;
+: o.s
+    cri { 
+    _extension a? if .extension } exit then
+    (o.)   ser @ ?execute space   ['] .}r >r   me each> +i me recurse -i ;
 
-\ Save/Load
-: osave >r dup -> nam @ count r> name>path 2dup 2>r   f[ o.r ]f cr ." Saved to "   2r> type ;
+\ Save
+: (osave)
+    dup { _extension a? >r  _extension aoff 
+    o.s
+    r> if _extension aon then }
+;
+: osave >r dup -> nam @ count r> name>path 2dup 2>r   f[ (osave) ]f cr ." Saved to "   2r> type ;
 : save ' execute figpath osave ;
-: postload post @ ?dup if count evaluate then me each> recurse ;
-: oload included   former { postload   me } ;
-: load bl parse figpath name>path ws { oload } to this ;
 : (ser>) r> ser ! ; : ser> postpone (ser>) discard-sinline ; immediate
 : post: here aligned post ! 0 parse $, ;
 
@@ -286,7 +310,7 @@ create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws1
 
 \ Edit menu actions
 -sin
-: button: 8 8 at *button { >in @ bl parse data! [bolted] } >in ! : ;
+: button: 8 8 at *button { >in @ bl parse data! 1w [bolted] } >in ! : ;
 : <nr last @ { [nr] } ;
 
 : ?root this root = if r> drop cr ." No selection." then ;
