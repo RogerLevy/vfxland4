@@ -14,7 +14,7 @@ host value task
     task -> rp @ rp!
     task -> sp @ sp!
     drop \ ensure TOS is in TOS register
-    as 
+    in 
 ;
 : wait begin (wait) delta - dup 0 <= until drop ;
 : (spin) begin wait again ;
@@ -34,7 +34,7 @@ host value task
         task -> rp @ rp!
         task -> sp @ sp!
         drop \ ensure TOS is in TOS register
-        as 
+        in 
 ;
 : (perform>) r> perform ;
 : perform> postpone (perform>) discard-sinline ; immediate

@@ -29,8 +29,8 @@ create e /ALLEGRO_EVENT allot&erase
 
 \ - Main loop
 : present display al_flip_display ;
-: think me >r root as physics act reckon r> as ;
-: paint identity cls me >r root as ?draw r> as ;
+: think me >r root in physics act reckon r> in ;
+: paint identity cls me >r root in ?draw r> in ;
 : frame !delta poll pump think paint ;
 : ?quit <esc> pressed? if >vfx quit then ;
 : 0interp 0 #tib ! reset-stacks postpone \\ ;

@@ -2832,7 +2832,7 @@ extern "C" int al_get_bitmap_width( void * bmp );
 \ extern "C" al_get_blender( );
 \ extern "C" al_get_channel_count( );
 \ extern "C" al_get_clipboard_text( );
-\ extern "C" al_get_clipping_rectangle( );
+extern "C" void al_get_clipping_rectangle( void * int-x, void * int-y, void * int-w, void * int-h );
 \ extern "C" al_get_config_value( );
 \ extern "C" al_get_cpu_count( );
 \ extern "C" al_get_current_directory( );

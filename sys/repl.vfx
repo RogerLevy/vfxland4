@@ -15,7 +15,7 @@ z" sys/data/Mx437_SperryPC_8x16.ttf" #32 3 al_load_ttf_font
 : ?type ?dup 0= if drop else type then ;
 : .tib ." >" tib #tib @ ?type ." _" ;
 : try catch dup .throw if 2drop then ;
-: obey >vfx >display   cr tib #tib @ ?type ."  >>> "  tib #tib @ ['] evaluate try   0 #tib ! ;
+: obey >vfx >display   cr tib #tib @ ?type   ."  >>> "   tib #tib @ ['] evaluate try   0 #tib ! ;
 : ?charkey  
     alt? if drop exit then
     case
@@ -32,18 +32,18 @@ root value uime
 variable uiosp
 bpage uios uios uiosp !
 : repl-events
-    me >r uime as
+    me >r uime in
     osp @ >r uiosp @ osp !
     ALLEGRO_EVENT_KEY_CHAR happened? if
         the-char ?charkey
     then
     osp @ uiosp ! r> osp !
-    me to uime r> as
+    me to uime r> in
 ;
 
 : bar blue winw 64 rectf ;
 : ]z. ]z text ; 
-: bar-text sherry32.fnt font ! white z[ .s ]z. nr z[ .tib ]z. ;
+: bar-text sherry32.fnt font !   white z[ .s ]z.   nr   z[ .tib ]z. ;
 
 c: *repl
     act>

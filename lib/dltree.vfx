@@ -62,7 +62,7 @@
 
 : dleach  ( xt node -- )
     -> first @ {  begin  me while
-        next @ >r  dup >r execute r>  r> as
+        next @ >r  dup >r execute r>  r> in
     repeat
     drop  } ;
 
@@ -70,6 +70,6 @@
 
 : dlclear  ( node -- )
     { first @ {  begin  me while
-        next @  (dlorphan)  as
+        next @  (dlorphan)  in
     repeat
     } 0 dup first ! last ! } ;

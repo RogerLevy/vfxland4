@@ -1,11 +1,11 @@
 \ - Ball
 gamew gameh 2. 2. 2p/ at actors { *bouncer } named ball {
-\    *hidden {
+\    *helper {
 \        :noname act> 5.0 after> parent @ { 0.1 0.1 sx v+! } 2. after> parent @ kill ; execute
 \    }
-    *hidden {
+    *helper {
         :noname 1 perform>
-            parent @ as
+            parent @ in
 \            5 0 do
             begin
                 ( cr ." BIG" )
@@ -24,13 +24,13 @@ z" data/bmp/vga-palette.png" loadbmp constant vga-palette.bmp
 c: *wow
     4. 4. sx v!
     draw>
-    bg-palette.bmp ctr @ p>s 31 and 32 - setpal
-    bg-palette.bmp ctr @ p>s 31 and setpal
+    bg-palette.bmp  ctr @ p>s 31 and 32 -  0 32 setpal
+    bg-palette.bmp  ctr @ p>s 31 and  0 32 setpal
     0.2 delta* ctr +!
     0 0 at palette.bmp blit 
 ;
-\ game { 0 0 at *wow named wow }
-bg-palette.bmp 0 setpal
+game { 0 0 at *wow named wow }
+bg-palette.bmp 0 0 256 setpal
 
 create buf 4 cells allot
 : cycle-water

@@ -1,13 +1,13 @@
 \ Paletted graphics
 s" glsl/default.v.glsl" s" glsl/palette.f.glsl" load-shader constant palette.s
 2048 1 *bmp constant palette.bmp
-: setpal ( bmp n - ) \ SLOW! (still this is the fastest I could make it...)
+: setpal ( bmp dest n len - ) \ SLOW! (still this is the fastest I could make it...)
+    palette.bmp onto opaque   0 swap 1 clip! 
     0 at | b |
-    palette.bmp onto opaque
     b bmph for b 0 i b bmpw 1 blitr b bmpw 0 +at loop
     backbuf onto transparent ;
 
 \ Extend objects
 motif var plt var plo +basis
-: paletted palette.s shader z" pal_tex" palette.bmp 1 sampler! z" pal_ofs" plo @ s>f 256e f/ float! ;
+: paletted palette.s shader   z" pal_tex" palette.bmp 1 sampler!   z" pal_ofs" plo @ s>f 256e f/ float! ;
 : ?paletted plt @ if paletted then ;

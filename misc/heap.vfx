@@ -4,7 +4,7 @@
         next @ >r
             me recurse
             me remove me free drop 
-        r> as
+        r> in
     repeat } me remove me free drop
     } ;
 : reckon
@@ -12,5 +12,5 @@
         next @ >r
             recurse
             en @ 0= if me delete then
-        r> as
+        r> in
     repeat } ;

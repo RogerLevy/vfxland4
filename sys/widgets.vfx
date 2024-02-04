@@ -16,7 +16,7 @@ z" sys/data/MxPlus_IBM_VGA_8x16.ttf" #16 3 al_load_ttf_font
 : +.vfx pad place s" .VFX" pad append pad count ;
 : ?parent-wordlist
     me { begin parent @ dup while
-        as nam @ ?dup if count +.vfx search-context if >body @ } exit then then
+        in nam @ ?dup if count +.vfx search-context if >body @ } exit then then
     repeat } 
 ;
 : button:exec
