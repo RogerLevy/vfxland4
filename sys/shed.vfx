@@ -346,3 +346,20 @@ editmenu -> first @ {
     *button { ` snapping toggle` [nr] }
 }
 +sin
+
+
+variable errors   errors on
+:noname [ is .othrow ]
+    errors @ not if drop exit then
+    case
+        0 of exit endof
+        -1 of exit endof
+        -2 of cr 'AbortText @ count type endof
+        dup Err$ nip if
+            cr dup Err$ type ."  ( " . ." )"
+        else
+            cr ." No text available for THROW code " ."  ( " . ." )"
+        then
+    end-case
+    cr me h. ." : " me o. .s ." in: " r> r> >name count type >r
+;

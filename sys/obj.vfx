@@ -105,7 +105,8 @@ c: *helper vis off 0 0 x v! ;
         r> in
     repeat }
 ;
-: ?execute ?dup 0; catch dup .throw if quit then ;
+defer .othrow ' .throw is .othrow
+: ?execute ?dup 0; catch .othrow ;
 : +t +m x v@ 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
 : ?children first @ if +t children -t then ;

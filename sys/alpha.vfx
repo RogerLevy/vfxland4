@@ -1,5 +1,3 @@
-\ win32catch \ enables catching windows exceptions
-\ Win32ExceptThrow
 require lib/counter.vfx
 require lib/mersenne.vfx
 require lib/strout.vfx
