@@ -1,7 +1,7 @@
 require engine.vfx
 require stage.vfx
 
-z" data/bmp/roger-sheet.png" 0 tilebank tilebank_0
+z" data/bmp/roger-sheet.png" loadbmp 0 tilebank: tilebank_0
 
 misc {
     container: tilemaps {

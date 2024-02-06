@@ -1,6 +1,6 @@
 motif var tio var tl var spd var ac var af +basis \ add animation capability to everything
 : ?+ac delta spd @ p* ac +! ;
-: keyframe { tio @ tileofs !   me nth-child { draw } } ;
+: keyframe { tio @ me nth-child { tio ! draw } } ;
 : animation ac @ p>s tl @ keyframe   halt @ ?; ?+ac ;
 : animate spd ! tl ! draw> animation ;
 : timeline-ser ser> tio ? ." tio ! " ;
