@@ -67,7 +67,7 @@ variable cspd 20. cspd !
 
 : ?2tsnap 2s>p snapping @ if tsnap swap tsnap swap then 2pround ;
 
-: ghost mouse s>local tcenter ?2tsnap 2p>s at $ffffff80 color anm -> tio @ tileofs ! ctw v@ cti @ tiles ;
+: ghost mouse s>local tcenter ?2tsnap 2p>s at $ffffff80 color   ctw v@ cti @ anm -> tio @ + tiles ;
 
 \ - Editor components 2/2
 : crosshairs 64 0 +at 0 128 black line   -64 64 +at 128 0 black line   64 0 +at ;
