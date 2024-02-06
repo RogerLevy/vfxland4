@@ -138,18 +138,13 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : bmpwh 7 cells + v@ ; 
 : bmpw bmpwh drop ;
 : bmph bmpwh nip ;
-: 32bit ALLEGRO_PIXEL_FORMAT_RGBA_8888 al_set_new_bitmap_format ;
-: 8bit ALLEGRO_PIXEL_FORMAT_SINGLE_CHANNEL_8 al_set_new_bitmap_format ;
-: loadbmp 32bit al_load_bitmap ;
-\ $1 constant ALLEGRO_MEMORY_BITMAP
-\ $1000 constant ALLEGRO_CONVERT_BITMAP
+: loadbmp al_load_bitmap ;
 : bflags! al_set_new_bitmap_flags ;
-: loadbmp8 8bit ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
+: loadbmpp ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
 : loadbmpm $1001 bflags! al_load_bitmap $1000 bflags! ;
 : subbmp pen v@ 2swap al_create_sub_bitmap ;
 : hold al_hold_bitmap_drawing ;
-: *bmp 32bit al_create_bitmap ;
-: *bmp8 8bit al_create_bitmap ;
+: *bmp al_create_bitmap ;
 : -bmp ?null al_destroy_bitmap ;
 : onto ?null al_set_target_bitmap ;
 : backbuf display al_get_backbuffer ;
