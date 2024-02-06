@@ -13,8 +13,8 @@ variable object-tile  \ allows objects to know the tile # that spawned them
 
 : @objects  ( tilemap - )
     actors clear  actors in  [[
-    tm-base @  tm-rows 0 do
-        tm-cols 0 do
+    tm-base @  tm-rows for
+        tm-cols for
             dup @ 0 >= if
                 dup @ cells tile-objects + @ ?dup if
                     over @ object-tile !  over clear-tile  
@@ -59,7 +59,7 @@ variable level#
 
 : load-holes  ( - )
     holes clear
-    g1 count-tilemap 4 / 0 do
+    g1 count-tilemap 4 / for
         @+ dup 110 = swap 150 = or if
             i 20 mod holes push   i 15 / holes push
         then

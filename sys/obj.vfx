@@ -120,7 +120,7 @@ defer .othrow ' .throw is .othrow
 
 \ - Indexed child access
 : #children -> first @ dup if 0 swap begin 1 u+ -> next @ ?dup 0= until then ;
-: nth-child dup #children >r -> first @ swap 0 r> wrap 0 ?do -> next @ loop ;
+: nth-child dup #children >r -> first @ swap 0 r> wrap for -> next @ loop ;
 
 \ - Misc
 : descendant? ( obj obj - f )

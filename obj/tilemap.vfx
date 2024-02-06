@@ -28,14 +28,14 @@ motif var tma var stride var scrollx var scrolly var tio
 : tile dup 28 rshift swap tileofs @ + $1fff and tarr [] @ ;
 PRIVATE
 : tile+ dup -1 <> if tile fblit else drop then tw 0 +at ;
-: row pen v@ 2>r 0 ?do @+ tile+ loop drop 2r> tw + at ;
+: row pen v@ 2>r for @+ tile+ loop drop 2r> tw + at ;
 : scrolled ( x y - ofs )
     2dup  tw dup 2mod 2negate +at  tw / stride @ *  swap tw / + cells ;
 : t/ tw + 1 - tw / ;
 : stride+ stride @ cells + ;
 : width w @ p>s t/ scrollx @ p>s tw mod if 1 + then ;
 : height h @ p>s t/ scrolly @ p>s tw mod if 1 + then ;
-: rows 1 hold 0 ?do dup width row stride+ loop drop 0 hold ;
+: rows 1 hold for dup width row stride+ loop drop 0 hold ;
 PUBLIC
 : tilemap tio @ tileofs ! scrollx v@ 2p>s scrolled tma @ + height rows ;
 : 1tilemap 2s>p w v! stride ! tma ! draw> tilemap ;
@@ -91,8 +91,8 @@ tw s>f fvalue gap
     true to ceiling?  t on-tilemap-collision ;
 
 ( check up/down )
-: cu  mbw gap f/ f>s 2 + 0 do  f2dup pt cel? if pd unloop exit then ve+  loop f2drop ;
-: cd  mbw gap f/ f>s 2 + 0 do  f2dup pt flr? if pu unloop exit then ve+  loop f2drop ;
+: cu  mbw gap f/ f>s 2 + for  f2dup pt cel? if pd unloop exit then ve+  loop f2drop ;
+: cd  mbw gap f/ f>s 2 + for  f2dup pt flr? if pu unloop exit then ve+  loop f2drop ;
 
 ( push left/right )
 : pl ( f:xy ) fdrop gap fmod fnegate +vx
@@ -101,8 +101,8 @@ tw s>f fvalue gap
     true to lwall?  t on-tilemap-collision ;
 
 ( check left/right )
-: cl  mbh gap f/ f>s 2 + 0 do  f2dup pt wrt? if pr unloop exit then he+  loop f2drop ;
-: crt mbh gap f/ f>s 2 + 0 do  f2dup pt wlt? if pl unloop exit then he+  loop f2drop ;
+: cl  mbh gap f/ f>s 2 + for  f2dup pt wrt? if pr unloop exit then he+  loop f2drop ;
+: crt mbh gap f/ f>s 2 + for  f2dup pt wlt? if pl unloop exit then he+  loop f2drop ;
 : ud  vy fs@ f0<> if  vy fs@ f0< if  px ny cu  else  px ny mbh f+ cd  then then ;
 : lr  vx fs@ f0<> if  vx fs@ f0< if  nx ny cl  else  nx mbw f+ ny crt  then then ;
 
