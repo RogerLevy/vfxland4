@@ -4,4 +4,4 @@
 : fly act> x @ 0 < if gamew gameh rnd 2s>p x v! then ;
 : pixel 1 1 rectf ;
 c: *star rspd vx ! fly draw> white pixel  ;
-: stars 0 do somewhere at *star { } loop ;
+: stars for somewhere at *star { } loop ;

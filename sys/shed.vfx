@@ -82,7 +82,7 @@ c: *extension ;
 variable indent
 : +i  4 indent +! ;
 : -i  -4 indent +! ;
-: cri cr indent @ 0 ?do space loop ;
+: cri cr indent @ for space loop ;
 : .xy x v@ 2pround 2p>s swap . . ;
 : ?.en en @ 0= if ." en off " then ;
 : ?.vis vis @ 0= if ." vis off " then ;

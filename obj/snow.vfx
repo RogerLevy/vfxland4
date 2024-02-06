@@ -37,6 +37,6 @@ variable vc
 : fall act> wiggle ?wrap ;
 \ : pixel 1 1 rectf ;
 c: *flake rspd vx v! fall ( draw> white pixel ) ;
-: flakes 0 do somewhere at *flake drop loop ;
+: flakes for somewhere at *flake drop loop ;
 
 c: *snow draw> white points ;
