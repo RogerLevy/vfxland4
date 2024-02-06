@@ -53,8 +53,6 @@ c: *repl
         -matte bar bar-text
 ;
 
-' noop is EditOnError
-
 root {
     *repl named repl { }
 }

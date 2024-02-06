@@ -1,6 +1,4 @@
 faster
-win32catch
-Win32ExceptThrow 
 
 \ - Window
 require lib/window.vfx
