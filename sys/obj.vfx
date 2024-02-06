@@ -1,28 +1,22 @@
 256 constant /slot
 
-\ - Object stack
+\ - Addressing
 : bpage here $ff and 256 swap - allot here $100 allot constant ;
 bpage os
-variable osp  os osp !
-: >o osp @ ! 4 osp c+! ;
-: o> -4 osp c+! osp @ @ ;
-
-\ - Structs
-: field create over , + $C0FFEE , does> @ + ;
-
-\ - Addressing
+variable osp   os osp !
 0 value me
 : in to me ;
-: { me >o to me ;
-: } o> to me ;
+: { me osp @ ! 4 osp c+!   to me ;
+: } -4 osp c+! osp @ @ to me ;
 : -> ' >body @ ?literal s" +" evaluate ; immediate 
 : require me { require } ;
 : include me { include } ;
 : included me { included } ;
 
-\ - Vars
+\ - Structure
 0 value /obj
 0 value /basis
+: field create over , + $C0FFEE , does> @ + ;
 : ofield /obj swap field to /obj does> @ me + ;
 : ?already >in @ bl word find if dup >body cell+ @ $C0FFEE = if r> drop drop drop exit then then drop >in ! ; DoNotSin
 : var ?already cell ofield ; DoNotSin 

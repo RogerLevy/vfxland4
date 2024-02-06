@@ -6,8 +6,8 @@ reference actors
 /obj to /tilemap
 : tilemap:wh { #cols v@ 2s>p tw s>p dup 2p* } ;
 
-: 1csvmap 2dup csv-wh #cols v!   here #cols @ gamew gameh 1tilemap   csv-cells, ;
-: csv-map: 0 0 at *tilemap   named   { [locked]   1csvmap   draw-paletted-tilemap me } ;
+: 1csv-map 2dup csv-wh #cols v!   here #cols @ gamew gameh 1tilemap   csv-cells, ;
+: csv-map: 0 0 at *tilemap   named   { [locked]   1csv-map   draw-paletted-tilemap me } ;
 : pgame gamew gameh 2s>p ;
 : game* pgame 2p* ;
 : game- pgame 2- ;
