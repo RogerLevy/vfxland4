@@ -55,3 +55,6 @@ bg0 -> plt on
 
 \ groups
 \ ws2 { 50 50 at *group { *group } } } ws2 switch editmode on
+
+m: hi ." hello" ;
+:: *sam hi ." konnichiwa" ;

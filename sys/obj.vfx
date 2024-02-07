@@ -86,13 +86,23 @@ defer 1object
 : init en on vis on 1. dup sx v! ;
 : *slot here 256 allot&erase ;
 : *child ( parent - obj ) *slot dup rot push dup { init }  ;
+: >static -> con @ >body cell+ ;
 : c:
-    create here 0 , :noname swap !
+    create here 0 , 256 cells allot&erase :noname swap !
     does> me *child { dup body> 1object @ execute me } ;    
 c: *generic ;
 c: *helper vis off 0 0 x v! ;
 : obj reference   *slot in   0 0 at   init   ['] *generic con !   latest-xt me over >body !  >name nam ! ;
 : delete remove ;
+
+\ - Static fields
+0 value /static
+: static /static cell field to /static does> @ swap >static + ;
+defer .othrow ' .throw is .othrow
+: ?execute ?dup 0; catch .othrow ;
+: m: static here 0 , :noname swap !
+    does> swap { dup @ me >static + @ dup if nip else drop cell+ cell+ @ then ?execute } ;
+: :: ( <con> <msg> <code> ; ) ' >body cell+ ' >body @ + :noname swap ! ;
 
 \ - Basic actions
 : visible? en @ vis @ and ;
@@ -105,8 +115,6 @@ c: *helper vis off 0 0 x v! ;
         r> in
     repeat }
 ;
-defer .othrow ' .throw is .othrow
-: ?execute ?dup 0; catch .othrow ;
 : +t +m x v@ 2p>f sx v@ 2p>f 0e transform ;
 : -t -m ;
 : ?children first @ if +t children -t then ;
