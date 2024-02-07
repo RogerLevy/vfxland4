@@ -42,6 +42,7 @@ synonym dup-endcase end-case
 : kb 1024 * ;
 : mb 1048576 * ;
 : for s" 0 ?do" evaluate ; immediate
+: >fullpath 1024 pad 0 GetFullPathName pad swap ;
 
 \ - 2D Vectors
 : v@ dup @ swap 4 + @ ;
@@ -193,7 +194,10 @@ variable font  builtin-font font !
     font @ fore 4f@ at@f w lh 0 z al_draw_multiline_text ;
 : text 9999999 mltext ;
 : nr 0 pen cell+ @ fonth + at ;
-
+: loadfont al_load_ttf_font ?dup 0= abort" Font not found" ;
+: font: rot >fullpath here >r z$, create 0 , r> cr dup . , swap , , 
+    does> >r r@ @ 0= if r@ cell+ @+ swap @+ swap @ loadfont r@ ! then r> @ ;
+    
 \ - Delta
 1e fvalue fdelta
 0e fvalue tdelta

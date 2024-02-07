@@ -33,6 +33,6 @@ create e /ALLEGRO_EVENT allot&erase
 : paint identity cls me >r root in ?draw r> in ;
 : frame !delta poll pump think paint ;
 : ?quit <esc> pressed? if >vfx quit then ;
-: 0interp 0 #tib ! reset-stacks postpone \\ refill drop ;
+: 0interp 0 #tib ! reset-stacks postpone \\ ;
 : pre !delta !delta 0interp win32catch Win32ExceptThrow ['] noop is EditOnError ;
 : go >display pre begin frame present yield 1 sleep ?quit again ;
