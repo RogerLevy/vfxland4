@@ -1,0 +1,32 @@
+require obj/tilemap.vfx
+require gradient.vfx
+
+create buf 20 16 * cells allot 
+: 1map
+    buf 20 gamew gameh 1tilemap 
+    320. 240. w v!
+    act> 1. 1. 2delta* scrollx v+!
+    ser> scrollx vp? ." scrollx v! "
+;
+
+c: *box 0.05 vx ! draw> blue w v@ 2p>s rectf red w v@ 2p>s rect ;
+
+: !textbounds 2dup nip 9 * fonth 2s>p w v! ;
+c: *hello draw> white s" Hello" !textbounds >z stext ; 
+
+create c1 0e sf, 0.1e sf, 0.5e sf, 1e sf,
+create c2 0.1e sf, 0.1e sf, 0.1e sf, 1e sf,
+c: *bg 0 0 x v! draw> c2 c1 gamew gameh gradient ;
+
+
+include starfield.vfx
+include obj/snow.vfx
+
+stage clear
+stage {
+    0 0 at *bg named bg { }
+    0 0 at 1000 stars
+    0 0 at *tilemap { 1map }
+    0 0 at *snow named snow { 10000 flakes }
+    0 0 at *hello { }
+}

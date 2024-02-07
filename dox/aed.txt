@@ -1,0 +1,5 @@
+[ ] Crash with multiple monitors and console is on another monitor
+[x] You can't see what tile is selected outside of edit mode
+[x] You can delete anything
+[ ] Auto-refresh the tile bank (when?)
+

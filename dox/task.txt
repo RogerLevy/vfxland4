@@ -1,0 +1,18 @@
+
+--- Synchronous Multitasking ---
+
+Any object can perform a task over time.
+    If you activate multitasking for an object you can't use ACT>.
+    (You could attach a child object and have that operate on its parent - you could even
+    attach a task and have it do the same.)
+
+To have an object run a task use PERFORM> ( n - <code> ) or PERFORM ( n xt - ) 
+    You must pass in one value.
+    Stacks are allocated automatically if needed.
+
+Lots of memory is allocated from the heap for the data and return stacks, to avoid issues
+related to calling external functions and give some legroom for data stack underflow/overflow (to delay or avoid crashes)
+
+Use WAIT inside a task to return to the main engine and wait for the next frame (0 WAIT) or a period of time (1. WAIT = 1 second. note: not precise!!!)
+
+if WAIT is called from outside a task, behavior is undefined.

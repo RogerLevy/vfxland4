@@ -1,0 +1,16 @@
+: *slot 256 allocate drop ;
+: delete
+    { first @ {  begin  me while
+        next @ >r
+            me recurse
+            me remove me free drop 
+        r> in
+    repeat } me remove me free drop
+    } ;
+: reckon
+    first @ {  begin  me while
+        next @ >r
+            recurse
+            en @ 0= if me delete then
+        r> in
+    repeat } ;

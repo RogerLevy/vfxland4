@@ -1,0 +1,40 @@
+\ - Synchronous multitasking
+motif var sp var rp var ds var rs +basis
+obj host
+host value task
+
+: (wait)
+    \ save state
+    me 
+    dup \ ensure TOS is on stack
+    sp@ task -> sp !
+    rp@ task -> rp !
+    host to task
+    \ restore state
+    task -> rp @ rp!
+    task -> sp @ sp!
+    drop \ ensure TOS is in TOS register
+    in 
+;
+: wait begin (wait) delta - dup 0 <= until drop ;
+: (spin) begin wait again ;
+: ?*stacks ds @ ?; 2 kb allocate drop ds ! 16 kb allocate drop rs ! ;
+: perform ( n xt - )
+    ?*stacks
+    swap ( n ) ds @ 1 kb + !  ds @ 1 kb + sp !  me ds @ 1 kb + cell+ !
+    ( xt ) rs @ 16 kb + cell- cell- !  rs @ 16 kb + cell- cell- rp !  ['] (spin) rs @ 16 kb + cell- !
+    act>
+        \ save state
+        me
+        dup \ ensure TOS is on stack
+        sp@ task -> sp !
+        rp@ task -> rp !
+        me to task
+        \ restore state
+        task -> rp @ rp!
+        task -> sp @ sp!
+        drop \ ensure TOS is in TOS register
+        in 
+;
+: (perform>) r> perform ;
+: perform> postpone (perform>) discard-sinline ; immediate

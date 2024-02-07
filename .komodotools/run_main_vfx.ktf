@@ -1,0 +1,16 @@
+// komodo tool: run main.vfx
+// =========================
+// cwd: %i
+// doNotOpenOutputWindow: 0
+// insertOutput: 0
+// is_clean: true
+// keyboard_shortcut: F5
+// operateOnSelection: 0
+// parseOutput: 0
+// parseRegex: 0
+// runIn: command-output-window
+// showParsedOutputList: 0
+// type: command
+// version: 1.1.5
+// =========================
+start "Hi" "VfxForth_x86_win.exe" include %i/main.vfx -dev

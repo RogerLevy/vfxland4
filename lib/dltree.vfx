@@ -29,6 +29,7 @@
     p n -> parent ! ;
 
 : dlpush  ( node parent -- )
+    2dup = abort" dlinsert: Same node!" 
     over dlremove
     dup -> first @ 0= if  (dlinit)  exit  then
     locals| p n |
@@ -37,17 +38,20 @@
     n p -> last !
     p n -> parent ! ;
 
-: dlinsert  ( node dest -- )
-    dup -> next @ 0= if  -> parent @ dlpush  exit  then
-    over dlremove
-    dup -> next @ locals| e d n |
-    n d -> next !
-    d n -> prev !
-    e n -> next !
-    n e -> prev !
-    d -> parent @ n -> parent ! ;
+: dlinsert-after  ( node dest -- )
+    2dup = abort" dlinsert: Same node!"
+    dup -> parent @ 0= if 2drop exit then
+    over dlremove 
+    dup -> next @ 0= if  -> parent @ dlpush exit  then
+    dup -> next @ locals| neighbor dest src |
+    src dest -> next !
+    dest src -> prev !
+    neighbor src -> next !
+    src neighbor -> prev !
+    dest -> parent @ src -> parent ! ;
 
 : dlunshift  ( node parent -- )
+    2dup = abort" dlinsert: Same node!" 
     over dlremove
     dup -> first @ 0= if  (dlinit)  exit  then
     locals| p n |
@@ -58,7 +62,7 @@
 
 : dleach  ( xt node -- )
     -> first @ {  begin  me while
-        dup >r execute r>  next @ as
+        next @ >r  dup >r execute r>  r> in
     repeat
     drop  } ;
 
@@ -66,6 +70,6 @@
 
 : dlclear  ( node -- )
     { first @ {  begin  me while
-        next @  (dlorphan)  as
+        next @  (dlorphan)  in
     repeat
     } 0 dup first ! last ! } ;

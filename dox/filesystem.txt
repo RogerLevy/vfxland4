@@ -1,0 +1,56 @@
+=== Terminology ===
+component - files whose dependencies are largely defined externally
+    they can bring in libraries and objects but not each other,
+    except chapter-load-style components such as main.vfx
+
+=== Folders ===
+/
+    program components 
+
+sys/
+    system components
+
+obj/
+    scripts defining one exposed constructor
+
+lib/
+    modular libraries (VFX) that can depend on each other using REQUIRE
+
+fig/
+    figures created with shed:SAVE
+    
+assets/
+    working files for generating program data
+    
+data/
+    data files used by the program, such as images
+
+tool/
+    development modules; can be coupled to the program
+
+
+=== Files ===
+
+allegro-xxx.vfx
+    Allegro bindings and convenience words
+
+window.vfx
+    Allegro window management
+
+alpha.vfx
+    base game library, depends on Allegro
+
+core.vfx
+    main loop, including  Allegro event pump
+
+main.vfx
+    entry point for development; not intended to be the entry point for games
+
+obj.vfx
+    object system
+    
+repl.vfx
+    commandline
+    
+shed.vfx
+    toolshed dev environment

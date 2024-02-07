@@ -1,0 +1,11 @@
+it's as capable as Ramen
+but the code looks like ColorForth and Dark Blue
+and it feels like Studio to use
+if I can make it feel like TestPad too though... (that one felt like a miracle ... magical)
+it follows all the right principles:
+    small code
+    try to do things as simply as possible
+    try to use and extend Forth instead of treating it only as the "language you're using"
+    don't worry about memory too much
+    document externally
+    

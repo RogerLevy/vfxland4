@@ -1,0 +1,9 @@
+require lib/files.vfx
+
+: (header) @f drop ( id ) h@f ( w ) h@f ( h ) ;
+
+: stm-dims ( a c - w h )
+    ?exist r/o[ (header) ]file ;
+
+: load-stm ( a c dest - w h )
+    >r   ?exist r/o[ (header)   r> bytes-left read ]file ;

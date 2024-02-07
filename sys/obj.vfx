@@ -1,0 +1,139 @@
+256 constant /slot
+
+\ - Addressing
+: bpage here $ff and 256 swap - allot here $100 allot constant ;
+bpage os
+variable osp   os osp !
+0 value me
+: in to me ;
+: { me osp @ !   4 osp c+!   to me ;
+: } -4 osp c+!   osp @ @ to me ;
+: require me >r require r> in ;
+: include me >r include r> in ;
+: included me >r included r> in ;
+: former 4 osp c+!   osp @ @   -4 osp c+! ;
+
+\ - Structure
+0 value /obj
+0 value /basis
+: field create over , + $C0FFEE , does> @ + ;
+: ofield /obj swap field to /obj does> @ me + ;
+: ?already >in @ bl word find if dup >body cell+ @ $C0FFEE = if r> drop drop drop exit then then drop >in ! ; DoNotSin
+: var ?already cell ofield ; DoNotSin 
+: motif /basis to /obj ;
+: -> ' >body @ ?literal s" +" evaluate ; immediate 
+
+\ - Double-linked tree
+var en var next var prev var first var last var parent
+include lib/dltree.vfx
+: remove dlremove ;
+: push dlpush ;
+: unshift dlunshift ;
+: insert-after dlinsert-after ;
+: each dleach ;
+: (each>) r> swap dleach ;
+: each> postpone (each>) discard-sinline ; immediate
+: clear dlclear ;
+: insert 2dup 2>r insert-after 2r> swap insert-after ;
+: linkage next parent cell+ over - ;
+: params { linkage cell+ nip dup me + /slot rot - } ;
+
+\ - Basis
+var nam
+var dead var vis var halt var con 
+var x var y var w var h var vx var vy var sx var sy
+var beh var drw var phy var fgc var bgc 
+: +basis /obj to /basis ;
++basis
+defer children
+
+\ - Transplant
+\ 0 value dst
+\ : transplant-children to dst each> me dst push ;
+: transplant ( obj dest - )
+    >r { r@ clear   en @ r@ -> en !   me params drop r> params move } ;
+
+\ - Naming support
+: my-context nam @ name> >body cell+ @ ;
+: $create-name $create , context @ , does> @ ;
+: reference 0 bl word $create-name ;
+: ?+order dup ?order if drop else +order then ;
+: name ( obj $ - obj|orig ) 
+    swap { find if
+        cr ." Reference already exists: "
+        dup >name    dup nam !   count type
+        dup >body @ if
+            ."  ... REPLACING"
+            >body @ >r   me r@ transplant
+            me remove
+            r@ { my-context } ?+order
+            r> ( original ) } dup me push exit 
+        else
+            ."  ... ASSIGNING" 
+            me swap >body !
+            me ( obj )
+        then
+    else
+        me swap $create-name latest ctrl>nfa nam !
+        me ( obj )
+    then } ;
+: named bl word name ;
+: .name -> nam @ ?dup if count type space then ;
+
+\ - Instancing
+defer 1object
+:noname [ is 1object ] con ! pen v@ 2s>p x v! ;
+: init en on vis on 1. dup sx v! ;
+: *slot here 256 allot&erase ;
+: *child ( parent - obj ) *slot dup rot push dup { init }  ;
+: >static -> con @ >body cell+ ;
+: c:
+    create here 0 , 256 cells allot&erase :noname swap !
+    does> me *child { dup body> 1object @ execute me } ;    
+c: *generic ;
+c: *helper vis off 0 0 x v! ;
+: obj reference   *slot in   0 0 at   init   ['] *generic con !   latest-xt me over >body !  >name nam ! ;
+: delete remove ;
+
+\ - Static fields
+0 value /static
+: static /static cell field to /static does> @ swap >static + ;
+defer .othrow ' .throw is .othrow
+: ?execute ?dup 0; catch .othrow ;
+: m: static here 0 , :noname swap !
+    does> swap { dup @ me >static + @ dup if nip else drop cell+ cell+ @ then ?execute } ;
+: :: ( <con> <msg> <code> ; ) ' >body cell+ ' >body @ + :noname swap ! ;
+
+\ - Basic actions
+: visible? en @ vis @ and ;
+: kill dup -> en off   -> dead on ;
+: reckon
+    first @ { begin me while
+        next @ >r
+            recurse
+            dead @ if me delete then
+        r> in
+    repeat }
+;
+: +t +m x v@ 2p>f sx v@ 2p>f 0e transform ;
+: -t -m ;
+: ?children first @ if +t children -t then ;
+: draw drw @ ?dup if +t 0 0 at ?execute children -t else ?children then ;
+: ?draw en @ 0;   vis @ 0;   draw ; 
+:noname [ is children ] ['] ?draw me each ;
+: act halt @ ?;   en @ 0;   beh @ ?execute   me each> recurse ;
+: physics halt @ ?;   en @ 0;   phy @ ?execute   me each> recurse ;
+: (draw>) r> drw ! ; : draw> postpone (draw>) discard-sinline ; immediate
+: (act>) r> beh ! ; : act> postpone (act>) discard-sinline ; immediate
+
+\ - Indexed child access
+: #children -> first @ dup if 0 swap begin 1 u+ -> next @ ?dup 0= until then ;
+: nth-child dup #children >r -> first @ swap 0 r> wrap for -> next @ loop ;
+
+\ - Misc
+: descendant? ( obj obj - f )
+    swap { begin
+        parent @ dup while
+        over = if   } drop -1   exit then
+        parent @ in
+    repeat nip ( 0 ) } ;

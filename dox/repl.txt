@@ -1,0 +1,32 @@
+=== 2024/1/20 ===
+
+[x] This control scheme
+
+Global
+	Tab		    Toggle REPL
+
+REPL
+	QWERTY		Enter commands
+	Enter		Enter commands
+	Backspace	Backspace
+
+=== OLD ===
+
+0 value kbfocus
+variable editmode
+
+ui - the workspace
+    [x] processes allegro events, sending them out to the display list
+    shed
+        [x] disabling this locks out all UI editing functions, including your tools
+        [-] processes hovering and dragging and additional editing functions when editmode is enabled,
+            overriding kbfocus
+        [x] if you turn off editmode it also disables any overlay graphics
+        tools
+            [x] where editors and any other user-added tools should be placed
+        info
+            [x] draws shed overlays
+    repl
+        [x] disabling this locks out interaction with Forth
+        [x] processes some global hotkeys (including toggling visibility)
+        [-] processes keystrokes when it is visible, overriding kbfocus

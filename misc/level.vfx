@@ -1,0 +1,74 @@
+\ ------------------------------------------------------------------------------
+
+method (load) ( - )
+: load  ( obj -- )  [[ (load) ]] ;
+
+\ ------------------------------------------------------------------------------
+
+create tile-objects  1024 cells allot&erase
+
+: clear-tile  -1 swap ! ;
+
+variable object-tile  \ allows objects to know the tile # that spawned them
+
+: @objects  ( tilemap - )
+    actors clear  actors in  [[
+    tm-base @  tm-rows for
+        tm-cols for
+            dup @ 0 >= if
+                dup @ cells tile-objects + @ ?dup if
+                    over @ object-tile !  over clear-tile  
+                    i ts @ tilew *  j ts @ tileh *  at   
+                    ( kind ) one [[ cr .actor ]]
+                then
+            then
+            cell+
+        loop
+    loop  drop ]] ;
+
+\ ------------------------------------------------------------------------------
+
+: csv-ints,  ( $ c - )
+    read> lines> csv> evaluate , ;
+
+\ ------------------------------------------------------------------------------
+
+%actor kind: %level ;kind
+
+\ ------------------------------------------------------------------------------
+
+100 array levels
+
+\ ( $ c ) = "suffix.ext", pad = level name
+: csv-layer,  ( $ c  tileset - )  
+    >r  s" tiled/" pad count $+  2swap $+
+    r>  static 20 15 *tilemap drop  csv-ints,  ;
+
+: define-level  ( n - <name> )
+    >r  >in @ 
+    %level create-static  me r> levels set  me in
+        >in ! bl parse pad place ;
+
+\ ------------------------------------------------------------------------------
+
+variable level#
+100 stack holes  \ x , y , x , y ....
+
+: copy-tilemap  ( src-tilemap dest-tilemap - )
+    swap count-tilemap  rot count-tilemap drop  swap move ;
+
+: load-holes  ( - )
+    holes clear
+    g1 count-tilemap 4 / for
+        @+ dup 110 = swap 150 = or if
+            i 20 mod holes push   i 15 / holes push
+        then
+    loop drop ;
+
+%level m: (load)
+    first @ g1 copy-tilemap
+    load-holes ;
+        
+: level  ( n - )
+    dup levels [] @ dup 0= if  2drop  exit  then
+    swap  level# !  load ;

@@ -1,0 +1,365 @@
+0 value dragee
+root value this
+0 value hoveree
+variable snapping
+0 value workspace
+synonym ws workspace
+variable editmode
+reference static
+reference editmenu
+reference shed
+create drag-s 0 , 0 ,
+1 bit _bolted bit _locked bit _sealed bit _extension value _attributes
+
+\ - Scripting
+motif var ser var attr var post var hx var hy var data +basis
+: (physics>) r> phy ! ;
+: physics> postpone (physics>) discard-sinline ; immediate
+:noname [ is 1object ] con !   pen v@ 2s>p x v!   physics> vx v@ 2delta* x v+! ;
+: copy *slot { me /slot move   linkage erase   me } ;
+: (*clone) ( orig new ) | p |
+    -> first @ begin ?dup while
+        dup dup copy dup p push
+        recurse
+        -> next @
+    repeat ;
+: clone dup copy   dup >r (*clone) r> ;
+: a? attr @ and 0<> ;
+: aoff invert attr @ and attr ! ;
+: aon attr @ or attr ! ;
+: replace dup >r insert   r> kill ;
+: from -> x v@ p>s at ;
+: rtransform
+    me begin ?dup while
+        dup { x v@ 2p>f  sx v@ 2p>f } 0e
+            m2 al_build_transform
+            m m2 al_compose_transform
+        -> parent @
+    repeat
+    m al_use_transform
+;
+: ascale/ sx v@ 2p/ parent @ ?dup if { recurse } then ;
+: ascale* sx v@ 2p* parent @ ?dup if { recurse } then ;
+: a+t +m identity rtransform ;
+: abox a+t hx v@ v*m w v@ ascale* 2over 2+ -t ;
+: >local abox 2drop 2- ascale/ ;
+: s>local 2s>p >local 2p>s ;
+: hide -> vis off ;
+: reveal -> vis on ;
+: container: 0 0 at *generic named ;
+: [locked] _locked aon ;
+: [bolted] _bolted aon ;
+: [sealed] _sealed aon ;
+: over? mouse 2s>p abox inside? ;
+: is-static? begin -> parent @ ?dup while dup static = ?dup if nip exit then repeat 0 ; 
+: editable? dup 0;   is-static? not   workspace static = or ;
+: tsnap dup abs 4. + dup 8. mod - swap 0< if negate then ;
+: 2pround 2p>f fround fswap fround f>p f>p ; 
+: ?snap _bolted a? ?; x v@ snapping @ if tsnap swap tsnap swap else 2pround then x v! ;
+: upstage dup -> parent @ unshift ;
+: downstage dup -> parent @ push ;
+: box! 2s>p w v! 2s>p hx v! ;
+: ?freedata data @ ?dup if free drop then ;
+: data! ?freedata dup icount+ allocate drop >r r@ iplace r> data ! ;
+: data@ data @ dup 0; icount ;
+: zdata@ data@ >z ;
+: sdims w v@ 2p>s ;
+
+\ Load
+: postload post @ ?dup if count evaluate then me each> recurse ;
+: oload osp @ >r me >r   ['] included catch .throw   r> in r> osp !   former { postload   me } ;
+: load bl parse figpath name>path ws { oload } to this ;
+
+\ Extensions
+: 1extension data! _extension aon ;
+c: *extension ;
+: load-extension
+    cr ." Loading extension: " 2dup type space
+    2dup oload   dup me insert   me remove   in   1extension ;
+: .extension .\" *EXTENSION { s\" " data@ type .\" \" load-extension } " ;
+
+\ - Serialize
+variable indent
+: +i  4 indent +! ;
+: -i  -4 indent +! ;
+: cri cr indent @ for space loop ;
+: .xy x v@ 2pround 2p>s swap . . ;
+: ?.en en @ 0= if ." en off " then ;
+: ?.vis vis @ 0= if ." vis off " then ;
+: ?.halt halt @ if ." halt on " then ;
+: ?.a attr @ ?dup if h. ." attr ! " then ; \ <- could be more future-proof
+: ?.wh w v@ or if hx vp? ." hx v! " w vp? ." w v! " then ;
+: ?.s sx v@ or 1. <> if sx vp? ." sx v! " then ;
+: .con con @ >name count type space ;
+: .{ ." { " ;
+: .} ." } " } ;
+: .}r first @ if cri then .} ;
+: ?.named nam @ if ." named " me .name then ;
+: (o.) .xy ." at " .con ?.named .{ ?.en ?.vis ?.halt ?.a ?.wh ?.s ;
+: o. { (o.) .} ;
+: o.c { (o.) ['] .}r >r me each> cr ."     " me o. ;
+: o.r cri { (o.)   ser @ ?execute space   ['] .}r >r   me each> +i me recurse -i ;
+: o.s
+    cri { 
+    _extension a? if .extension } exit then
+    (o.)   ser @ ?execute space   ['] .}r >r   me each> +i me recurse -i ;
+
+\ Save
+: (osave)
+    dup { _extension a? >r  _extension aoff 
+    o.s
+    r> if _extension aon then }
+;
+: osave >r dup -> nam @ count r> name>path 2dup 2>r   f[ (osave) ]f cr ." Saved to "   2r> type ;
+: save ' execute figpath osave ;
+: (ser>) r> ser ! ; : ser> postpone (ser>) discard-sinline ; immediate
+: post: here aligned post ! 0 parse $, ;
+
+\ - Selecting
+: editmenu? shed descendant? editmenu @ and ;
+: select dup editmenu? not if to this else drop then ;
+
+\ - Dragging
+: +drag _bolted a? ?;   the-walt 2s>p drag-s v@ 2p* x v+! ;
+: ?dragging dragee ?dup 0; { +drag } ;
+: plop dragee ?dup 0; { ?snap } 0 to dragee ;
+: m*box x v@ hx v@ sx v@ 2p* 2+ w v@ sx v@ 2p* 2over 2+ v*m 2swap v*m 2swap ;
+: (hover) me each> visible? 0; w v@ or 0<> first @ or 0; 
+    the-mouse 2s>p m*box inside? if me to hoveree then +t recurse -t ;
+: hover +t (hover) -t ;
+: drag-context { 1. 1. parent @ { ascale/ } drag-s v! } ;
+: drag dup to dragee   drag-context ; 
+: pickdrag ?dup 0; dup select drag ;
+
+\ - Figure Editor 1/3
+: stext @color >r   1 1 +at dup black text   -1 -1 +at r> color text ;
+\ : tiny a+t hx v@ v*m 2p>s at -t identity ;
+: (info) +m identity 0 0 at sherry32.fnt font ! z[ me o. ]z stext -m ;
+: outline hx v@ 2p>s at w v@ 2p>s rect ;
+: a-outline a+t outline -t ;
+: (outlines) each> +t outline me recurse -t ;
+: outlines
+    me | p |
+    $00ff0080 color me (outlines)
+    hoveree editable? if
+        hoveree p descendant? if
+            hoveree { yellow a-outline } 
+        then
+    then
+    this editable? if 
+        this p descendant? if
+            this { red a-outline (info) }
+        then
+    then
+;
+: connector x v@ 2p>s line ;
+: (connectors) me each> visible? 0; connector +t recurse -t ;
+: connectors 0 0 at $ffffff40 color (connectors) ;
+
+\ - Figure Editor 2/3
+: +zoom
+    workspace { 
+        sx @ >r   0.25 * r@ + 0.25 2. clamp dup   sx v!
+        mouse 2s>p >local sx v@ 2p*   1. sx @ r> p/ - dup   2p*   x v+!
+    }
+;
+: can-delete? | it |
+    it 0= if 0 exit then 
+    it editable? not if cr ." Cannot delete static objects when not editing the static layer." 0 exit then 
+    it { _locked a? } if cr ." Object is locked. Cannot delete!" 0 exit then
+    -1 ;
+: unpick root to this ; \  0 to dragee 0 to hoveree ;
+: delete-this this can-delete? if this delete   unpick then ;
+: ?bring dragee 0; dragee workspace = 0; dragee workspace push ;
+
+\ Clicking
+create omx 0 , 0 ,
+0 value target
+: click? ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?   mouse omx v@ d= and ;
+
+\ Edit menu
+require sys/widgets.vfx
+: toggle-editmenu
+    hoveree to target
+    editmenu toggle
+    editmenu @ 0;
+    editmenu {
+        mouse winwh w v@ 2p>s 2- 2min 2s>p x v!
+        me downstage
+        me open-toolbox
+    }
+;
+
+\ - Figure Editor 3/3
+: shed-events
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key <del> = if delete-this then
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+        the-mbutton 1 = if
+            hoveree pickdrag
+        then
+    then
+    click? the-mbutton 2 = and if
+        toggle-editmenu 
+    then
+;
+c: *shed draw> editmode @ 0; -matte 2 2 at ;
+: edit-info outlines connectors ;
+c: *info draw> editmode @ 0; workspace { a+t edit-info -t } ;
+
+\ - Workspace
+: ws-var var does> @ workspace + ;
+motif ws-var ws-static
+: 1workspace [locked] ;
+c: *workspace 1workspace draw> -matte ;
+: disable-each each> me off ;
+
+\ - Shed layout
+root {
+    container: workspaces {
+        *workspace named ws1  { me -> ws-static on }
+        *workspace named ws2  { me -> ws-static on }
+        *workspace named ws3  { me -> ws-static on }
+        *workspace named ws4  { me -> ws-static on }
+        *workspace named ws5  { me -> ws-static on }
+        *workspace named ws6  { me -> ws-static on }
+        *workspace named ws7  { me -> ws-static on }
+        *workspace named ws8  { me -> ws-static on }
+        *workspace named ws9  { me -> ws-static on }
+        *workspace named ws10 { me -> ws-static on }
+        *workspace named trash { me -> ws-static on }
+        *workspace named static { me -> ws-static on }
+    }
+    *shed named shed {
+        *info named info { }
+        *toolbox named editmenu { ` -- EDIT --` me off 0 32 at *panel } { } 
+    }
+}
+
+: ?static ws-static @ static ! ;
+: toggle-static static workspace <> if ws-static toggle then   ?static ;
+: toggle-editmode editmode toggle   editmode @ not if editmenu off then   ( editmode @ ws-static ! )   ?static ;
+: forthwid ['] forth >body @ ;
+: switch
+    workspace ?dup if -> first @ ?dup if { my-context dup forthwid <> if -order else drop then } then then
+    workspaces disable-each
+    dup to workspace on
+    ?static
+    workspace -> first @ ?dup if { my-context ?+order } then
+;
+ws1 switch
+
+\ - Global events
+: ecat e ALLEGRO_EVENT.type @ 10 / ;
+create workspace-table ws1 , ws2 , ws3 , ws4 , ws5 , ws6 , ws7 , ws8 , ws9 , ws10 , trash , static ,
+
+: common-events
+    ALLEGRO_EVENT_KEY_DOWN happened? if
+        the-key <f1> >=
+        the-key <f12> <= and if
+            the-key <f1> - workspace-table [] @ switch
+        then
+        the-key <tab> = if repl toggle then
+        the-key <s> = alt? and if toggle-static then
+        the-key <e> = alt? and if toggle-editmode then
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_DOWN happened? if
+        mouse omx v!
+        the-mbutton 2 =
+        the-mbutton 1 = alt? and   or if
+            workspace drag
+        then
+    then
+    ALLEGRO_EVENT_MOUSE_AXES happened? if
+        the-wheel ?dup if +zoom then
+        0 to hoveree
+        workspace { hover }
+        static @ if static { hover } then
+        editmenu @ if shed { hover } then
+        ?dragging
+    then
+    ALLEGRO_EVENT_MOUSE_BUTTON_UP happened?
+    ALLEGRO_EVENT_DISPLAY_SWITCH_OUT happened? or if
+        plop
+    then
+
+    \ Pass events to objects
+    ecat 0 = if \ joystick
+        workspace { respond }
+    then
+    ecat 2 = if \ mouse
+        alt? not if
+            workspace static <> if static { respond } then
+            editmenu @ if editmenu { respond } then
+        then
+    then
+;
+
+:noname [ is events ]
+    common-events
+    repl @ if
+        ecat 1 = if repl-events then \ keyboard
+        ecat 2 = if \ mouse
+            editmode @ if shed-events else alt? not if workspace { respond } then then
+        then
+    else
+        editmode @ if shed-events else alt? not if workspace { respond } then then
+    then
+;
+
+\ Edit menu actions
+-sin
+: button: 8 8 at *button { >in @ bl parse data! 1w [bolted] } >in ! : ;
+: <nr last @ { [nr] } ;
+
+: ?root this root = if r> drop cr ." No selection." then ;
+: ?locked this { _locked a? } if r> drop cr ." Cannot do that on a locked object." then ;
+: ?bolted this { _bolted a? } if r> drop cr ." Cannot do that on a bolted object." then ;
+: localize { mouse 2s>p >local } this -> x v! ;
+: ?sealed target { _sealed a? } if r> drop cr ." Target is sealed." then ;
+
+editmenu -> first @ {
+    button: [ATTACH] ?root ?locked ?bolted   target 0;   ?sealed   this target push   8. 8. this -> x v!   editmenu off ;
+    button: [DETACH] ?root ?locked ?bolted   target 0;   ?sealed   target workspace push   editmenu off ;
+    <nr
+    button: [BRING] ?root ?locked ?bolted   this workspace push   workspace localize   editmode off ;
+    : ?bring { me workspace descendant? not if [bring] else   me this over insert-after   this { -> parent @ localize } then } ;
+    button: [CLONE] ?root   this >r   this clone select   r> ?bring   editmenu off ;
+    <nr
+    button: [CLEAR] ?root ?locked ?sealed   this clear   editmenu off ;
+    button: [TRASH] ?root ?locked ?sealed   this trash push   unpick   editmenu off ;
+    <nr
+    button: [UPSTAGE] ?root ?bolted   this upstage   editmenu off ;
+    button: [DOWNSTAGE] ?root ?bolted   this downstage   editmenu off ;
+    <nr
+    button: [LOCK] ?root this   { _locked aon } ;
+    button: [UNLOCK] ?root this   { _locked aoff } ;
+    <nr
+    button: [BOLT] ?root ?locked   this { _bolted aon } ;
+    button: [UNBOLT] ?root ?locked   this { _bolted aoff } ;
+    <nr
+    button: [SEAL] ?root ?locked   this { _sealed aon } ;
+    button: [UNSEAL] ?root ?locked   this { _sealed aoff } ;
+    <nr
+    button: [DESELECT] ?root   unpick   editmenu off ;
+    *button { ` snapping toggle` [nr] }
+}
++sin
+
+
+variable errors   errors on
+:noname [ is .othrow ]
+    errors @ not if drop exit then
+    case
+        0 of exit endof
+        -1 of exit endof
+        -2 of cr 'AbortText @ count type endof
+        dup Err$ nip if
+            cr dup Err$ type ."  ( " . ." )"
+        else
+            cr ." No text available for THROW code " ."  ( " . ." )"
+        then
+    end-case
+    cr me h. ." : " me o. .s ." in: " r> r> >name count type >r
+;

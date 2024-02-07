@@ -1,0 +1,213 @@
+require lib/counter.vfx
+require lib/mersenne.vfx
+require lib/strout.vfx
+require lib/fixed.vfx
+require lib/csv.vfx
+require lib/files.vfx
+require lib/fileout.vfx
+
+320 value gamew
+240 value gameh
+60e fconstant framerate
+
+\ - Misc
+: @+ dup cell+ swap @ ;
+: ?literal state @ if postpone literal then ;
+: ?; s" if exit then" evaluate ; immediate
+: 0; s" 0= if exit then" evaluate ; immediate
+: sf@+ dup sf@ cell+ ;
+: sf-! cell- dup sf! ;
+: f>ds 0 >r rp@ sf! r> ;
+synonym | locals|
+: >> rshift ;
+: << lshift ;
+: sf/ s>f fswap f/ f>s ;
+: sf* s>f f* f>s ;
+: f[ write[ ;
+: ]f ]write ;
+: u+ rot + swap ;
+synonym dup-endcase end-case
+: bit dup constant 1 lshift ;
+: udup over swap ;
+: defer defer ['] noop latest-xt defer! ;
+: [] swap cells + ; \ "indexed"
+: toggle dup @ not swap ! ;
+: z[ zstr[ ;
+: ]z ]zstr ;
+: $[ z[ ;
+: ]$ ]z zcount ;
+: iplace 2dup ! cell+ swap move ;
+: icount @+ ;
+: icount+ cell+ ;
+: kb 1024 * ;
+: mb 1048576 * ;
+: for s" 0 ?do" evaluate ; immediate
+
+\ - 2D Vectors
+: v@ dup @ swap 4 + @ ;
+: v! dup >r 4 + ! r> ! ;
+: v+! dup >r 4 + +! r> +! ;
+: v, swap , , ;
+: 2+ rot + >r + r> ;
+: 2mod rot swap mod >r mod r> ;
+: 2negate swap negate swap negate ;
+: 2s>f swap s>f s>f ;
+: x@ @ ;
+: y@ cell+ @ ;
+: 2p>s p>s swap p>s swap ;  
+: 2s>p s>p swap s>p swap ;
+: 2p>f swap p>f p>f ;
+: 2f>p f>p f>p swap ;
+: 2p. swap p. p. ; 
+: vp? v@ 2p. ;
+: 2i 1i swap 1i swap ;
+: 2p* rot p* >r p* r> ;
+: 2p/ rot swap p/ >r p/ r> ;
+
+\ - Ranges
+: 2rnd rnd swap rnd swap ;
+: overlap? 2swap 2rot rot > -rot < and >r rot > -rot < and r> and ;
+: inside? 2>r 2>r 2dup 2r> 2r> overlap? ;
+: clamp >r max r> min ;
+: lerp ( n. src dest -- ) over - rot p* + ;
+: wrap ( n u-start u-range -- n ) >r swap over - r> swap over 2* + swap mod + ;
+: 2max rot max >r max r> ;
+: 2min rot min >r min r> ;
+: 2clamp 2swap 2>r 2min 2r> 2max ;
+
+\ - Input
+: held? kbs0 swap al_key_down 0<> ;
+: kdelta dup kbs0 swap al_key_down kbs1 rot al_key_down - ;
+: pressed? kdelta 1 = ;
+: letgo? kdelta -1 = ;
+: shift? 215 held? 216 held? or ;
+: ctrl? 217 held? 218 held? or ;
+: alt? 219 held? 220 held? or ;
+: mouse ms0 ALLEGRO_MOUSE_STATE.x @ ms0 ALLEGRO_MOUSE_STATE.y @ ;
+: mickey ms1 ALLEGRO_MOUSE_STATE.x @ ms1 ALLEGRO_MOUSE_STATE.y @ ;
+: 2- rot swap - >r - r> ;
+: walt mouse mickey 2- ;
+: mheld? ms0 ALLEGRO_MOUSE_STATE.buttons @ and 0<> ;
+: mdelta dup mheld? 1 and  swap ms1 ALLEGRO_MOUSE_STATE.buttons @ and 0<> 1 and - ;
+: mpressed? mdelta 1 = ;
+: mletgo? mdelta -1 = ;
+: poll poll-keyboard poll-mouse ;
+
+\ - Matrix stack
+create mstk 16 cells 16 * allot
+create m2 16 cells allot
+variable mp
+variable tx variable ty
+: m mp @ 15 and 16 cells * mstk + ; 
+: +m m 1 mp +! m swap al_copy_transform ;
+: -m -1 mp +!  m al_use_transform ;
+: transform  m2 al_build_transform  m2 m al_compose_transform  m m2 al_copy_transform  m al_use_transform ;
+: identity  m al_identity_transform  m al_use_transform ;
+: v*m 2p>f ty sf! tx sf! m tx ty al_transform_coordinates tx sf@ f>p ty sf@ f>p ;
+
+\ - Graphics
+create pen 0 , 0 ,
+create fore 0e sf, 0e sf, 0e sf, 0e sf,
+create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
+: at pen v! ;
+: +at pen v+! ;
+: at@ pen v@ ;
+: at@f pen v@ 2s>f ;
+: 4f@ sf@+ sf@+ sf@+ sf@ ;
+: 4f! 4 cells + sf-! sf-! sf-! cell- sf! ;
+: rect 1e f>ds >r  at@f  at@ 2+ 2s>f  fore 4f@  r> al_draw_rectangle ;
+: rectf pen v@ 2+  at@f 2s>f  fore 4f@  al_draw_filled_rectangle ;
+: circ 1e f>ds >r  at@f  s>f  fore 4f@  r> al_draw_circle ;
+: circf 1e f>ds >r  at@f  s>f  fore 4f@  r> al_draw_filled_circle ;
+: fcolor fore 4f! ;
+: cls backdrop 4f@ al_clear_to_color ;
+: c dup 24 >> s>f 255e f/ ;
+: color c 8 << c 8 << c 8 << c drop fcolor ;
+: b >r sf@+ 255e f* f>s r> or ;
+: @color fore 0 b 8 << b 8 << b 8 << b nip ;
+: line 1e f>ds >r  at@ 2+ 2s>f  at@f  fore 4f@ r> al_draw_line ;
+: winwh winw winh ;
+: clip! al_set_clipping_rectangle ;
+: clip@ 0 0 0 0 sp@ 12 + sp@ 12 + sp@ 12 + sp@ 12 + al_get_clipping_rectangle ;
+: -matte 0 0 winwh clip! ;
+
+\ - Bitmaps
+: ?null ?dup 0= if r> drop exit then ;
+: fblit at@f swap al_draw_bitmap ;
+: blit ?null 0 swap fblit ;
+: bmpwh 7 cells + v@ ; 
+: bmpw bmpwh drop ;
+: bmph bmpwh nip ;
+: loadbmp al_load_bitmap ;
+: bflags! al_set_new_bitmap_flags ;
+: loadbmpi ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
+: loadbmpm $1001 bflags! al_load_bitmap $1000 bflags! ;
+: subbmp pen v@ 2swap al_create_sub_bitmap ;
+: hold al_hold_bitmap_drawing ;
+: *bmp al_create_bitmap ;
+: -bmp ?null al_destroy_bitmap ;
+: onto ?null al_set_target_bitmap ;
+: backbuf display al_get_backbuffer ;
+: opaque ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO al_set_blender ;
+: transparent ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender ;
+: writebmp onto opaque blit backbuf onto transparent ;
+: rblit swap >r  dup bmpwh 2 2 2/ 2s>f  at@f  r> p>f deg>rad  swap al_draw_rotated_bitmap ;
+: tblit swap >r  fore 4f@  at@f  r> al_draw_tinted_bitmap ;
+: pixel at@ fore 4f@ al_put_pixel ;
+: bmpformat@ al_get_bitmap_format ;
+: pitch@ 2 cells + @ ;
+: lockbmp dup bmpformat@ 0 al_lock_bitmap dup @ swap pitch@ ;
+: -lockbmp al_unlock_bitmap ;
+: pixel@ swap >r >r dup lockbmp r> * + r> cells + @ swap -lockbmp ;
+: lpixel[] rot * swap cells + + ;
+: blitr 2swap 2s>f 2s>f at@ 2s>f 0 al_draw_bitmap_region ;
+
+\ - Colors
+: red 1e 0e 0e 1e fcolor ;
+: green 0e 1e 0e 1e fcolor ;
+: blue 0e 0e 1e 1e fcolor ;
+: yellow 1e 1e 0e 1e fcolor ;
+: magenta 1e 0e 1e 1e fcolor ;
+: cyan 0e 1e 1e 1e fcolor ;
+: brown 0.5e 0.25e 0e 1e fcolor ;
+: pink 1e 0.5e 1e 1e fcolor ;
+: orange 1e 0.5e 0e 1e fcolor ;
+: purple 0.5 0e 1e 1e fcolor ;
+: white 1e 1e 1e 1e fcolor ;
+: gray 0.75e fdup fdup 1e fcolor ;
+: grey gray ;
+: black 0e 0e 0e 1e fcolor ;
+: dk dup sf@ 2e f/ sf!+ ;
+: br dup sf@ 2e f* sf!+ ;
+: <d fore dk dk dk drop ; 
+: <b fore br br br drop ;
+
+\ - Text
+variable font  builtin-font font !
+: ?type ?dup if type else drop then ;
+: >z z[ ?type ]z ;
+: fonth font @ al_get_font_line_height ;
+: mltext ( z w - )
+    s>f f>ds   
+    fonth s>f f>ds | lh w z | 
+    font @ fore 4f@ at@f w lh 0 z al_draw_multiline_text ;
+: text 9999999 mltext ;
+: nr 0 pen cell+ @ fonth + at ;
+
+\ - Delta
+1e fvalue fdelta
+0e fvalue tdelta
+dcounter 2value dLastTime
+1000e framerate f/ 10000e f* fvalue fus
+: !delta
+    dcounter 2dup dLastTime d- d>f
+        fdup 10000000e f/ to tdelta fus f/ to fdelta
+        to dLastTime ;
+: delta* fdelta f>p p* ;
+: 2delta* fdelta f>p p* swap fdelta f>p p* swap ;
+: delta tdelta f>p ;
+
+\ - Quickly reload a set file
+create reload$ 256 allot
+: rld cr ." ==================== RELOAD ====================" reload$ count included ;
+: fget 0 parse reload$ place s" .vfx" reload$ append reload$ count included ;
