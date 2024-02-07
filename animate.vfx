@@ -1,14 +1,8 @@
 motif var tio var tl var spd var ac var af +basis \ add animation capability to everything
-
-\ - Runtime rendering
 : ?+ac delta spd @ p* ac +! ;
-: keyframe { tio @ me nth-child { tio ! draw } } ;
-: animation ac @ p>s tl @ keyframe   halt @ ?; ?+ac ;
+: keyframe { me nth-child { draw } } ;
+: animation tio @ tileofs !   ac @ p>s tl @ keyframe   halt @ ?; ?+ac ;
 : animate spd ! tl ! draw> animation ;
-
-\ - Timeline definition
 : timeline-ser ser> tio ? ." tio ! " ;
 c: *timeline timeline-ser [locked] ;
-
-\ - Keyframe definition
 c: *keyframe ; 

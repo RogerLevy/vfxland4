@@ -3,7 +3,7 @@ motif var ti
 : ttile+ tile tblit tw 0 +at ;
 : tiles | t | for dup for t ttile+ 1 +to t loop dup negate dup 16 + +to t tw * tw +at loop drop ;
 : tdims w v@ 2p>s tw / swap 1 max tw / swap 1 max ;
-: draw-tile draw> fgc @ color tdims ti @ tiles ;
+: tile-draw draw> fgc @ color tdims ti @ tiles ;
 : ser-tile ser> ti ? ." ti ! " ;
 : tile:dims! tw * swap tw * swap 2s>p w v! ;
-c: *tile 16. 16. w v! -1 fgc ! draw-tile ser-tile ; 
+c: *tile 16. 16. w v! -1 fgc ! tile-draw ser-tile ; 

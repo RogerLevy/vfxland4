@@ -2,10 +2,9 @@ require engine.vfx
 require obj/bouncer.vfx
 require stage.vfx
 
-: tilebank dup 256 * constant loadbank ;
-z" data/bmp/tbank_initial.png" 0 tilebank tilebank_0
-z" data/bmp/samurai.pcx" 17 tilebank tilebank_sam
-z" data/bmp/world_tiles.png" 16 tilebank tilebank_world
+z" data/bmp/tbank_initial.png" loadbmp 0 tilebank: tilebank_0
+z" data/bmp/samurai.pcx" loadbmpi 17 tilebank: tilebank_sam
+z" data/bmp/world_tiles.png" loadbmpi 16 tilebank: tilebank_world
 
 misc {
     container: tilemaps {

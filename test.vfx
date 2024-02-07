@@ -23,7 +23,7 @@ z" data/bmp/bg-palette.png" loadbmp constant bg-palette.bmp
 z" data/bmp/vga-palette.png" loadbmp constant vga-palette.bmp
 c: *wow
     4. 4. sx v!
-    draw> 0 @ 1 !  
+    draw> \ 0 @ 1 !  
     bg-palette.bmp  ctr @ p>s 31 and 32 -  0 32 setpal
     bg-palette.bmp  ctr @ p>s 31 and  0 32 setpal
     0.2 delta* ctr +!

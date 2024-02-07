@@ -140,7 +140,7 @@ create backdrop 0e sf, 0e sf, 0e sf, 1e sf,
 : bmph bmpwh nip ;
 : loadbmp al_load_bitmap ;
 : bflags! al_set_new_bitmap_flags ;
-: loadbmpp ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
+: loadbmpi ALLEGRO_KEEP_INDEX al_load_bitmap_flags ;
 : loadbmpm $1001 bflags! al_load_bitmap $1000 bflags! ;
 : subbmp pen v@ 2swap al_create_sub_bitmap ;
 : hold al_hold_bitmap_drawing ;

@@ -1,6 +1,7 @@
 PUBLIC
 16 constant tw \ tile width
 2048 2048 *bmp value tbank
+variable tileofs
 
 : subbank ( n - bmp x y ) tbank swap 63 and 8 /mod 256 * swap 256 * swap ;
 : tilebank: ( bmp n - <name> ) dup 256 * constant subbank at writebmp ;
@@ -18,10 +19,10 @@ create tarr all-tiles,
 
 \ - Drawing
 PUBLIC
-motif var tma var stride var scrollx var scrolly var tio
+motif var tio +basis var tma var stride var scrollx var scrolly 
 /obj value /tilemap
 : tm[] { stride @ * + tma @ [] } ;
-: tile dup 28 rshift swap tio @ + $1fff and tarr [] @ ;
+: tile dup 28 rshift swap tileofs @ + $1fff and tarr [] @ ;
 PRIVATE
 : tile+ dup -1 <> if tile fblit else drop then tw 0 +at ;
 : row pen v@ 2>r for @+ tile+ loop drop 2r> tw + at ;
@@ -31,7 +32,7 @@ PRIVATE
 : height h @ p>s tw + 1 - tw / scrolly @ p>s tw mod if 1 + then ;
 : rows 1 hold for dup width row stride @ cells + loop drop 0 hold ;
 PUBLIC
-: tilemap scrollx v@ 2p>s scrolled tma @ + height rows ;
+: tilemap tio @ tileofs !   scrollx v@ 2p>s scrolled tma @ + height rows ;
 : 1tilemap 2s>p w v! stride ! tma ! draw> tilemap ;
 c: *tilemap here gamew tw / gamew gameh 1tilemap ;
 

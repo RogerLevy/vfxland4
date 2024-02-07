@@ -51,7 +51,7 @@ create walkv 1. , 0 ,   0 , -1. ,   -1. , 0 ,   0 , 1. ,
 \ - Z offset
 motif var z +basis
 : zanimate
-    animate draw> 
+    animate   draw> 
         0 z @ negate 2i sx v@ 2p/ 2p>f 1e 1e 0e transform
         ?paletted animation -shader ;
 
