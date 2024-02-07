@@ -200,9 +200,9 @@ require sys/widgets.vfx
             hoveree pickdrag
         then
     then
-\    click? the-mbutton 2 = and if
-\        toggle-editmenu 
-\    then
+    click? the-mbutton 2 = and if
+        toggle-editmenu 
+    then
 ;
 c: *shed draw> editmode @ 0; -matte 2 2 at ;
 : edit-info outlines connectors ;
@@ -233,7 +233,7 @@ root {
     }
     *shed named shed {
         *info named info { }
-        *toolbox named editmenu { ` -- EDIT --` me off 0 32 at *panel } { 8 8 at *generic } { } 
+        *toolbox named editmenu { ` -- EDIT --` me off 0 32 at *panel } { } 
     }
 }
 
