@@ -1,2 +1,8 @@
-\ TODO: framework sample
-
+require lib/private.vfx
+require sys/alpha.vfx 
+require sys/obj.vfx
+require sys/core.vfx
+require sys/repl.vfx \ <-- do not remove
+require sys/filetypes.vfx
+require sys/shed.vfx \ <-- do not remove
+require sys/widgets.vfx \ <-- do not remove
