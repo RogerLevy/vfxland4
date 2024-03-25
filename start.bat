@@ -1,0 +1,1 @@
+start "" "VfxForth_x86_win.exe" cwd prg include main.vfx cwd ..

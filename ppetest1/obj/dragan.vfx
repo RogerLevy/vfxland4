@@ -1,0 +1,12 @@
+require obj/sam.vfx
+
+misc {
+    container: dragan-anims {
+        include fig/tl/dragan-walk-r.tl
+        include fig/tl/dragan-walk-u.tl
+        include fig/tl/dragan-walk-l.tl
+        include fig/tl/dragan-walk-d.tl
+    }
+}
+
+c: *dragan -1 olddir !   -8 -8 16 16 box!   tilebank_dragan tio !   parent-draw ;

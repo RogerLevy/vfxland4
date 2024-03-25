@@ -1,0 +1,54 @@
+
+0 0 at *AED named AED { post: UNTITLED.TL edit 0 kf!  
+    0 0 at *TOOLBOX { $6 attr ! 56. 28. w v! ` AED` $0 bgc !  
+        0 32 at *GENERIC { $7 attr !  
+            0 0 at *TOOLBOX { $6 attr ! 80. 28. w v! ` Editor` $0 bgc !  
+                0 32 at *SPANEL { $7 attr ! 384. 384. w v!  
+                    0 0 at *EDITOR named EDITOR { $7 attr ! 128. 128. w v! 3. 3. sx v!  
+                        64 64 at *GENERIC named ANMC { $7 attr !  
+                            0 0 at *TIMELINE named UNTITLED.TL { $2 attr ! 0 tio !  
+                                0 0 at *KEYFRAME {  } 
+                            } 
+                        } 
+                    } 
+                } 
+            } 
+            576 0 at *TOOLBOX { $6 attr ! 88. 28. w v! ` Preview` $0 bgc !  
+                0 32 at *SPANEL { $7 attr ! 384. 384. w v!  
+                    0 0 at *PREVIEW named PREVIEW { $7 attr ! 3. 3. sx v!  
+                        64 64 at *PSPR named PSPR { $7 attr !  } 
+                    } 
+                } 
+            } 
+            0 432 at *TOOLBOX { $6 attr ! 72. 28. w v! ` Tiles` $0 bgc !  
+                0 32 at *TBANK { $7 attr ! 256. 256. w v!  } 
+            } 
+            272 432 at *TOOLBOX { $6 attr ! 72. 28. w v! ` Tools` $0 bgc !  
+                0 32 at *PANEL { $7 attr ! 200. 200. w v!  
+                    8 8 at *BUTTON { $7 attr ! 152. 28. w v! ` snapping toggle` $0 bgc !  } 
+                    8 8 at *BUTTON { $17 attr ! 136. 28. w v! ` refresh-tbank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 0 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 1 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 2 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $17 attr ! 80. 28. w v! ` 3 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 4 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 5 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` 6 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $17 attr ! 80. 28. w v! ` 7 bank` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 88. 28. w v! ` slowest` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 64. 28. w v! ` slow` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` normal` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 64. 28. w v! ` fast` $0 bgc !  } 
+                    8 8 at *BUTTON { $17 attr ! 88. 28. w v! ` fastest` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 96. 28. w v! ` narrower` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 72. 28. w v! ` wider` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 88. 28. w v! ` shorter` $0 bgc !  } 
+                    8 8 at *BUTTON { $7 attr ! 80. 28. w v! ` taller` $0 bgc !  } 
+                } 
+            } 
+            390 0 at *TOOLBOX { $6 attr ! 80. 28. w v! ` Status` $0 bgc !  
+                0 32 at *STATUS { $6 attr !  } 
+            } 
+        } 
+    } 
+} 

@@ -1,0 +1,20 @@
+\ - Engine and Tools
+cwd ../ppe
+require ppe.vfx
+\ [defined] release not [if] 
+    ws2 { require aed.vfx }
+\ [then]
+cwd ../ppetest1
+
+\ - Game will live in heap memory
+256 mb allocate throw dup constant gamebase dp !
+: unused gamebase 256 mb + here - ;
+
+\ - Game
+include notzelda.vfx
+include balltest.vfx 
+include paltest.vfx wow off
+include misctests.vfx
+
+\ - Enter main loop
+go

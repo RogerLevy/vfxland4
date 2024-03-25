@@ -1,0 +1,6 @@
+\ - Bouncy pink thing
+misc { include fig/tl/bouncer.tl }
+motif var n
+: bounce+ ( n height speed - n z ) delta* rot + dup -rot psin abs p* ;
+: bouncer-act act> n @ 24. 3. bounce+ z ! n ! ;
+c: *bouncer -8 -8 16 16 box! bouncer.tl 0 zanimate bouncer-act ;

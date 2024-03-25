@@ -1,0 +1,24 @@
+0 value subject
+reference bg0
+reference actors
+
+/tilemap to /obj var #cols var #rows
+/obj to /tilemap
+: tilemap:wh { #cols v@ 2s>p tw s>p dup 2p* } ;
+
+: 1csv-map 2dup csv-wh #cols v!   here #cols @ gamew gameh 1tilemap   csv-cells, ;
+: csv-map: 0 0 at *tilemap   named   { [locked]   1csv-map   draw-paletted-tilemap me } ;
+: pgame gamew gameh 2s>p ;
+: game* pgame 2p* ;
+: game- pgame 2- ;
+: scroll 2dup bg0 -> scrollx v!   2negate actors -> x v! ;
+: track x v@ 0.5 0.5 game* 2-   0 0   bg0 tilemap:wh game-   2clamp scroll ;
+: impose me over insert-after   -> x v@ x v! ;
+c: *camera physics> subject ?dup if impose else vx v@ 2delta* x v+! then   track ;
+
+stage clear
+stage {
+    0 0 at *tilemap named bg0 { [bolted] }
+    container: actors { [locked] }
+    0 0 at *camera { [locked] }
+}

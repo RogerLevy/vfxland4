@@ -1,0 +1,55 @@
+
+0 0 at *GENERIC named ROOT {  
+    0 0 at *GENERIC named WORKSPACE {  
+        478 106 at *GAME named GAME { halt on 3. 3. sx v!  
+            0 0 at *GENERIC named STAGE {  } 
+        } 
+        0 0 at *SHED named SHED {  
+            0 0 at *GENERIC named TOOLS {  
+                0 0 at *AED named AED { post: UNTITLED.TL edit 0 kf! me tools push  
+                    300 74 at *TOOLBOX { 56. 28. w v! ` AED` data! $0 bgc !  
+                        0 32 at *GENERIC { $2 attr !  
+                            0 0 at *STATUS { $2 attr !  } 
+                            0 64 at *GENERIC { $2 attr !  
+                                0 0 at *EDITOR named EDITOR { $3 attr ! 128. 128. w v! 3. 3. sx v!  
+                                    64 64 at *GENERIC named ANMC { $2 attr !  
+                                        0 0 at *TIMELINE named UNTITLED.TL {  
+                                            0 0 at *KEYFRAME {  } 
+                                        } 
+                                    } 
+                                } 
+                                512 0 at *PREVIEW named PREVIEW { $2 attr ! 3. 3. sx v!  
+                                    64 64 at *PSPR named PSPR { $2 attr !  } 
+                                } 
+                                0 392 at *TOOLBOX { $2 attr ! 72. 28. w v! ` Tiles` data! $0 bgc !  
+                                    0 32 at *TBANK named TSELECTOR { $3 attr ! 256. 256. w v!  } 
+                                } 
+                                528 400 at *TOOLBOX { $2 attr ! 72. 28. w v! ` Tools` data! $0 bgc !  
+                                    0 32 at *GENERIC { $2 attr ! 160. 36. w v!  
+                                        0 0 at *BUTTON { $3 attr ! 152. 28. w v! ` snapping toggle` data! $0 bgc !  } 
+                                    } 
+                                } 
+                            } 
+                        } 
+                    } 
+                } 
+                0 0 at *GENERIC named WIDGETS {  
+                    1399 341 at *TOOLBOX { 144. 28. w v! ` This is a test` data! $0 bgc !  
+                        0 32 at *PANEL { $1 attr ! 295. 68. w v!  
+                            8 8 at *LABEL { $9 attr ! 136. 16. w v! ` aosdfjaosdifj` data! $0 bgc !  } 
+                            8 32 at *BUTTON { $1 attr ! 152. 28. w v! ` editmode toggle` data! $0 bgc !  } 
+                            175 32 at *BUTTON { $1 attr ! 112. 28. w v! ` dbg toggle` data! $0 bgc !  } 
+                        } 
+                    } 
+                } 
+            } 
+            0 0 at *INFO named INFO {  } 
+        } 
+    } 
+    0 0 at *GENERIC named STATIC {  
+        0 0 at *UI named UI {  
+            0 933 at *REPL named REPL {  } 
+        } 
+        0 0 at *DBG named DBG { en off  } 
+    } 
+} 

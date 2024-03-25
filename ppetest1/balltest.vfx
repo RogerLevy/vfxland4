@@ -1,0 +1,19 @@
+\ - Ball
+gamew gameh 2. 2. 2p/ at actors { *bouncer named ball } {
+\    *helper {
+\        :noname act> 5.0 after> parent @ { 0.1 0.1 sx v+! } 2. after> parent @ kill ; execute
+\    }
+    *helper {
+        :noname 1 perform>
+            parent @ in
+\            5 for
+            begin
+                ( cr ." BIG" )
+                1. 1. sx v! 0.5 wait
+                ( cr ." SMALL" )
+                2. 2. sx v! 0.5 wait
+            again
+ \           loop
+        ; execute
+    }
+}
