@@ -1,15 +1,18 @@
 cwd ../real  require real.vfx  cwd ..
 
-\ - Window
-3e fvalue zoom
-[defined] release [if]
-    -1 -1  1 window
-[else]
-    320 3 *  240 3 * 64 +  0 window
-    display  1920 2 / 8 -  0 al_set_window_position
-[then]
 
-vfx-hwnd 0 -10 0  1920 2 / 20 +  520 $40 SetWindowPos drop
+\ - Window
+-1 -1 1 window
+vfx-hwnd 0 0 0 monw monh $80 SetWindowPos drop  \ hides vfx window
+
+\ [defined] release [if]
+\     -1 -1 1 window
+\ [else]
+\     monw 2 / monh 100 - 0 window
+\     display  monw 2 / 0 al_set_window_position
+\ [then]
+\ 
+\ vfx-hwnd 0 -10 0  1920 2 / 20 +  520 $40 SetWindowPos drop
 
 \ - Rest of dictionary goes on the heap
 256 mb allocate throw dup constant gamebase dp !
